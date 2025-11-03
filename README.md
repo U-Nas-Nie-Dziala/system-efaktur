@@ -1,15 +1,15 @@
-# system-efaktur
+# 🧾 System e-Faktur
 
-Sklad zespołu: 
+Projekt zespołowy mający na celu stworzenie aplikacji do obsługi **faktur elektronicznych**.
 
-Roszkowski Daniel 
+---
 
-Pijagin Ludwika
+## 👥 Skład zespołu
 
-Jaworowski Bartłomiej
+- **Roszkowski Daniel**  
+- **Pijagin Ludwika**  
+- **Jaworowski Bartłomiej**  
+- **Pogorzelski Kamil**  
+- **Kozikowski Radosław**
 
-Pogorzelski Kamil
-
-Kozikowski Radosław
-
-
+---
