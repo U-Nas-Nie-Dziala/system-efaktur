@@ -5,6 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
+    "prepare": "npx prisma generate",
     "build": "tsdown",
     "serve": "node ./dist/index.cjs"
   },
