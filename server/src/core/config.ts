@@ -31,8 +31,16 @@ class ConfigEnv implements IConfig {
     @IsString()
     APP_COOKIE_SECRET: string;
 
+    @IsNotEmpty()
+    @IsString()
+    APP_JWT_SECRET: string;
+
     @IsOptional()
     DATABASE_URL: string;
+
+    @IsNotEmpty()
+    @IsString()
+    AUTH_COOKIE: string = 'sign';
 }
 
 export class Config {
