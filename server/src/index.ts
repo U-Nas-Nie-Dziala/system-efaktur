@@ -1,3 +1,5 @@
+import "reflect-metadata";
+
 import { Server } from "./core/server";
 
 const run = async () => {

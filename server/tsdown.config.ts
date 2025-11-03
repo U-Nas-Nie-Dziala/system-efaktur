@@ -6,6 +6,9 @@ export default defineConfig({
     dts: true,
     outDir: "dist",
     sourcemap: true,
-    format: ["commonjs"],
-    watch: true,
+    format: ["cjs"],
+    watch: false,
+    outputOptions: {
+        esModule: true,
+    },
 });

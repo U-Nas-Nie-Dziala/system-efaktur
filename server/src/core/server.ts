@@ -1,14 +1,18 @@
 import express from "express";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
+import cookieParser from "cookie-parser";
 import cors from "cors";
+import { Config } from "./config";
 
 export class Server {
     private express: express.Application;
 
     constructor() {
+        Config.validateEnv();
+
         this.express = express();
-        this.express.use(helmet);
+        this.express.use(helmet());
         this.express.use(
             cors({
                 credentials: true,
@@ -18,6 +22,7 @@ export class Server {
                 methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
             })
         );
+
         this.express.use(
             rateLimit({
                 windowMs: 1000 * 60 * 15,
@@ -25,10 +30,18 @@ export class Server {
             })
         );
 
+        this.express.use(cookieParser(Config.key<string>("APP_COOKIE_SECRET")));
+
         this.express.use(express.json({ strict: true }));
     }
 
     public start() {
-        this.express.listen(8080);
+        this.express.listen(8080, () =>
+            console.log(
+                `Server running at: http://localhost:${Config.key<number>(
+                    "APP_PORT"
+                )}`
+            )
+        );
     }
 }
