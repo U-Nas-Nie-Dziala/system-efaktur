@@ -1,12 +1,12 @@
 {
   "name": "server",
   "version": "1.0.0",
-  "description": "system-efaktur backend ExpressJs + tRPC",
+  "description": "system-efaktur backend ExpressJs",
   "main": "index.js",
   "type": "module",
   "scripts": {
     "prepare": "npx prisma generate",
-    "build": "tsdown",
+    "build": "tsdown -c tsdown.ts",
     "serve": "node ./dist/index.cjs"
   },
   "author": "U-Nas-Nie-Dziala",

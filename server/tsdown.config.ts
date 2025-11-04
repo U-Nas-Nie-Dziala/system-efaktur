@@ -1,14 +1,15 @@
 import { defineConfig } from "tsdown";
 
 export default defineConfig({
-    clean: true,
     entry: ["./src/index.ts"],
-    dts: true,
     outDir: "dist",
-    sourcemap: true,
     format: ["cjs"],
+    target: "node18",
+    sourcemap: true,
+    clean: true,
+    dts: true,
     watch: false,
-    outputOptions: {
-        esModule: true,
-    },
+    // outputOptions: {
+    //     esModule: true,
+    // },
 });

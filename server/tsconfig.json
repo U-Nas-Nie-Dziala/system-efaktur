@@ -2,8 +2,9 @@
     "include": ["./src/**/*.ts"],
     "compilerOptions": {
         "typeRoots": ["./node_modules/@types", "./src/@types"],
-        "target": "es2016",
-        "module": "commonjs",
+        "target": "es2022",
+        "module": "nodenext",
+        "moduleResolution": "nodenext",
         "esModuleInterop": true,
         "forceConsistentCasingInFileNames": true,
         "removeComments": true,
