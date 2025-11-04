@@ -3,7 +3,7 @@ import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import cookieParser from "cookie-parser";
 import cors from "cors";
-import multer from "multer";
+// import multer from "multer";
 import { Config } from "./config";
 
 export class Server {
