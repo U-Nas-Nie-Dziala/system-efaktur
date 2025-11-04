@@ -21,6 +21,7 @@
     "@types/jsonwebtoken": "^9.0.10",
     "@types/multer": "^2.0.0",
     "@types/node": "^24.9.1",
+    "@types/ws": "^8.18.1",
     "nodemon": "^3.1.10",
     "rimraf": "^6.0.1",
     "ts-node": "^10.9.2",
@@ -44,6 +45,7 @@
     "reflect-metadata": "^0.2.2",
     "tsdown": "^0.15.12",
     "uninstall": "^0.0.0",
+    "ws": "^8.18.3",
     "zod": "^4.1.12"
   },
   "volta": {

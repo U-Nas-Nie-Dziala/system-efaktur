@@ -24,6 +24,11 @@ class ConfigEnv implements IConfig {
     APP_PORT: number;
 
     @IsNotEmpty()
+    @IsNumber()
+    @Type(() => Number)
+    APP_WS_PORT: number;
+
+    @IsNotEmpty()
     @IsString()
     APP_SECRET: string;
 
