@@ -44,7 +44,7 @@ export class Server {
     }
 
     public start() {
-        this.express.listen(8080, () =>
+        this.express.listen(Config.key<number>("APP_PORT"), () =>
             console.log(
                 `Server running at: http://localhost:${Config.key<number>(
                     "APP_PORT"
