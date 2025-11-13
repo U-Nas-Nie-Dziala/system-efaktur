@@ -9,15 +9,15 @@ datasource db {
 }
 
 model Users {
-  id          String    @id @default(uuid())
-  firstname   String    @db.VarChar(64)
-  lastname    String    @db.VarChar(64)
-  email       String    @db.VarChar(255)
-  password    String    @db.VarChar(64)
-  companyId   String    @unique
-  company     Companies @relation(fields: [companiesId], references: [id])
-  created_at  DateTime  @default(now())
-  updated_at  DateTime  @updatedAt
+  id          String     @id @default(uuid())
+  firstname   String     @db.VarChar(64)
+  lastname    String     @db.VarChar(64)
+  email       String     @db.VarChar(255)
+  password    String     @db.VarChar(64)
+  companyId   String?    @unique
+  company     Companies? @relation(fields: [companiesId], references: [id])
+  created_at  DateTime   @default(now())
+  updated_at  DateTime   @updatedAt
   companiesId String
   tokens      Tokens[]
 }
