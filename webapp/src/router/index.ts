@@ -7,8 +7,30 @@ import {
 const routes: RouteRecordRaw[] = [
   {
     path: "/",
-    name: "index",
-    component: () => import("../views/Index.vue"),
+    component: () => import("../layouts/DefaultLayout.vue"),
+    children: [
+      {
+        path: "",
+        name: "index",
+        component: () => import("../views/Index.vue"),
+      },
+    ],
+  },
+  {
+    path: "/auth",
+    component: () => import("../layouts/AuthLayout.vue"),
+    children: [
+      {
+        path: "login",
+        name: "login",
+        component: () => import("../views/auth/Login.vue"),
+      },
+      {
+        path: "register",
+        name: "register",
+        component: () => import("../views/auth/Register.vue"),
+      },
+    ],
   },
 ];
 
