@@ -3,11 +3,12 @@
   "version": "1.0.0",
   "description": "system-efaktur backend ExpressJs",
   "main": "index.js",
-  "type": "module",
   "scripts": {
-    "prepare": "npx prisma generate",
-    "build": "tsdown -c tsdown.ts",
-    "serve": "node ./dist/index.cjs"
+    "install": "npx prisma generate",
+    "clean-build": "rimraf ./dist",
+    "build": "swc ./src -d dist --copy-files",
+    "dev": "nodemon --config ./nodemon.json",
+    "serve": "node ./dist/src/index.js"
   },
   "author": "U-Nas-Nie-Dziala",
   "license": "ISC",
@@ -28,6 +29,7 @@
     "typescript": "^5.9.3"
   },
   "dependencies": {
+    "@prisma/client": "^6.19.0",
     "@trpc/server": "^11.7.0",
     "bcrypt": "^6.0.0",
     "class-transformer": "^0.5.1",
@@ -41,10 +43,9 @@
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.2",
     "multer": "^2.0.2",
-    "prisma": "^6.18.0",
+    "prisma": "^6.19.0",
     "reflect-metadata": "^0.2.2",
     "tsdown": "^0.15.12",
-    "uninstall": "^0.0.0",
     "ws": "^8.18.3",
     "zod": "^4.1.12"
   },

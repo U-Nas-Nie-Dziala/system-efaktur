@@ -1,11 +1,5 @@
 import { parse } from "dotenv";
-import {
-    IsNotEmpty,
-    IsNumber,
-    IsOptional,
-    IsString,
-    validateSync,
-} from "class-validator";
+import { IsNotEmpty, IsNumber, IsOptional, IsString, validateSync } from "class-validator";
 import { plainToInstance, Type } from "class-transformer";
 import { resolve } from "path";
 import { readFileSync } from "fs";
@@ -45,7 +39,7 @@ class ConfigEnv implements IConfig {
 
     @IsNotEmpty()
     @IsString()
-    AUTH_COOKIE: string = 'sign';
+    AUTH_COOKIE: string = "sign";
 }
 
 export class Config {
@@ -53,9 +47,7 @@ export class Config {
 
     private constructor() {
         try {
-            const raw = parse(
-                readFileSync(resolve(__dirname, "./../.env"), "utf-8")
-            );
+            const raw = parse(readFileSync(resolve(__dirname, "./../../../.env"), "utf-8"));
             this.config = plainToInstance(ConfigEnv, raw);
 
             const errors = validateSync(this.config, {

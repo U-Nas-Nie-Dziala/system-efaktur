@@ -1,0 +1,17 @@
+{
+    "verbose": true,
+    "ext": "ts,json",
+    "exec": "npm run clean-build && npm run build && npm run serve",
+    "ignore": [
+        ".git",
+        ".vscode",
+        "./logs/",
+        "./dist/"
+    ],
+    "watch": [
+        "./src/"
+    ],
+    "events": {
+        "start": "cls || clear"
+    }
+}
