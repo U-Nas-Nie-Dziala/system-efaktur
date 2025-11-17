@@ -1,0 +1,30 @@
+@token = {{login.response.body.token}}
+@testUserFirstname = "Test"
+@testUserLastname = "Testowy"
+@testUserEmail = "test@example.com"
+@testUserPassword = "TestingPassword123!" 
+
+# @name login
+POST http://localhost:8080/auth/login
+Content-Type: application/json
+
+{
+    "email": {{testUserEmail}},
+    "password": {{testUserPassword}}
+}
+
+###
+POST http://localhost:8080/auth/register
+Content-Type: application/json
+
+{
+    "firstname": {{testUserFirstname}},
+    "lastname": {{testUserLastname}},
+    "email": {{testUserEmail}},
+    "password": {{testUserPassword}}
+}
+
+###
+GET http://localhost:8080/company/@me
+Content-Type: application/json
+Authorization: {{token}}

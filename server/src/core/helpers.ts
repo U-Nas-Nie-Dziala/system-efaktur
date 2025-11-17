@@ -33,3 +33,13 @@ export function BindDto<T extends object>(dto: ClassConstructor<T>) {
         }
     };
 }
+
+type IExtractAuth = {
+    userId: string;
+    iat: Number;
+    exp: Number;
+};
+
+export function extractAuth(res: express.Response): IExtractAuth | null {
+    return res.locals.auth ?? null;
+}
