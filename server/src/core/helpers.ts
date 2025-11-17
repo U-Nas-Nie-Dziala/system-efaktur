@@ -13,20 +13,23 @@ export function BindDto<T extends object>(dto: ClassConstructor<T>) {
             });
 
             if (errors.length > 0) {
-                return res.status(400).json(
-                    errors.map((v) => {
+                return res.status(400).json({
+                    message: "Bad Request",
+                    errors: errors.map((v) => {
                         return {
                             property: v.property,
                             children: v.children,
                             constraints: v.constraints,
                         };
-                    })
-                );
+                    }),
+                });
             }
 
             return next();
         } catch (e) {
-            return res.status(400).json({});
+            return res.status(400).json({
+                message: "Bad Request.",
+            });
         }
     };
 }
