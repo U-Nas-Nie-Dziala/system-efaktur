@@ -25,7 +25,7 @@ const theme = useTheme();
       </v-btn>
     </v-app-bar>
 
-    <v-navigation-drawer v-model="drawer" permanent>
+    <v-navigation-drawer v-model="drawer" app>
       <v-list nav density="compact">
         <v-list-item 
           v-for="link in placeholderLinks"
