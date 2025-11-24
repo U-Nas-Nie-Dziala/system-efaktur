@@ -8,7 +8,9 @@
     "clean-build": "rimraf ./dist",
     "build": "swc ./src -d dist --copy-files",
     "dev": "nodemon --config ./nodemon.json",
-    "serve": "node ./dist/src/index.js"
+    "serve": "node ./dist/src/index.js",
+    "ts-gen": "ts-node ./src/core/ksef/xsd.ts",
+    "test:ksef": "ts-node ./tests/ksef.ts"
   },
   "author": "U-Nas-Nie-Dziala",
   "license": "ISC",
@@ -23,6 +25,7 @@
     "@types/multer": "^2.0.0",
     "@types/node": "^24.9.1",
     "@types/ws": "^8.18.1",
+    "@types/xml2js": "^0.4.14",
     "nodemon": "^3.1.10",
     "rimraf": "^6.0.1",
     "ts-node": "^10.9.2",
@@ -47,6 +50,8 @@
     "reflect-metadata": "^0.2.2",
     "tsdown": "^0.15.12",
     "ws": "^8.18.3",
+    "xml-js": "^1.6.11",
+    "xml2js": "^0.6.2",
     "zod": "^4.1.12"
   },
   "volta": {
