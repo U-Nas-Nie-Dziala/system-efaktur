@@ -10,7 +10,8 @@
     "dev": "nodemon --config ./nodemon.json",
     "serve": "node ./dist/src/index.js",
     "ts-gen": "ts-node ./src/core/ksef/xsd.ts",
-    "test:ksef": "ts-node ./tests/ksef.ts"
+    "test:ksef": "ts-node ./tests/ksef.ts",
+    "test:xml": "ts-node ./tests/builder.ts"
   },
   "author": "U-Nas-Nie-Dziala",
   "license": "ISC",

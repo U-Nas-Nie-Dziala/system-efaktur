@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-16"?>
+<Faktura xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://crd.gov.pl/wzor/2025/06/25/13775/">
+    <Naglowek>
+        <KodFormularza kodSystemowy="FA (3)" wersjaSchemy="1-0E">FA</KodFormularza>
+        <DataWytworzeniaFa>2025-11-26T03:05:39.181Z</DataWytworzeniaFa>
+        <WariantFormularza>3</WariantFormularza>
+        <SystemInfo>Studencka Aplikacja Podatnika</SystemInfo>
+    </Naglowek>
+</Faktura>
