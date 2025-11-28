@@ -1,3 +1,3 @@
 export class NKom {
-    constructor(public Value: string) {}
+    constructor(public Value: any) {}
 }

@@ -1,3 +1,6 @@
+import { TKlucz } from "./TKlucz";
+import { TWartosc } from "./TWartosc";
+
 export class TMetaDane {
-    constructor(public TKlucz: string, public TWartosc: string) {}
+    constructor(public TKlucz: TKlucz, public TWartosc: TWartosc) {}
 }

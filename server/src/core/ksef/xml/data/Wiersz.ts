@@ -1,5 +1,5 @@
-import { NKom } from "./NKom";
+import { WKom } from "./WKom";
 
 export class Wiersz {
-    constructor(public Value: NKom[]) {}
+    constructor(public Wiersz: WKom[]) {}
 }

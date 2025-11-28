@@ -1,10 +1,13 @@
-import { Tabela } from "./Tabela";
+import { ZNaglowek } from "./ZNaglowek";
+import { MetaDane } from "./MetaDane";
 import { Tekst } from "./Tekst";
-import { TMetaDane } from "./TMetaDane";
+import { Tabela } from "./Tabela";
 
 export class BlokDanych {
-    public ZNaglowek: string;
-    public MetaDane: TMetaDane[];
-    public Tekst: Tekst;
-    public Tabela: Tabela;
+    constructor(
+        public ZNaglowek: ZNaglowek | undefined = undefined,
+        public MetaDane: MetaDane[],
+        public Tekst: Tekst | undefined = undefined,
+        public Tabela: Tabela[]
+    ) {}
 }

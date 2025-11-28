@@ -1,5 +1,5 @@
 export class KodFormularza {
-    public _attributes: [string, string][] = [
+    public readonly _attributes: [string, string][] = [
         ["kodSystemowy", "FA (3)"],
         ["wersjaSchemy", "1-0E"],
     ];
