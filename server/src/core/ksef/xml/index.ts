@@ -47,13 +47,60 @@ export class InvoiceToXML {
         }
     }
 
-    public contract(rootElement: string, faktura: Faktura) {
-        console.log(faktura);
-        this.xml += `<${rootElement} xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://crd.gov.pl/wzor/2025/06/25/13775/">`;
-        this.deep(faktura);
+    public contract(tagName: string, obj: any): any {
+        if (obj === null || obj === undefined) return "";
 
-        this.xml += `</${rootElement}>`;
+        // Jeśli to prymityw → zwracamy jako wartość tekstową taga:
+        if (typeof obj !== "object") {
+            return `<${tagName}>${this.escapeXml(String(obj))}</${tagName}>`;
+        }
 
-        return this.xml;
+        let attributes = "";
+
+        // Obsługa _attributes: [ [key,value], ... ]
+        if (Array.isArray(obj._attributes)) {
+            // @ts-ignore
+            attributes = " " + obj._attributes.map(([k, v]) => `${k}="${this.escapeXml(String(v))}"`).join(" ");
+        }
+
+        // Jeśli obiekt ma pole Value → to jego treść
+        if (Object.prototype.hasOwnProperty.call(obj, "Value")) {
+            // Jeśli Value jest obiektem → rekurencja
+            if (typeof obj.Value === "object") {
+                return `<${tagName}${attributes}>${this.contract(tagName, obj.Value)}</${tagName}>`;
+            }
+
+            return `<${tagName}${attributes}>${this.escapeXml(String(obj.Value))}</${tagName}>`;
+        }
+
+        // Zwykłe pola → podtagi
+        let inner = "";
+
+        for (const key of Object.keys(obj)) {
+            if (key === "_attributes" || key === "Value") continue;
+
+            const value = obj[key];
+            if (value === undefined || value === null) continue;
+
+            // Tablice → wiele tagów
+            if (Array.isArray(value)) {
+                for (const element of value) {
+                    inner += this.contract(key, element);
+                }
+            } else {
+                inner += this.contract(key, value);
+            }
+        }
+
+        return `<${tagName}${attributes}>${inner}</${tagName}>`;
+    }
+
+    public escapeXml(val: string): string {
+        return val
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&apos;");
     }
 }

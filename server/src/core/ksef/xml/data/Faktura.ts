@@ -8,6 +8,12 @@ import { Stopka } from "./Stopka";
 import { Zalacznik } from "./Zalacznik";
 
 export class Faktura {
+    public readonly _attributes: [string, string][] = [
+        ["xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance"],
+        ["xmlns:xsd", "http://www.w3.org/2001/XMLSchema"],
+        ["xmlns", "http://crd.gov.pl/wzor/2025/06/25/13775/"],
+    ];
+
     constructor(
         public Naglowek: Naglowek,
         public Podmiot1: Podmiot1,

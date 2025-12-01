@@ -4,7 +4,7 @@ export class Naglowek {
     constructor(
         public KodFormularza: KodFormularza,
         public WariantFormularza: string = "3",
-        public DataWytworzenia: string,
+        public DataWytworzeniaFa: string,
         public SystemInfo?: string
     ) {}
 }

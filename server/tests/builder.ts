@@ -22,6 +22,8 @@ import { PMarzy } from "../src/core/ksef/xml/data/PMarzy";
 import { RodzajFaktury } from "../src/core/ksef/xml/data/RodzajFaktury";
 import { FaWiersz } from "../src/core/ksef/xml/data/FaWiersz";
 import { StawkaPodatku } from "../src/core/ksef/xml/data/StawkaPodatku";
+import { JST } from "../src/core/ksef/xml/data/JST";
+import { GV } from "../src/core/ksef/xml/data/GV";
 
 const xml = new InvoiceToXML();
 
@@ -35,7 +37,25 @@ const podmiot1 = new Podmiot1(
     adresP1
 );
 
-const podmiot2 = new Podmiot2(undefined, new DaneIdentyfikacyjne2("test sp.z.o.o", new NIP("9753144889")), adresP1);
+const podmiot2 = new Podmiot2(
+    undefined,
+    new DaneIdentyfikacyjne2(
+        new NIP("9753144889"),
+        new Nazwa("test sp.z.o.o"),
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+    ),
+    adresP1,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    new JST(2),
+    new GV(2)
+);
 
 const ad = new Adnotacje(
     2,
@@ -43,7 +63,7 @@ const ad = new Adnotacje(
     2,
     2,
     new Zwolnienie(undefined, undefined, undefined, undefined, 1),
-    new NoweSrodkiTransportu(1, 2, undefined, 1),
+    new NoweSrodkiTransportu(undefined, undefined, undefined, 1),
     2,
     new PMarzy(undefined, undefined, undefined, undefined, undefined, 1)
 );
@@ -71,7 +91,7 @@ const faw = new FaWiersz(
 
 const faContent = new Fa(
     new KodWaluty("PLN"),
-    "2025-11-28",
+    new Date().toISOString().slice(0, 10), // YYYY-MM-DD format
     "Testowo",
     "2025/11-28/SSD-dasdakshdak21313",
     undefined,
