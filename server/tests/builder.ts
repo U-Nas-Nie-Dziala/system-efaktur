@@ -143,3 +143,6 @@ const faContent = new Fa(
 
 const xmlString = xml.contract("Faktura", new Faktura(naglowek, podmiot1, podmiot2, undefined, undefined, faContent));
 fs.writeFileSync(path.resolve(process.cwd(), "./tests/test_xml.xml"), xmlString);
+
+const jsonString = xml.toJSON(new Faktura(naglowek, podmiot1, podmiot2, undefined, undefined, faContent));
+fs.writeFileSync(path.resolve(process.cwd(), "./tests/test_json.json"), jsonString);
