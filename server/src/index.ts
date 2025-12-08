@@ -1,4 +1,5 @@
 import "reflect-metadata";
+import { Database } from "./core/database";
 import { Server } from "./core/server";
 import { auth } from "./app/routes/auth";
 import { WSS } from "./core/ws";
@@ -12,6 +13,7 @@ const run = async () => {
     app.registerRouter(auth);
     app.registerRouter(company);
 
+    await Database.init();
     WSS.start();
 
     // define WS events

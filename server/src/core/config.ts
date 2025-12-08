@@ -1,5 +1,5 @@
 import { parse } from "dotenv";
-import { IsNotEmpty, IsNumber, IsOptional, IsString, validateSync } from "class-validator";
+import { IsNotEmpty, IsNumber, IsString, validateSync } from "class-validator";
 import { plainToInstance, Type } from "class-transformer";
 import { resolve } from "path";
 import { readFileSync } from "fs";
@@ -8,7 +8,11 @@ interface IConfig {
     APP_PORT: number;
     APP_SECRET: string;
     APP_COOKIE_SECRET: string;
-    DATABASE_URL: string;
+    DB_HOST: string;
+    DB_PORT: number;
+    DB_USER: string;
+    DB_PASS: string;
+    DB_NAME: string;
 }
 
 class ConfigEnv implements IConfig {
@@ -34,8 +38,26 @@ class ConfigEnv implements IConfig {
     @IsString()
     APP_JWT_SECRET: string;
 
-    @IsOptional()
-    DATABASE_URL: string;
+    @IsNotEmpty()
+    @IsString()
+    DB_HOST: string;
+
+    @IsNotEmpty()
+    @IsNumber()
+    @Type(() => Number)
+    DB_PORT: number;
+
+    @IsNotEmpty()
+    @IsString()
+    DB_USER: string;
+
+    @IsNotEmpty()
+    @IsString()
+    DB_PASS: string;
+
+    @IsNotEmpty()
+    @IsString()
+    DB_NAME: string;
 
     @IsNotEmpty()
     @IsString()

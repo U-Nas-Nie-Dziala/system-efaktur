@@ -1,19 +1,17 @@
 import { Router, Request, Response } from "express";
-import { BindDto } from "@/core/helpers";
+import { BindDto, useRepository } from "@/core/helpers";
 import { LoginDto, ILoginDto, RegisterDto, IRegisterDto } from "../data/auth.dto";
-import prisma from "@/core/prisma";
 import { hash, compare } from "bcrypt";
 import jwt from "jsonwebtoken";
 import { Config } from "@/core/config";
+import { User } from "../models/User";
 
 export const auth = Router();
 
 auth.post("/auth/login", [BindDto(LoginDto)], async (req: Request<any, any, ILoginDto>, res: Response) => {
-    const account = await prisma.users.findFirst({
-        where: {
-            email: req.body.email,
-        },
-    });
+    const userRepository = useRepository(User);
+
+    const account = await userRepository.findOneBy({ email: req.body.email });
 
     if (!account) {
         return res.status(404).json({
@@ -72,11 +70,8 @@ auth.post("/auth/login", [BindDto(LoginDto)], async (req: Request<any, any, ILog
 });
 
 auth.post("/auth/register", [BindDto(RegisterDto)], async (req: Request<any, any, IRegisterDto>, res: Response) => {
-    const account = await prisma.users.findFirst({
-        where: {
-            email: req.body.email,
-        },
-    });
+    const userRepository = useRepository(User);
+    const account = await userRepository.findOneBy({ email: req.body.email });
 
     if (account) {
         return res.status(401).json({
@@ -92,15 +87,11 @@ auth.post("/auth/register", [BindDto(RegisterDto)], async (req: Request<any, any
             ],
         });
     }
-
     const hashed = await hash(req.body.password, 12);
     req.body.password = hashed;
 
-    const user = await prisma.users.create({
-        data: req.body,
-    });
+    await userRepository.save(req.body);
 
     // TODO: email verification?
-
     return res.status(201).json({});
 });

@@ -28,3 +28,22 @@ Content-Type: application/json
 GET http://localhost:8080/company/@me
 Content-Type: application/json
 Authorization: {{token}}
+
+### 
+POST http://localhost:8080/company/@me
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+    "name": "Test Company",
+    "type": "Jednoosobowa działalność gospodarcza",
+    "nip": "123456789",
+    "regon": "123456789",
+    "street": "Testowa",
+    "address": "10 lok. 10",
+    "zipcode": "15-345",
+    "city": "Testowo",
+    "country": "Polska",
+    "registerDate": "2024-01-01",
+    "vat": false
+}

@@ -1,23 +1,8 @@
 import { IsBoolean, IsDate, IsEnum, IsNotEmpty, IsOptional, IsSemVer, IsString, MaxLength } from "class-validator";
-import { CompanyType } from "@/generated/prisma/enums";
+import { CompanyType, ICompanyContract } from "../models/Company";
+import { Type } from "class-transformer";
 
-export type ICompanyType = {
-    name: string;
-    type: CompanyType;
-    nip: string;
-    regon: string;
-    bdo?: string;
-    krs?: string;
-    street: string;
-    address: string;
-    zipcode: string;
-    city: string;
-    country: string;
-    registerDate: Date;
-    vat: boolean;
-};
-
-export class CompanyDto implements ICompanyType {
+export class CompanyDto implements ICompanyContract {
     @IsNotEmpty()
     @IsString()
     @MaxLength(255)
@@ -74,6 +59,7 @@ export class CompanyDto implements ICompanyType {
 
     @IsNotEmpty()
     @IsDate()
+    @Type(() => Date)
     registerDate: Date;
 
     @IsNotEmpty()
