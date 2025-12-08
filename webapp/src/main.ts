@@ -1,8 +1,10 @@
-import { createApp } from "vue";
-import "vuetify/styles/main.sass";
-import { createVuetify } from "vuetify";
-import { aliases, mdi } from 'vuetify/iconsets/mdi'
 import '@mdi/font/css/materialdesignicons.css'
+import "@fortawesome/fontawesome-free/css/all.css";
+import "vuetify/styles/main.sass";
+import { createApp } from "vue";
+import { createVuetify } from "vuetify";
+import { aliases, fa } from "vuetify/iconsets/fa";
+import { mdi } from 'vuetify/iconsets/mdi'
 import * as components from "vuetify/components";
 import * as directives from "vuetify/directives";
 import App from "./App.vue";
@@ -14,13 +16,14 @@ const vuetify = createVuetify({
   components,
   directives,
   theme: {
-    defaultTheme: "light",
+    defaultTheme: "dark",
   },
   icons: {
-    defaultSet: 'mdi',
+    defaultSet: 'fa',
     aliases,
     sets: {
-      mdi,
+      fa,
+      mdi
     },
   },
 });

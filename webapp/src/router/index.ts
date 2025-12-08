@@ -7,12 +7,12 @@ import {
 const routes: RouteRecordRaw[] = [
   {
     path: "/",
-    component: () => import("../layouts/DefaultLayout.vue"),
+    component: () => import("../layouts/LandingPageLayout.vue"),
     children: [
       {
         path: "",
-        name: "index",
-        component: () => import("../views/Index.vue"),
+        name: "landing-page",
+        component: () => import("../views/LandingPage.vue"),
       },
     ],
   },
