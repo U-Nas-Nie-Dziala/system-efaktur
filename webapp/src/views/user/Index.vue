@@ -168,7 +168,7 @@ const recentInvoices = ref([]);
               <div class="text-caption text-medium-emphasis">
                 Rozpocznij od utworzenia pierwszej faktury
               </div>
-              <v-btn color="#d63031" class="mt-4" prepend-icon="mdi-plus">
+              <v-btn color="#d63031" class="mt-4" prepend-icon="mdi:mdi-plus">
                 Utwórz fakturę
               </v-btn>
             </div>
