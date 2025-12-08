@@ -1,6 +1,6 @@
 import { Router, Request, Response } from "express";
 import { isAuthenticated } from "../middlewares/authenticated";
-import { extractAuth, BindDto, useRepository } from "@/core/helpers";
+import { extractAuth, BindDto, useRepository, Resource } from "@/core/helpers";
 import { CompanyDto } from "../data/company.dto";
 import { Company } from "../models/Company";
 import { User } from "../models/User";
