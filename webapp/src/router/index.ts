@@ -16,6 +16,19 @@ const routes: RouteRecordRaw[] = [
       },
     ],
   },
+
+  {
+    path: "/user",
+    component: () => import("../layouts/DefaultLayout.vue"),
+    children: [
+      {
+        path: "index",
+        name: "index",
+        component: () => import("../views/user/Index.vue"),
+      },
+    ],
+  },
+
   {
     path: "/auth",
     component: () => import("../layouts/AuthLayout.vue"),

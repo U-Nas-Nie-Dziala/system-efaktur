@@ -2,7 +2,7 @@
   <v-app>
     <v-app-bar
       app
-      lass="text-h4 mb-2"
+      class="text-h4 mb-2"
       density="compact"
       elevation="10"
       style="
@@ -27,10 +27,7 @@
         <router-view />
       </v-container>
     </v-main>
-
-    <v-footer>
-      <Footer />
-    </v-footer>
+    <Footer />
   </v-app>
 </template>
 

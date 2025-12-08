@@ -16,7 +16,12 @@
             class="text-white"
             prepend-icon="fa-solid fa-rocket"
           >
-            Zaloguj się
+            <RouterLink
+              to="/auth/login"
+              class="text-white text-decoration-none"
+            >
+              Zaloguj się
+            </RouterLink>
           </v-btn>
         </v-col>
       </v-row>
@@ -35,7 +40,7 @@
 
     <v-row>
       <v-col cols="12" md="4">
-        <v-card elevation="2" class="pa-4 h-100">
+        <v-card elevation="2" class="pa-4 h-100" link>
           <v-card-text class="text-center">
             <v-icon size="64" color="#c0392b" class="mb-4">
               fa-solid fa-tasks
@@ -50,7 +55,7 @@
       </v-col>
 
       <v-col cols="12" md="4">
-        <v-card elevation="2" class="pa-4 h-100">
+        <v-card elevation="2" class="pa-4 h-100" link>
           <v-card-text class="text-center">
             <v-icon size="64" color="#c0392b" class="mb-4">
               fa-solid fa-users
@@ -65,7 +70,7 @@
       </v-col>
 
       <v-col cols="12" md="4">
-        <v-card elevation="2" class="pa-4 h-100">
+        <v-card elevation="2" class="pa-4 h-100" link>
           <v-card-text class="text-center">
             <v-icon size="64" color="#c0392b" class="mb-4">
               fa-solid fa-chart-line
@@ -126,13 +131,14 @@
           </p>
         </v-col>
         <v-col cols="12" md="4" class="text-md-right text-center">
-          <v-btn
-            size="x-large"
-            class="text-none"
-            style="color: #d63031"
-            elevation="10"
-          >
-            Zarejestruj się teraz
+          <v-btn size="x-large" class="text-none" elevation="10">
+            <RouterLink
+              to="/auth/register"
+              class="font-weight-medium text-decoration-none"
+              style="color: #d63031"
+            >
+              Zarejestruj się teraz
+            </RouterLink>
           </v-btn>
         </v-col>
       </v-row>

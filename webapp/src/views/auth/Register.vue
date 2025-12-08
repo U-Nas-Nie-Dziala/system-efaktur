@@ -20,11 +20,11 @@ const submit = async () => {
 </script>
 
 <template>
-  <v-container class="auth-wrapper" fluid>
+  <v-container>
     <v-row align="center" justify="center">
       <v-col cols="12" md="8" lg="6">
-        <v-sheet
-          class="px-8 py-10 auth-card"
+        <v-card
+          class="px-8 py-10 auth-card rounded-lg"
           elevation="3"
           max-width="640"
           width="100%"
@@ -80,7 +80,7 @@ const submit = async () => {
 
             <v-btn
               block
-              color="primary"
+              style="background-color: #d63031; color: white"
               type="submit"
               class="mt-6"
               :loading="loading"
@@ -93,27 +93,13 @@ const submit = async () => {
             Masz już konto?
             <RouterLink
               to="/auth/login"
-              class="font-weight-medium text-primary text-decoration-none"
+              class="font-weight-medium text-decoration-none"
             >
               Przejdź do logowania
             </RouterLink>
           </p>
-        </v-sheet>
+        </v-card>
       </v-col>
     </v-row>
   </v-container>
 </template>
-
-<style scoped>
-.auth-wrapper {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.auth-card {
-  margin-left: auto;
-  margin-right: auto;
-}
-</style>
