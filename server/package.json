@@ -33,7 +33,6 @@
     "typescript": "^5.9.3"
   },
   "dependencies": {
-    "@prisma/client": "^6.19.0",
     "@trpc/server": "^11.7.0",
     "bcrypt": "^6.0.0",
     "class-transformer": "^0.5.1",
@@ -47,7 +46,6 @@
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.2",
     "multer": "^2.0.2",
-    "prisma": "^6.19.0",
     "reflect-metadata": "^0.2.2",
     "tsdown": "^0.15.12",
     "ws": "^8.18.3",
