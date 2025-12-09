@@ -92,7 +92,7 @@ const submit = async () => {
           <p class="text-body-2 text-medium-emphasis mt-6 text-center">
             Masz już konto?
             <RouterLink
-              to="/auth/login"
+              :to="{ name: 'login' }"
               class="font-weight-medium text-decoration-none"
             >
               Przejdź do logowania

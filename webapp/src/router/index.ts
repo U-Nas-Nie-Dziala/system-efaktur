@@ -22,9 +22,29 @@ const routes: RouteRecordRaw[] = [
     component: () => import("../layouts/DefaultLayout.vue"),
     children: [
       {
-        path: "index",
-        name: "index",
-        component: () => import("../views/user/Index.vue"),
+        path: "home",
+        name: "home",
+        component: () => import("../views/user/Home.vue"),
+      },
+      {
+        path: "invoices",
+        name: "invoices",
+        component: () => import("../views/user/Invoices.vue"),
+      },
+      {
+        path: "clients",
+        name: "clients",
+        component: () => import("../views/user/Clients.vue"),
+      },
+      {
+        path: "products",
+        name: "products",
+        component: () => import("../views/user/Products.vue"),
+      },
+      {
+        path: "settings",
+        name: "settings",
+        component: () => import("../views/user/Settings.vue"),
       },
     ],
   },

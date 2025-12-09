@@ -4,11 +4,21 @@ import { ref } from "vue";
 import Footer from "../components/Footer.vue";
 import ThemeSwitcher from "../components/ThemeSwitcher.vue";
 
-const placeholderLinks = ref([
-  { title: "Panel glowny", icon: "mdi:mdi-view-dashboard-outline" },
-  { title: "Nowa zakladka", icon: "mdi:mdi-bookmark-outline" },
-  { title: "Miejsce na modul", icon: "mdi:mdi-dots-horizontal" },
-]);
+const placeholderLinks = [
+  {
+    title: "Panel glowny",
+    icon: "mdi:mdi-view-dashboard-outline",
+    name: "home",
+  },
+  { title: "Faktury", icon: "mdi:mdi-file-document", name: "invoices" },
+  { title: "Kontrahenci", icon: "mdi:mdi-account-group", name: "clients" },
+  {
+    title: "Towary i usługi",
+    icon: "mdi:mdi-package-variant",
+    name: "products",
+  },
+  { title: "Ustawienia", icon: "mdi:mdi-cog-outline", name: "settings" },
+];
 
 const drawer = ref(true);
 </script>
@@ -48,13 +58,13 @@ const drawer = ref(true);
           :title="link.title"
           :value="link.title"
           class="cursor-pointer"
-          link
+          :to="{ name: link.name }"
         ></v-list-item>
       </v-list>
       <ThemeSwitcher />
     </v-navigation-drawer>
 
-    <v-main>
+    <v-main class="fill-height">
       <v-container fluid>
         <RouterView />
       </v-container>

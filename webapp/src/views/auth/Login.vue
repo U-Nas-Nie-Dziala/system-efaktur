@@ -14,7 +14,7 @@ const submit = async () => {
   loading.value = true;
   await new Promise((resolve) => setTimeout(resolve, 800));
   loading.value = false;
-  router.push("/user/index");
+  router.push("/user/home");
 };
 </script>
 
@@ -71,7 +71,7 @@ const submit = async () => {
           <p class="text-body-2 text-medium-emphasis mt-6 text-center">
             Nie masz konta?
             <RouterLink
-              to="/auth/register"
+              :to="{ name: 'register' }"
               class="font-weight-medium text-decoration-none"
             >
               Zarejestruj się

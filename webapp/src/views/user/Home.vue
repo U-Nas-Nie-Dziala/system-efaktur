@@ -43,7 +43,7 @@ const recentInvoices = ref([]);
 </script>
 
 <template>
-  <div>
+  <v-container fluid>
     <v-row class="mb-6">
       <v-col cols="12">
         <v-card
@@ -243,7 +243,7 @@ const recentInvoices = ref([]);
         </v-card>
       </v-col>
     </v-row>
-  </div>
+  </v-container>
 </template>
 
 <style scoped>
