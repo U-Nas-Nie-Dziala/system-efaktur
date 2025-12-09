@@ -1,7 +1,9 @@
-import { GTU } from "./GTU";
-import { Procedura } from "./Procedura";
-import { StawkaPodatku } from "./StawkaPodatku";
-import { ZamowienieWiersz } from "./ZamowienieWiersz";
+import { IZamowienieWiersz, ZamowienieWiersz } from "./ZamowienieWiersz";
+
+export interface IZamowienie {
+    WartoscZamowienia: number;
+    ZamowienieWiersz: IZamowienieWiersz[];
+}
 
 export class Zamowienie {
     constructor(public WartoscZamowienia: number, public ZamowienieWiersz: ZamowienieWiersz[]) {}

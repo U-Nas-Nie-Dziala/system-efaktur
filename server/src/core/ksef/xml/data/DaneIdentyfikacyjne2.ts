@@ -1,6 +1,16 @@
-import { KodKraju } from "./KodKraju";
-import { Nazwa } from "./Nazwa";
-import { NIP } from "./NIP";
+import { IKodKraju, KodKraju } from "./KodKraju";
+import { INazwa, Nazwa } from "./Nazwa";
+import { INIP, NIP } from "./NIP";
+
+export interface IDaneIdentyfikacyjne2 {
+    NIP?: INIP;
+    Nazwa: INazwa;
+    KodUE?: string;
+    NrVatUE?: string;
+    KodKraju?: IKodKraju;
+    NrID?: string;
+    BrakID?: 1;
+}
 
 export class DaneIdentyfikacyjne2 {
     constructor(

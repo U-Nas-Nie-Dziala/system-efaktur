@@ -1,4 +1,12 @@
-import { FormaPlatnosci } from "./FormaPlatnosci";
+import { FormaPlatnosci, IFormaPlatnosci } from "./FormaPlatnosci";
+
+export interface IZaplataCzesciowa {
+    KwotaZaplatyCzesciowej: number;
+    DataZaplatyCzesciowej: string;
+    FormaPlatnosci?: IFormaPlatnosci;
+    PlatnoscInna?: 1;
+    OpisPlatnosci?: string;
+}
 
 export class ZaplataCzesciowa {
     constructor(

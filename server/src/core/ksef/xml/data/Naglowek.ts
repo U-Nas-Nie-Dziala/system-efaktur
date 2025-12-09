@@ -1,4 +1,11 @@
-import { KodFormularza } from "./KodFormularza";
+import { IKodFormularza, KodFormularza } from "./KodFormularza";
+
+export interface INaglowek {
+    KodFormularza: IKodFormularza;
+    WariantFormularza?: string;
+    DataWytworzeniaFa: string;
+    SystemInfo?: string;
+}
 
 export class Naglowek {
     constructor(

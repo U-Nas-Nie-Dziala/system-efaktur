@@ -1,10 +1,24 @@
-import { Adres } from "./Adres";
-import { AdresKoresp } from "./AdresKoresp";
-import { DaneIdentyfikacyjne2 } from "./DaneIdentyfikacyjne2";
-import { DaneKontaktowe } from "./DaneKontaktowe";
-import { OpisRoli } from "./OpisRoli";
-import { Rola } from "./Rola";
-import { RolaInna } from "./RolaInna";
+import { Adres, IAdres } from "./Adres";
+import { AdresKoresp, IAdresKoresp } from "./AdresKoresp";
+import { DaneIdentyfikacyjne2, IDaneIdentyfikacyjne2 } from "./DaneIdentyfikacyjne2";
+import { DaneKontaktowe, IDaneKontaktowe } from "./DaneKontaktowe";
+import { IOpisRoli, OpisRoli } from "./OpisRoli";
+import { IRola, Rola } from "./Rola";
+import { IRolaInna, RolaInna } from "./RolaInna";
+
+export interface IPodmiot3 {
+    IDNabywcy?: string;
+    NrEORI?: string;
+    DaneIdentyfikacyjne: IDaneIdentyfikacyjne2;
+    Adres?: IAdres;
+    AdresKoresp?: IAdresKoresp;
+    DaneKontaktowe?: IDaneKontaktowe;
+    Rola?: IRola;
+    RolaInna?: IRolaInna;
+    OpisRoli?: IOpisRoli;
+    Udzial?: string;
+    NrKlienta?: string;
+}
 
 export class Podmiot3 {
     constructor(

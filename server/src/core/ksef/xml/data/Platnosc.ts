@@ -2,7 +2,23 @@ import { ZaplataCzesciowa } from "./ZaplataCzesciowa";
 import { TerminPlatnosci } from "./TerminPlatnosci";
 import { FormaPlatnosci } from "./FormaPlatnosci";
 import { RachunekBankowy } from "./RachunekBankowy";
-import { Skonto } from "./Skonto";
+import { ISkonto, Skonto } from "./Skonto";
+
+export interface IPlatnosc {
+    Zaplacono?: 1;
+    DataZaplaty?: string;
+    ZnacznikZaplatyCzesciowej?: 1 | 2;
+    ZaplataCzesciowa?: ZaplataCzesciowa[];
+    TerminPlatnosci?: TerminPlatnosci;
+    FormaPlatnosci?: FormaPlatnosci;
+    PlatnoscInna?: 1;
+    OpisPlatnosci?: string;
+    RachunekBankowy?: RachunekBankowy;
+    RachunekBankowyFaktora?: RachunekBankowy;
+    Skonto?: ISkonto;
+    LinkDoPlatnosci?: string;
+    IPKSeF?: string;
+}
 
 export class Platnosc {
     constructor(

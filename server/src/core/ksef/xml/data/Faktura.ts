@@ -1,11 +1,22 @@
-import { Fa } from "./Fa";
-import { Naglowek } from "./Naglowek";
-import { Podmiot1 } from "./Podmiot1";
-import { Podmiot2 } from "./Podmiot2";
-import { Podmiot3 } from "./Podmiot3";
-import { PodmiotUpowazniony } from "./PodmiotUpowazniony";
-import { Stopka } from "./Stopka";
-import { Zalacznik } from "./Zalacznik";
+import { Fa, IFa } from "./Fa";
+import { INaglowek, Naglowek } from "./Naglowek";
+import { IPodmiot1, Podmiot1 } from "./Podmiot1";
+import { IPodmiot2, Podmiot2 } from "./Podmiot2";
+import { IPodmiot3, Podmiot3 } from "./Podmiot3";
+import { IPodmiotUpowazniony, PodmiotUpowazniony } from "./PodmiotUpowazniony";
+import { IStopka, Stopka } from "./Stopka";
+import { IZalacznik, Zalacznik } from "./Zalacznik";
+
+export interface IFaktura {
+    Naglowek: INaglowek;
+    Podmiot1: IPodmiot1;
+    Podmiot2: IPodmiot2;
+    Podmiot3?: IPodmiot3;
+    PodmiotUpowazniony?: IPodmiotUpowazniony;
+    Fa: IFa;
+    Stopka?: IStopka;
+    Zalacznik?: IZalacznik;
+}
 
 export class Faktura {
     public readonly _attributes: [string, string][] = [

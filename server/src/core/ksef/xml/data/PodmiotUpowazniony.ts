@@ -1,8 +1,17 @@
-import { Adres } from "./Adres";
-import { AdresKoresp } from "./AdresKoresp";
-import { DaneIdentyfikacyjne } from "./DaneIdentyfikacyjne";
-import { DaneKontaktowePU } from "./DaneKontaktowePU";
-import { RolaPU } from "./RolaPU";
+import { Adres, IAdres } from "./Adres";
+import { AdresKoresp, IAdresKoresp } from "./AdresKoresp";
+import { DaneIdentyfikacyjne, IDaneIdentyfikacyjne } from "./DaneIdentyfikacyjne";
+import { DaneKontaktowePU, IDaneKontaktowePU } from "./DaneKontaktowePU";
+import { IRolaPU, RolaPU } from "./RolaPU";
+
+export interface IPodmiotUpowazniony {
+    NrEORI?: string;
+    DaneIdentyfikacyjne: IDaneIdentyfikacyjne;
+    Adres: IAdres;
+    AdresKoresp?: IAdresKoresp;
+    DaneKontaktowe?: IDaneKontaktowePU;
+    RolaPU: IRolaPU;
+}
 
 export class PodmiotUpowazniony {
     constructor(

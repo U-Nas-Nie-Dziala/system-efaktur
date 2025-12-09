@@ -1,7 +1,18 @@
 import { KodWaluty } from "./KodWaluty";
-import { Transport } from "./Transport";
-import { Umowy } from "./Umowy";
-import { Zamowienia } from "./Zamowienia";
+import { ITransport, Transport } from "./Transport";
+import { IUmowy, Umowy } from "./Umowy";
+import { IZamowienia, Zamowienia } from "./Zamowienia";
+
+export interface IWarunkiTransakcji {
+    Umowy?: IUmowy[];
+    Zamowienia?: IZamowienia[];
+    NrPartiiTowaru?: string[];
+    WarunkiDostawy?: string;
+    KursUmowny?: number;
+    WalutaUmowna?: KodWaluty;
+    Transport?: ITransport;
+    PodmiotPosredniczacy?: 1;
+}
 
 export class WarunkiTransakcji {
     constructor(

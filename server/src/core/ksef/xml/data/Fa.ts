@@ -1,21 +1,77 @@
-import { KodWaluty } from "./KodWaluty";
-import { WZ } from "./WZ";
-import { OkresFa } from "./OkresFa";
-import { KursWalutyZ } from "./KursWalutyZ";
-import { Adnotacje } from "./Adnotacje";
-import { RodzajFaktury } from "./RodzajFaktury";
-import { TypKorekty } from "./TypKorekty";
-import { DaneFaKorygowanej } from "./DaneFaKorygowanej";
-import { Podmiot1K } from "./Podmiot1K";
-import { Podmiot2K } from "./Podmiot2K";
-import { ZaliczkaCzesciowa } from "./ZaliczkaCzesciowa";
-import { DodatkowyOpis } from "./DodatkowyOpis";
-import { FakturaZaliczkowa } from "./FakturaZaliczkowa";
-import { FaWiersz } from "./FaWiersz";
-import { Rozliczenie } from "./Rozliczenie";
-import { Platnosc } from "./Platnosc";
-import { WarunkiTransakcji } from "./WarunkiTransakcji";
-import { Zamowienie } from "./Zamowienie";
+import { IKodWaluty, KodWaluty } from "./KodWaluty";
+import { IWZ, WZ } from "./WZ";
+import { IOkresFa, OkresFa } from "./OkresFa";
+import { IKursWalutyZ, KursWalutyZ } from "./KursWalutyZ";
+import { Adnotacje, IAdnotacje } from "./Adnotacje";
+import { IRodzajFaktury, RodzajFaktury } from "./RodzajFaktury";
+import { ITypKorekty, TypKorekty } from "./TypKorekty";
+import { DaneFaKorygowanej, IDaneFaKorygowanej } from "./DaneFaKorygowanej";
+import { IPodmiot1K, Podmiot1K } from "./Podmiot1K";
+import { IPodmiot2K, Podmiot2K } from "./Podmiot2K";
+import { IZaliczkaCzesciowa, ZaliczkaCzesciowa } from "./ZaliczkaCzesciowa";
+import { DodatkowyOpis, IDodatkowyOpis } from "./DodatkowyOpis";
+import { FakturaZaliczkowa, IFakturaZaliczkowa } from "./FakturaZaliczkowa";
+import { FaWiersz, IFaWiersz } from "./FaWiersz";
+import { IRozliczenie, Rozliczenie } from "./Rozliczenie";
+import { IPlatnosc, Platnosc } from "./Platnosc";
+import { IWarunkiTransakcji, WarunkiTransakcji } from "./WarunkiTransakcji";
+import { IZamowienie, Zamowienie } from "./Zamowienie";
+
+export interface IFa {
+    KodWaluty: IKodWaluty;
+    P_1: string;
+    P_1M?: string;
+    P_2: string;
+    WZ?: IWZ[];
+    P_6?: string;
+    OkresFa?: IOkresFa;
+    P_13_1: number;
+    P_14_1: number;
+    P_14_1W?: number;
+    P_13_2?: number; // sprawdzic
+    P_14_2?: number; // sprawdzić
+    P_14_2W?: number;
+    P_13_3?: number; // sprawdzic
+    P_14_3?: number; // sprawdzic
+    P_14_3W?: number;
+    P_13_4?: number; // sprawdzic
+    P_14_4?: number; // sprawdzic
+    P_14_4W?: number;
+    P_13_5?: number; // sprawdzic
+    P_14_5?: number;
+    P_13_6_1?: number;
+    P_13_6_2?: number;
+    P_13_6_3?: number;
+    P_13_7?: number;
+    P_13_8?: number;
+    P_13_9?: number;
+    P_13_10?: number;
+    P_13_11?: number;
+    P_15: number;
+    KursWalutyZ?: IKursWalutyZ;
+    Adnotacje: IAdnotacje;
+    RodzajFaktury: IRodzajFaktury;
+    PrzyczynaKorekty?: string;
+    TypKorekty?: ITypKorekty;
+    DaneFaKorygowanej?: IDaneFaKorygowanej[];
+    OkresFaKorygowanej?: string;
+    NrFaKorygowany?: string;
+    Podmiot1K?: IPodmiot1K;
+    Podmiot2K?: IPodmiot2K;
+    P_15ZK?: number;
+    KursWalutyZK?: IKursWalutyZ;
+    Zaliczka?: IZaliczkaCzesciowa;
+    FP?: 1;
+    TP?: 1;
+    DodatkowyOpis?: IDodatkowyOpis[];
+    FakturaZaliczkowa?: IFakturaZaliczkowa;
+    ZwrotAkcyzy?: 1;
+    FaWiersz: IFaWiersz[];
+    Rozliczenie?: IRozliczenie;
+    Platnosc?: IPlatnosc;
+    WarunkiTransakcji?: IWarunkiTransakcji;
+    Zamowienie?: IZamowienie;
+}
 
 export class Fa {
     constructor(

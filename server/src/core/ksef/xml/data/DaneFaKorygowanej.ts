@@ -1,3 +1,11 @@
+export interface IDaneFaKorygowanej {
+    DataWystFaKorygowanej: string;
+    NrFaKorygowanej: string;
+    NrKSeF?: 1;
+    NrKSeFFaKorygowanej?: string;
+    NrKSeFN?: 1;
+}
+
 export class DaneFaKorygowanej {
     constructor(
         public DataWystFaKorygowanej: string,

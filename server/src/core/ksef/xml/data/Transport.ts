@@ -1,6 +1,23 @@
-import { RodzajTransportu } from "./RodzajTransportu";
-import { Przewoznik } from "./Przewoznik";
-import { Adres } from "./Adres";
+import { IRodzajTransportu, RodzajTransportu } from "./RodzajTransportu";
+import { IPrzewoznik, Przewoznik } from "./Przewoznik";
+import { Adres, IAdres } from "./Adres";
+
+export interface ITransport {
+    RodzajTransportu?: IRodzajTransportu;
+    TransportInny?: 1;
+    OpisInnegoTransportu?: string;
+    Przewoznik?: IPrzewoznik;
+    NrZleceniaTransportu?: string;
+    OpisLadunku?: any;
+    LadunekInny?: 1;
+    OpisInnegoLadunku?: string;
+    JednostkaOpakowania?: string;
+    DataGodzRozpTransportu?: string;
+    DataGodzZakTransportu?: string;
+    WysylkaZ?: IAdres;
+    WysylkaPrzez?: IAdres;
+    WysylkaDo?: IAdres;
+}
 
 export class Transport {
     constructor(

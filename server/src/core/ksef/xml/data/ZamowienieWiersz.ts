@@ -1,6 +1,29 @@
-import { StawkaPodatku } from "./StawkaPodatku";
-import { GTU } from "./GTU";
-import { Procedura } from "./Procedura";
+import { IStawkaPodatku, StawkaPodatku } from "./StawkaPodatku";
+import { GTU, IGTU } from "./GTU";
+import { IProcedura, Procedura } from "./Procedura";
+
+export interface IZamowienieWiersz {
+    NrWierszaZam: number;
+    UU_IDZ?: string;
+    P_7Z?: string;
+    IndeksZ?: string;
+    GTINZ?: string;
+    PKWiUZ?: string;
+    CNZ?: string;
+    PKOBZ?: string;
+    P_8AZ?: string;
+    P_8BZ?: number;
+    P_9AZ?: number;
+    P_11NettoZ?: number;
+    P_11VatZ?: number;
+    P_12Z?: IStawkaPodatku;
+    P_12Z_XII?: number;
+    P_12Z_Zal_15?: 1;
+    GTUZ?: IGTU;
+    ProceduraZ?: IProcedura;
+    KwotaAkcyzyZ?: number;
+    StanPrzedZ?: 1;
+}
 
 export class ZamowienieWiersz {
     constructor(

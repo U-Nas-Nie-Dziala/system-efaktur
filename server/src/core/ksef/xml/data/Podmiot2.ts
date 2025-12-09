@@ -1,9 +1,21 @@
-import { Adres } from "./Adres";
-import { AdresKoresp } from "./AdresKoresp";
-import { DaneIdentyfikacyjne2 } from "./DaneIdentyfikacyjne2";
-import { DaneKontaktowe } from "./DaneKontaktowe";
-import { GV } from "./GV";
-import { JST } from "./JST";
+import { Adres, IAdres } from "./Adres";
+import { AdresKoresp, IAdresKoresp } from "./AdresKoresp";
+import { DaneIdentyfikacyjne2, IDaneIdentyfikacyjne2 } from "./DaneIdentyfikacyjne2";
+import { DaneKontaktowe, IDaneKontaktowe } from "./DaneKontaktowe";
+import { GV, IGV } from "./GV";
+import { IJST, JST } from "./JST";
+
+export interface IPodmiot2 {
+    NrEORI?: string;
+    DaneIdentyfikacyjne: IDaneIdentyfikacyjne2;
+    Adres: IAdres;
+    AdresKoresp?: IAdresKoresp;
+    DaneKontaktowe?: IDaneKontaktowe;
+    NrKlienta?: string;
+    IDNabywcy?: string;
+    JST?: IJST;
+    GV?: IGV;
+}
 
 export class Podmiot2 {
     constructor(

@@ -1,7 +1,14 @@
-import { ZNaglowek } from "./ZNaglowek";
-import { MetaDane } from "./MetaDane";
-import { Tekst } from "./Tekst";
-import { Tabela } from "./Tabela";
+import { IZNaglowek, ZNaglowek } from "./ZNaglowek";
+import { IMetaDane, MetaDane } from "./MetaDane";
+import { ITekst, Tekst } from "./Tekst";
+import { ITabela, Tabela } from "./Tabela";
+
+export interface IBlokDanych {
+    ZNaglowek?: IZNaglowek;
+    MetaDane: IMetaDane[];
+    Tekst?: ITekst;
+    Tabela: ITabela[];
+}
 
 export class BlokDanych {
     constructor(
