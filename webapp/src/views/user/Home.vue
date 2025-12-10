@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { ref } from "vue";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
 
 const stats = ref([
   {
@@ -29,14 +32,15 @@ const stats = ref([
 ]);
 
 const quickActions = ref([
-  { icon: "mdi:mdi-plus-circle", title: "Nowa faktura", color: "#ff6b6b" },
+  { icon: "mdi:mdi-plus-circle", title: "Nowa faktura", color: "#ff6b6b", route: "invoices" },
   {
     icon: "mdi:mdi-account-plus",
     title: "Dodaj kontrahenta",
     color: "#ee5a6f",
+    route: "clients",
   },
-  { icon: "mdi:mdi-file-chart", title: "Raporty", color: "#d63031" },
-  { icon: "mdi:mdi-cog", title: "Ustawienia", color: "#c0392b" },
+  { icon: "mdi:mdi-file-chart", title: "Raporty", color: "#d63031", route: null },
+  { icon: "mdi:mdi-cog", title: "Ustawienia", color: "#c0392b", route: "settings" },
 ]);
 
 const recentInvoices = ref([]);
@@ -122,6 +126,7 @@ const recentInvoices = ref([]);
                   hover
                   class="text-center pa-4"
                   style="cursor: pointer"
+                  @click="action.route && router.push({ name: action.route })"
                 >
                   <v-icon size="48" :color="action.color">{{
                     action.icon
