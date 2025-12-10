@@ -20,22 +20,6 @@ const CompanyType = {
   INNE: "Inna forma prawna",
 };
 
-const initialCompanyState = {
-  name: "",
-  select: null,
-  nip: "",
-  regon: "",
-  bdo: "",
-  krs: "",
-  street: "",
-  address: "",
-  zipcode: "",
-  city: "",
-  country: "",
-  registerDate: null,
-  vat: false,
-};
-
 const companyState = reactive<{
   name: string;
   select: typeof CompanyType | null;
@@ -51,7 +35,19 @@ const companyState = reactive<{
   registerDate: Date | null;
   vat: boolean;
 }>({
-  ...initialCompanyState,
+  name: "",
+  select: null,
+  nip: "",
+  regon: "",
+  bdo: "",
+  krs: "",
+  street: "",
+  address: "",
+  zipcode: "",
+  city: "",
+  country: "",
+  registerDate: null,
+  vat: false,
 });
 
 const show = ref(false);
@@ -68,7 +64,6 @@ const submit = (e: Event) => {
   );
   setTimeout(() => {
     loading.value = false;
-    Object.assign(companyState, initialCompanyState);
   }, 3000);
 };
 </script>
@@ -76,7 +71,7 @@ const submit = (e: Event) => {
 <template>
   <v-row dense justify="center" class="mt-6">
     <v-col cols="12" md="8">
-      <v-card elevation="2">
+      <v-card elevation="2" :disabled="loading">
         <v-card-title
           class="d-flex align-center justify-space-between pa-4"
           style="
@@ -235,14 +230,16 @@ const submit = (e: Event) => {
                     />
                   </v-col>
 
-                  <v-col cols="12" md="4">
-                    <v-checkbox
+                  <v-col cols="12" md="6">
+                    <v-checkbox-btn
                       v-model="companyState.vat"
-                      label="VAT"
+                      label="Czy podmiot jest czynnym podatnikiem VAT?"
                       variant="outlined"
                       value="true"
+                      :true-value="true"
+                      :false-value="false"
                       required
-                    ></v-checkbox>
+                    ></v-checkbox-btn>
                   </v-col>
                 </v-row>
               </v-container>

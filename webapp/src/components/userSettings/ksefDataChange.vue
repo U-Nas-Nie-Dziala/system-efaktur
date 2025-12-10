@@ -14,10 +14,6 @@ const submit = (e: Event) => {
   console.log("User data changed:", state.kseftoken, state.password);
   setTimeout(() => {
     loading.value = false;
-    Object.assign(state, {
-      kseftoken: "",
-      password: "",
-    });
   }, 3000);
 };
 </script>
@@ -25,7 +21,7 @@ const submit = (e: Event) => {
 <template>
   <v-row dense justify="center" class="mt-6">
     <v-col cols="12" md="8">
-      <v-card elevation="2">
+      <v-card elevation="2" :disabled="loading">
         <v-card-title
           class="d-flex align-center justify-space-between pa-4"
           style="

@@ -26,7 +26,6 @@ const submit1 = (e: Event) => {
   console.log("Personal data changed:", state1.firstname, state1.lastname);
   setTimeout(() => {
     loading1.value = false;
-    Object.assign(state1, { firstname: "", lastname: "" });
   }, 3000);
 };
 const submit2 = (e: Event) => {
@@ -35,7 +34,6 @@ const submit2 = (e: Event) => {
   console.log("Email change requested:", state2.email, state2.password);
   setTimeout(() => {
     loading2.value = false;
-    Object.assign(state2, { email: "", password: "" });
   }, 3000);
 };
 const submit3 = (e: Event) => {
@@ -48,13 +46,10 @@ const submit3 = (e: Event) => {
   );
   setTimeout(() => {
     loading3.value = false;
-    Object.assign(state3, {
-      password: "",
-      newPassword: "",
-      confirmPassword: "",
-    });
   }, 3000);
 };
+
+const loadingTab = [loading1, loading2, loading3];
 
 const show = ref(false);
 </script>
@@ -62,7 +57,7 @@ const show = ref(false);
 <template>
   <v-row dense justify="center" class="mt-6">
     <v-col cols="12" md="8">
-      <v-card elevation="2">
+      <v-card elevation="2" :disabled="loadingTab.some((l) => l.value)">
         <v-card-title
           class="d-flex align-center justify-space-between pa-4"
           style="
@@ -178,31 +173,35 @@ const show = ref(false);
               </div>
               <v-container>
                 <v-row class="ps-3 pe-3">
-                  <v-text-field
-                    v-model="state3.password"
-                    :counter="255"
-                    label="Podaj obecne hasło"
-                    variant="outlined"
-                    required
-                  ></v-text-field>
-                </v-row>
-                <v-row class="ps-3 pe-3">
-                  <v-text-field
-                    v-model="state3.newPassword"
-                    label="Podaj nowe hasło"
-                    variant="outlined"
-                    required
-                  >
-                  </v-text-field>
-                </v-row>
-                <v-row class="ps-3 pe-3">
-                  <v-text-field
-                    v-model="state3.confirmPassword"
-                    label="Potwierdź nowe hasło"
-                    variant="outlined"
-                    required
-                  >
-                  </v-text-field>
+                  <v-col md="4">
+                    <v-text-field
+                      v-model="state3.password"
+                      :counter="255"
+                      label="Podaj obecne hasło"
+                      variant="outlined"
+                      required
+                    ></v-text-field>
+                  </v-col>
+
+                  <v-col>
+                    <v-text-field
+                      v-model="state3.newPassword"
+                      label="Podaj nowe hasło"
+                      variant="outlined"
+                      required
+                    >
+                    </v-text-field>
+                  </v-col>
+
+                  <v-col>
+                    <v-text-field
+                      v-model="state3.confirmPassword"
+                      label="Potwierdź nowe hasło"
+                      variant="outlined"
+                      required
+                    >
+                    </v-text-field>
+                  </v-col>
                 </v-row>
               </v-container>
               <div class="d-flex justify-center pb-4">
