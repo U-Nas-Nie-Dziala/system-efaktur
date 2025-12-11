@@ -20,8 +20,12 @@ import {
     Naglowek,
     Nazwa,
     NIP,
+    OpisRoli,
     Podmiot1,
     Podmiot2,
+    Podmiot3,
+    Rola,
+    RolaInna,
     Telefon,
 } from "../data";
 import {
@@ -39,16 +43,21 @@ import {
     NewKodKrajuType,
     NewNazwaType,
     NewNipType,
+    NewOpisRoli,
+    NewRolaInna,
+    NewRolaType,
     NewTelefonType,
     SetNaglowekType,
     SetPodmiot1Type,
     SetPodmiot2Type,
+    SetPodmiot3Type,
 } from "./types";
 
 export class Fa3RootBuilder {
     private naglowek: Naglowek;
     private podmiot1: Podmiot1;
     private podmiot2: Podmiot2;
+    private podmiot3?: Podmiot3;
 
     constructor(params?: IFaktura) {}
 
@@ -153,6 +162,34 @@ export class Fa3RootBuilder {
             props.idNabywcy,
             props.jst,
             props.gv
+        );
+    }
+
+    public newRola(props: NewRolaType): Rola {
+        return new Rola(props.value);
+    }
+
+    public newRolaInna(props: NewRolaInna): RolaInna {
+        return new RolaInna(props.value);
+    }
+
+    public newOpisRoli(props: NewOpisRoli): OpisRoli {
+        return new OpisRoli(props.value);
+    }
+
+    public setPodmiot3(props: SetPodmiot3Type): void {
+        this.podmiot3 = new Podmiot3(
+            props.idNabywcy,
+            props.nrEORI,
+            props.daneIdentyfikacyjne,
+            props.adres,
+            props.adresKoresp,
+            props.daneKontaktowe,
+            props.rola,
+            props.rolaInna,
+            props.opisRoli,
+            props.udzial,
+            props.nrKlienta
         );
     }
 }

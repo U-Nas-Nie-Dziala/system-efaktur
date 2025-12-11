@@ -14,6 +14,9 @@ import {
     KodKraju,
     Nazwa,
     NIP,
+    OpisRoli,
+    Rola,
+    RolaInna,
     Telefon,
 } from "../data";
 
@@ -110,4 +113,30 @@ export type SetPodmiot2Type = {
     idNabywcy?: string;
     jst: JST;
     gv: GV;
+};
+
+export type NewRolaType = {
+    value: 1 | 2 | 3;
+};
+
+export type NewRolaInna = {
+    value: 1;
+};
+
+export type NewOpisRoli = {
+    value: string;
+};
+
+export type SetPodmiot3Type = {
+    idNabywcy?: string;
+    nrEORI?: string;
+    daneIdentyfikacyjne: DaneIdentyfikacyjne2;
+    adres?: Adres;
+    adresKoresp?: AdresKoresp;
+    daneKontaktowe?: DaneKontaktowe;
+    rola?: Rola;
+    rolaInna?: RolaInna;
+    opisRoli?: OpisRoli;
+    udzial?: string;
+    nrKlienta?: string;
 };
