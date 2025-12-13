@@ -13,13 +13,17 @@ import {
     JST,
     KodFormularza,
     KodKraju,
+    KodWaluty,
+    KursWalutyZ,
     Nazwa,
     NIP,
+    OkresFa,
     OpisRoli,
     Rola,
     RolaInna,
     RolaPU,
     Telefon,
+    WZ,
 } from "../data";
 
 export type SetNaglowekType = {
@@ -167,4 +171,138 @@ export type SetPodmiotUpowaznionyType = {
     adresKoresp?: AdresKoresp;
     daneKontaktowe?: DaneKontaktowePU;
     rolaPU: RolaPU;
+};
+
+export type NewKodWaluty = {
+    Value: "PLN" | "EUR" | "USD";
+};
+
+export type NewDataWystawieniaFaType = {
+    Value: string;
+};
+
+export type NewMiejsceWystawieniaFaType = {
+    Value: string;
+};
+
+export type NewNumerFaType = {
+    Value: string;
+};
+
+export type NewWzFaType = {
+    Value: string;
+};
+
+export type NewDataWykonaniaFaType = {
+    Value: string;
+};
+
+export type NewOkresFaType = {
+    Od: string;
+    Do: string;
+};
+
+export type NewPodsumowanieStawekVat23Type = {
+    wartoscNetto?: number;
+    wartoscVat?: number;
+    podatekPrzeliczonyNaPLN?: number;
+};
+
+export type NewPodsumowanieStawekVat23DataType = {
+    P_13_1?: number;
+    P_14_1?: number;
+    P_14_1W?: number;
+};
+
+export type NewPodsumowanieStawekVat8Type = {
+    wartoscNetto?: number;
+    wartoscVat?: number;
+    podatekPrzeliczonyNaPLN?: number;
+};
+
+export type NewPodsumowanieStawekVat8DataType = {
+    P_13_2?: number;
+    P_14_2?: number;
+    P_14_2W?: number;
+};
+
+export type NewPodsumowanieStawekVat5Type = {
+    wartoscNetto?: number;
+    wartoscVat?: number;
+    podatekPrzeliczonyNaPLN?: number;
+};
+
+export type NewPodsumowanieStawekVat5DataType = {
+    P_13_3?: number;
+    P_14_3?: number;
+    P_14_3W?: number;
+};
+
+export type NewPodsumowanieStawekVat4Type = {
+    wartoscNetto?: number;
+    wartoscVat?: number;
+    podatekPrzeliczonyNaPLN?: number;
+};
+
+export type NewPodsumowanieStawekVat4DataType = {
+    P_13_4?: number;
+    P_14_4?: number;
+    P_14_4W?: number;
+};
+
+export type NewPodsumowanieStawekVatProceduraSzczegolnaType = {
+    wartoscNetto?: number;
+    wartoscVat?: number;
+};
+
+export type NewPodsumowanieStawekVatProceduraSzczegolnaDataType = {
+    P_13_5?: number;
+    P_14_5?: number;
+};
+
+export type NewPodsumowanieStawekVat0Type = {
+    sumaWartosci0krajowa?: number;
+    sumaWartosci0WDT?: number;
+    sumaWartosci0export?: number;
+};
+
+export type NewPodsumowanieStawekVat0DataType = {
+    P_13_6_1?: number;
+    P_13_6_2?: number;
+    P_13_6_3?: number;
+};
+
+export type NewPodsumowanieStawekVatPozostaleType = {
+    sumaWartosciSprzedazyZwolnionej?: number;
+    sumaWartosciPozaRP?: number;
+    sumaWartosciObjetychWNT?: number;
+    sumaWartosciOdwrotneObciazenie?: number;
+    sumaWartosciProceduraMarzy?: number;
+};
+
+export type NewPodsumowanieStawekVatPozostaleDataType = {
+    P_13_7?: number;
+    P_13_8?: number;
+    P_13_9?: number;
+    P_13_10?: number;
+    P_13_11?: number;
+};
+
+export type SetFaType = {
+    kodWaluty: KodWaluty;
+    dataWystawieniaFa: string;
+    miejsceWystawieniaFa?: string;
+    numerFa: string;
+    wzFa?: WZ[];
+    dataWykonaniaFa?: string;
+    okresFa?: OkresFa;
+    podsumowanieStawekVat23?: NewPodsumowanieStawekVat23DataType;
+    podsumowanieStawekVat8?: NewPodsumowanieStawekVat8DataType;
+    podsumowanieStawekVat5?: NewPodsumowanieStawekVat5DataType;
+    podsumowanieStawekVat4?: NewPodsumowanieStawekVat4DataType;
+    podsumowanieStawekVatProceduraSzczegolna?: NewPodsumowanieStawekVatProceduraSzczegolnaDataType;
+    podsumowanieStawekVat0?: NewPodsumowanieStawekVat0DataType;
+    podsumowanieStawekVatPozostale?: NewPodsumowanieStawekVatPozostaleDataType;
+    kwotaNaleznosciOgolem: number;
+    kursWalutyZ?: KursWalutyZ;
 };

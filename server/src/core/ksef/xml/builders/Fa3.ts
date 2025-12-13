@@ -1,4 +1,5 @@
 import {
+    Adnotacje,
     Adres,
     AdresKoresp,
     AdresL1,
@@ -20,9 +21,12 @@ import {
     JST,
     KodFormularza,
     KodKraju,
+    KodWaluty,
+    KursWalutyZ,
     Naglowek,
     Nazwa,
     NIP,
+    OkresFa,
     OpisRoli,
     Podmiot1,
     Podmiot2,
@@ -33,6 +37,7 @@ import {
     RolaPU,
     Telefon,
     TelefonPU,
+    WZ,
 } from "../data";
 import {
     NewAdresKorespType,
@@ -43,19 +48,41 @@ import {
     NewDaneIdentyfikacyjneType,
     NewDaneKontaktowePUType,
     NewDaneKontaktoweType,
+    NewDataWykonaniaFaType,
+    NewDataWystawieniaFaType,
     NewEmailPuType,
     NewEmailType,
     NewGLNType,
     NewGVType,
     NewJSTType,
     NewKodKrajuType,
+    NewKodWaluty,
+    NewMiejsceWystawieniaFaType,
     NewNazwaType,
     NewNipType,
+    NewNumerFaType,
+    NewOkresFaType,
     NewOpisRoli,
+    NewPodsumowanieStawekDataType,
+    NewPodsumowanieStawekVat0DataType,
+    NewPodsumowanieStawekVat0Type,
+    NewPodsumowanieStawekVat23Type,
+    NewPodsumowanieStawekVat4DataType,
+    NewPodsumowanieStawekVat4Type,
+    NewPodsumowanieStawekVat5DataType,
+    NewPodsumowanieStawekVat5Type,
+    NewPodsumowanieStawekVat8DataType,
+    NewPodsumowanieStawekVat8Type,
+    NewPodsumowanieStawekVatPozostaleDataType,
+    NewPodsumowanieStawekVatPozostaleType,
+    NewPodsumowanieStawekVatProceduraSzczegolnaDataType,
+    NewPodsumowanieStawekVatProceduraSzczegolnaType,
     NewRolaInna,
     NewRolaType,
     NewTelefonPuType,
     NewTelefonType,
+    NewWzFaType,
+    SetFaType,
     SetNaglowekType,
     SetPodmiot1Type,
     SetPodmiot2Type,
@@ -229,6 +256,144 @@ export class Fa3RootBuilder {
             props.adresKoresp,
             props.daneKontaktowe,
             props.rolaPU
+        );
+    }
+
+    public newKodWaluty(props: NewKodWaluty): KodWaluty {
+        return new KodWaluty(props.Value);
+    }
+
+    public newDataWystawieniaFa(props: NewDataWystawieniaFaType): string {
+        return props.Value;
+    }
+
+    public newMiejsceWystawieniaFa(props: NewMiejsceWystawieniaFaType): string {
+        return props.Value;
+    }
+
+    public newNumerFa(props: NewNumerFaType): string {
+        return props.Value;
+    }
+
+    public newWzFa(props: NewWzFaType[]): WZ[] {
+        return props.map((wz) => new WZ(wz.Value));
+    }
+
+    public newDataWykonaniaFa(props: NewDataWykonaniaFaType): string {
+        return props.Value;
+    }
+
+    public newOkresFa(props: NewOkresFaType): OkresFa {
+        return new OkresFa(props.Od, props.Do);
+    }
+
+    public newPodsumowanieStawekVat23(props: NewPodsumowanieStawekVat23Type): NewPodsumowanieStawekDataType {
+        return {
+            P_13_1: props.wartoscNetto,
+            P_14_1: props.wartoscVat,
+            P_14_1W: props.podatekPrzeliczonyNaPLN,
+        };
+    }
+
+    public newPodsumowanieStawekVat8(props: NewPodsumowanieStawekVat8Type): NewPodsumowanieStawekVat8DataType {
+        return {
+            P_13_2: props.wartoscNetto,
+            P_14_2: props.wartoscVat,
+            P_14_2W: props.podatekPrzeliczonyNaPLN,
+        };
+    }
+
+    public newPodsumowanieStawekVat5(props: NewPodsumowanieStawekVat5Type): NewPodsumowanieStawekVat5DataType {
+        return {
+            P_13_3: props.wartoscNetto,
+            P_14_3: props.wartoscVat,
+            P_14_3W: props.podatekPrzeliczonyNaPLN,
+        };
+    }
+
+    public newPodsumowanieStawekVat4(props: NewPodsumowanieStawekVat4Type): NewPodsumowanieStawekVat4DataType {
+        return {
+            P_13_4: props.wartoscNetto,
+            P_14_4: props.wartoscVat,
+            P_14_4W: props.podatekPrzeliczonyNaPLN,
+        };
+    }
+
+    public newPodsumowanieStawekVatProceduraSzczegolna(
+        props: NewPodsumowanieStawekVatProceduraSzczegolnaType
+    ): NewPodsumowanieStawekVatProceduraSzczegolnaDataType {
+        return {
+            P_13_5: props.wartoscNetto,
+            P_14_5: props.wartoscVat,
+        };
+    }
+
+    public newPodsumowanieStawekVat0(props: NewPodsumowanieStawekVat0Type): NewPodsumowanieStawekVat0DataType {
+        return {
+            P_13_6_1: props.sumaWartosci0krajowa,
+            P_13_6_2: props.sumaWartosci0WDT,
+            P_13_6_3: props.sumaWartosci0export,
+        };
+    }
+
+    public newPodsumowanieStawekVatPozostale(
+        props: NewPodsumowanieStawekVatPozostaleType
+    ): NewPodsumowanieStawekVatPozostaleDataType {
+        return {
+            P_13_7: props.sumaWartosciSprzedazyZwolnionej,
+            P_13_8: props.sumaWartosciPozaRP,
+            P_13_9: props.sumaWartosciObjetychWNT,
+            P_13_10: props.sumaWartosciOdwrotneObciazenie,
+            P_13_11: props.sumaWartosciProceduraMarzy,
+        };
+    }
+
+    // pole P_15 = Suma wszystkich P_13_X + Suma wszystkich P_14_X
+    public newKwotaNaleznosciOgolem(value: number): number {
+        return value;
+    }
+
+    public newKursWalutyZ(Value: number): KursWalutyZ {
+        return new KursWalutyZ(Value);
+    }
+
+    public newAdnotacjeFa(): Adnotacje {
+        // return new Adnotacje();
+    }
+
+    public setFa(props: SetFaType): void {
+        this.fa = new Fa(
+            props.kodWaluty,
+            props.dataWystawieniaFa,
+            props.miejsceWystawieniaFa,
+            props.numerFa,
+            props.wzFa,
+            props.dataWykonaniaFa,
+            props.okresFa,
+            props.podsumowanieStawekVat23?.P_13_1,
+            props.podsumowanieStawekVat23?.P_14_1,
+            props.podsumowanieStawekVat23?.P_14_1W,
+            props.podsumowanieStawekVat8?.P_13_2,
+            props.podsumowanieStawekVat8?.P_14_2,
+            props.podsumowanieStawekVat8?.P_14_2W,
+            props.podsumowanieStawekVat5?.P_13_3,
+            props.podsumowanieStawekVat5?.P_14_3,
+            props.podsumowanieStawekVat5?.P_14_3W,
+            props.podsumowanieStawekVat4?.P_13_4,
+            props.podsumowanieStawekVat4?.P_14_4,
+            props.podsumowanieStawekVat4?.P_14_4W,
+            props.podsumowanieStawekVatProceduraSzczegolna?.P_13_5,
+            props.podsumowanieStawekVatProceduraSzczegolna?.P_14_5,
+            props.podsumowanieStawekVat0?.P_13_6_1,
+            props.podsumowanieStawekVat0?.P_13_6_2,
+            props.podsumowanieStawekVat0?.P_13_6_3,
+            props.podsumowanieStawekVatPozostale?.P_13_7,
+            props.podsumowanieStawekVatPozostale?.P_13_8,
+            props.podsumowanieStawekVatPozostale?.P_13_9,
+            props.podsumowanieStawekVatPozostale?.P_13_10,
+            props.podsumowanieStawekVatPozostale?.P_13_11,
+            props.kwotaNaleznosciOgolem,
+            props.kursWalutyZ
         );
     }
 }
