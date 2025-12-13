@@ -6,6 +6,7 @@ import {
     DaneIdentyfikacyjne,
     DaneIdentyfikacyjne2,
     DaneKontaktowe,
+    DaneKontaktowePU,
     Email,
     GLN,
     GV,
@@ -17,6 +18,7 @@ import {
     OpisRoli,
     Rola,
     RolaInna,
+    RolaPU,
     Telefon,
 } from "../data";
 
@@ -139,4 +141,30 @@ export type SetPodmiot3Type = {
     opisRoli?: OpisRoli;
     udzial?: string;
     nrKlienta?: string;
+};
+
+export type NewEmailPuType = {
+    Value: string;
+};
+
+export type NewTelefonPuType = {
+    Value: string;
+};
+
+export type NewDaneKontaktowePUType = {
+    emailPU?: Email;
+    telefonPU?: Telefon;
+};
+
+export type NewRolaPuType = {
+    Value: 1 | 2 | 3;
+};
+
+export type SetPodmiotUpowaznionyType = {
+    nrEORI?: string;
+    daneIdentyfikacyjne: DaneIdentyfikacyjne;
+    adres: Adres;
+    adresKoresp?: AdresKoresp;
+    daneKontaktowe?: DaneKontaktowePU;
+    rolaPU: RolaPU;
 };

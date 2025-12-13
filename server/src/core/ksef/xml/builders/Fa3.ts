@@ -6,7 +6,10 @@ import {
     DaneIdentyfikacyjne,
     DaneIdentyfikacyjne2,
     DaneKontaktowe,
+    DaneKontaktowePU,
     Email,
+    EmailPU,
+    Fa,
     GLN,
     GV,
     IDaneIdentyfikacyjne,
@@ -24,9 +27,12 @@ import {
     Podmiot1,
     Podmiot2,
     Podmiot3,
+    PodmiotUpowazniony,
     Rola,
     RolaInna,
+    RolaPU,
     Telefon,
+    TelefonPU,
 } from "../data";
 import {
     NewAdresKorespType,
@@ -35,7 +41,9 @@ import {
     NewAdresType,
     NewDaneIdentyfikacyjne2Type,
     NewDaneIdentyfikacyjneType,
+    NewDaneKontaktowePUType,
     NewDaneKontaktoweType,
+    NewEmailPuType,
     NewEmailType,
     NewGLNType,
     NewGVType,
@@ -46,11 +54,13 @@ import {
     NewOpisRoli,
     NewRolaInna,
     NewRolaType,
+    NewTelefonPuType,
     NewTelefonType,
     SetNaglowekType,
     SetPodmiot1Type,
     SetPodmiot2Type,
     SetPodmiot3Type,
+    SetPodmiotUpowaznionyType,
 } from "./types";
 
 export class Fa3RootBuilder {
@@ -58,6 +68,8 @@ export class Fa3RootBuilder {
     private podmiot1: Podmiot1;
     private podmiot2: Podmiot2;
     private podmiot3?: Podmiot3;
+    private podmiotUpowazniony?: PodmiotUpowazniony;
+    private fa: Fa;
 
     constructor(params?: IFaktura) {}
 
@@ -190,6 +202,33 @@ export class Fa3RootBuilder {
             props.opisRoli,
             props.udzial,
             props.nrKlienta
+        );
+    }
+
+    public newEmailPU(props: NewEmailPuType): EmailPU {
+        return new EmailPU(props.Value);
+    }
+
+    public newTelefonPU(props: NewTelefonPuType): TelefonPU {
+        return new TelefonPU(props.Value);
+    }
+
+    public newDaneKontaktowePU(props: NewDaneKontaktowePUType): DaneKontaktowePU {
+        return new DaneKontaktowePU(props.emailPU, props.telefonPU);
+    }
+
+    public newRolaPU(props: NewRolaType): RolaPU {
+        return new RolaPU(props.value);
+    }
+
+    public setPodmiotUpowazniony(props: SetPodmiotUpowaznionyType): void {
+        this.podmiotUpowazniony = new PodmiotUpowazniony(
+            props.nrEORI,
+            props.daneIdentyfikacyjne,
+            props.adres,
+            props.adresKoresp,
+            props.daneKontaktowe,
+            props.rolaPU
         );
     }
 }
