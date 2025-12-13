@@ -1,6 +1,8 @@
 import express from "express";
 import { ClassConstructor, plainToInstance } from "class-transformer";
 import { validate } from "class-validator";
+import { Database } from "./database";
+import { EntityTarget, Repository, ObjectLiteral } from "typeorm";
 
 export function BindDto<T extends object>(dto: ClassConstructor<T>) {
     return async (req: express.Request, res: express.Response, next: express.NextFunction) => {
@@ -42,4 +44,18 @@ type IExtractAuth = {
 
 export function extractAuth(res: express.Response): IExtractAuth | null {
     return res.locals.auth ?? null;
+}
+
+export function useRepository<T extends ObjectLiteral>(entity: EntityTarget<T>): Repository<T> {
+    return Database.dataSource.getRepository(entity);
+}
+
+export function Resource<T, K extends keyof T>(obj: T, keys: K[]): Omit<T, K> {
+    const clone = { ...obj };
+
+    for (const key of keys) {
+        delete clone[key];
+    }
+
+    return clone;
 }
