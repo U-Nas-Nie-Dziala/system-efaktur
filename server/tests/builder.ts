@@ -1,3 +1,6 @@
+// ! UWAGA ! - uruchomienie tego pliku jest jednorazowe - służy do wygenerowania przykładowych plików XML oraz JSON
+// ! UWAGA ! - uruchomienie tego pliku jest jednorazowa - służy do wygenerowania przykładowych plików XML oraz JSON
+
 import { InvoiceToXML } from "./../src/core/ksef/xml";
 import { Faktura } from "./../src/core/ksef/xml/data/Faktura";
 import { Naglowek } from "./../src/core/ksef/xml/data/Naglowek";

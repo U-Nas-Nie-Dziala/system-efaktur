@@ -1,3 +1,8 @@
+// ! UWAGA ! - PLIK CZYNNY - EDYTUJ TYLKO JEŚLI WIESZ CO ROBISZ !
+// Ten plik jest częścią systemu generowania XML dla faktur KSeF.
+// Zmiany w tym pliku mogą wpłynąć na poprawność generowanych dokumentów XML.
+// Proszę upewnić się, że wszelkie modyfikacje są zgodne z wymaganiami KSeF.
+
 export class InvoiceToXML {
     private xml: string = `<?xml version="1.0" encoding="utf-16"?>`;
 

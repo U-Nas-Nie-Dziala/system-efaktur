@@ -1,3 +1,5 @@
+// ! UWAGA ! PLIK PORZUCONY - NIE UŻYWAĆ - MA POZOSTAĆ DLA CELÓW HISTORYCZNYCH JAKO ARTEFAKT
+
 import {
     Faktura,
     Naglowek,

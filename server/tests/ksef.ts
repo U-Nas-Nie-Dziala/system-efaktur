@@ -1,91 +1,98 @@
-import xml2js from "xml2js";
-import convert from "xml-js";
-import fs from "fs";
-import path from "path";
+// ! UWAGA ! PLIK PORZUCONY - NIE UŻYWAĆ - MA POZOSTAĆ DLA CELÓW HISTORYCZNYCH JAKO ARTEFAKT
+// ! UWAGA ! PLIK PORZUCONY - NIE UŻYWAĆ - MA POZOSTAĆ DLA CELÓW HISTORYCZNYCH JAKO ARTEFAKT
+// ! UWAGA ! PLIK PORZUCONY - NIE UŻYWAĆ - MA POZOSTAĆ DLA CELÓW HISTORYCZNYCH JAKO ARTEFAKT
 
-const xsdContent = fs.readFileSync(path.resolve(process.cwd(), "./src/core/ksef/fa3.xsd"), "utf-8");
+// import xml2js from "xml2js";
+// import convert from "xml-js";
+// import fs from "fs";
+// import path from "path";
 
-const read = (data: any) => JSON.stringify(data, null, 2);
-const save = (data: any) => fs.writeFileSync(path.resolve(process.cwd(), "./tests/test_contract.json"), data, "utf-8");
+// const xsdContent = fs.readFileSync(path.resolve(process.cwd(), "./src/core/ksef/fa3.xsd"), "utf-8");
 
-import { type Fa3Root } from "./../src/core/ksef/types/invoce/TestTypes";
-const generate = async () => {
-    const contract = await xml2js.parseStringPromise(xsdContent);
+// const read = (data: any) => JSON.stringify(data, null, 2);
+// const save = (data: any) => fs.writeFileSync(path.resolve(process.cwd(), "./tests/test_contract.json"), data, "utf-8");
 
-    const schema = contract["xsd:schema"];
+// import { type Fa3Root } from "./../src/core/ksef/types/invoce/TestTypes";
+// const generate = async () => {
+//     const contract = await xml2js.parseStringPromise(xsdContent);
 
-    const r = read(schema["xsd:element"][0]);
-    save(r);
+//     const schema = contract["xsd:schema"];
 
-    return JSON.parse(r) as Fa3Root;
-};
+//     const r = read(schema["xsd:element"][0]);
+//     save(r);
 
-const createContract = async () => {
-    const xsd = await generate();
-    // xsd["xsd:complexType"][0].
-    // const root = xsd[0];
-    // const xmlContract = generateXmlFromElement(root);
+//     return JSON.parse(r) as Fa3Root;
+// };
 
-    const contract: { [key: string]: any } = {
-        _declaration: {
-            _attributes: {
-                version: "1.0",
-                encoding: "UTF-8",
-            },
-        },
-        Faktura: {
-            _attributes: {
-                "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
-                "xmlns:xsd": "http://www.w3.org/2001/XMLSchema",
-                xmlns: "http://crd.gov.pl/wzor/2025/06/25/13775/",
-            },
-        },
-    };
+// const createContract = async () => {
+//     const xsd = await generate();
+//     // xsd["xsd:complexType"][0].
+//     // const root = xsd[0];
+//     // const xmlContract = generateXmlFromElement(root);
 
-    contract["Faktura"]["ds"];
+//     const contract: { [key: string]: any } = {
+//         _declaration: {
+//             _attributes: {
+//                 version: "1.0",
+//                 encoding: "UTF-8",
+//             },
+//         },
+//         Faktura: {
+//             _attributes: {
+//                 "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+//                 "xmlns:xsd": "http://www.w3.org/2001/XMLSchema",
+//                 xmlns: "http://crd.gov.pl/wzor/2025/06/25/13775/",
+//             },
+//         },
+//     };
 
-    for (const i of xsd["xsd:complexType"][0]["xsd:sequence"]) {
-        for (const j of i["xsd:element"]) {
-            console.log(j["xsd:complexType"]?.map((v) => v["xsd:sequence"].map((v) => v["xsd:element"].map((v) => v.$.name))));
-        }
-    }
+//     contract["Faktura"]["ds"];
 
-    const xml = convert.json2xml(JSON.stringify(contract), { compact: true });
+//     for (const i of xsd["xsd:complexType"][0]["xsd:sequence"]) {
+//         for (const j of i["xsd:element"]) {
+//             console.log(
+//                 j["xsd:complexType"]?.map((v) => v["xsd:sequence"].map((v) => v["xsd:element"].map((v) => v.$.name)))
+//             );
+//         }
+//     }
 
-    fs.writeFileSync(path.resolve(process.cwd(), "./tests/test_contract.xml"), xml, "utf-8");
-};
+//     const xml = convert.json2xml(JSON.stringify(contract), { compact: true });
 
-createContract();
+//     fs.writeFileSync(path.resolve(process.cwd(), "./tests/test_contract.xml"), xml, "utf-8");
+// };
 
-export const mapSequence = () => {};
+// createContract();
 
-export function generateXmlFromElement(element: any) {
-    const name = element.$.name;
-    const type = element.$.type;
+// export const mapSequence = () => {};
 
-    // Prosta struktura - możesz rozbudować logikę
-    const xmlStructure = {
-        _declaration: {
-            _attributes: { version: "1.0", encoding: "UTF-8" },
-        },
-    };
+// export function generateXmlFromElement(element: any) {
+//     const name = element.$.name;
+//     const type = element.$.type;
 
-    // @ts-ignore
-    xmlStructure[name] = {
-        _text: getDefaultValueForType(type),
-    };
+//     // Prosta struktura - można rozbudować logikę
+//     const xmlStructure = {
+//         _declaration: {
+//             _attributes: { version: "1.0", encoding: "UTF-8" },
+//         },
+//     };
 
-    return xmlStructure;
-}
+//     // @ts-ignore
+//     xmlStructure[name] = {
+//         _text: getDefaultValueForType(type),
+//     };
 
-export function getDefaultValueForType(type: any) {
-    if (!type) return "sample value";
+//     return xmlStructure;
+// }
 
-    if (type.includes("string")) return "example";
-    if (type.includes("integer")) return "0";
-    if (type.includes("decimal")) return "0.0";
-    if (type.includes("boolean")) return "false";
-    if (type.includes("date")) return "2024-01-01";
+// export function getDefaultValueForType(type: any) {
+//     if (!type) return "sample value";
 
-    return "sample value";
-}
+//     if (type.includes("string")) return "example";
+//     if (type.includes("integer")) return "0";
+//     if (type.includes("decimal")) return "0.0";
+//     if (type.includes("boolean")) return "false";
+//     if (type.includes("date")) return "2024-01-01";
+
+//     return "sample value";
+// }
+// ! UWAGA ! PLIK PORZUCONY - NIE UŻYWAĆ - MA POZOSTAĆ DLA CELÓW HISTORYCZNYCH JAKO ARTEFAKT

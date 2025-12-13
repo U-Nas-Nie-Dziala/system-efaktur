@@ -1,3 +1,7 @@
+// ! UWAGA ! PLIK PORZUCONY - NIE UŻYWAĆ - MA POZOSTAĆ DLA CELÓW HISTORYCZNYCH JAKO ARTEFAKT
+// ! UWAGA ! PLIK PORZUCONY - NIE UŻYWAĆ - MA POZOSTAĆ DLA CELÓW HISTORYCZNYCH JAKO ARTEFAKT
+// ! UWAGA ! PLIK PORZUCONY - NIE UŻYWAĆ - MA POZOSTAĆ DLA CELÓW HISTORYCZNYCH JAKO ARTEFAKT
+
 import {
     Adres,
     AdresKoresp,
@@ -286,6 +290,30 @@ export type NewPodsumowanieStawekVatPozostaleDataType = {
     P_13_9?: number;
     P_13_10?: number;
     P_13_11?: number;
+};
+
+export type NewAdnotacjeFaType = {
+    metodaKasowa: 1 | 2;
+    samofakturowanie: 1 | 2;
+    odwrotneObciazenie: 1 | 2;
+    mechanizmPodzielonejPlatnosci: 1 | 2;
+    dostawaTowarowUslugZwolnionych: 1 | 2;
+};
+
+export type NewZwolnienieFaType = {
+    P_19?: 1;
+    P_19A?: string;
+    P_19B?: string;
+    P_19C?: string;
+    P_19N?: 1;
+};
+
+export type NewPMarzyType = {
+    znacznik?: 1;
+    P_19A?: string;
+    P_19B?: string;
+    P_19C?: string;
+    P_19N?: 1;
 };
 
 export type SetFaType = {
