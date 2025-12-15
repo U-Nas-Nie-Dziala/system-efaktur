@@ -5,6 +5,7 @@ import { hash, compare } from "bcrypt";
 import jwt from "jsonwebtoken";
 import { Config } from "@/core/config";
 import { User } from "../models/User";
+import { isAuthenticated } from "../middlewares/authenticated";
 
 export const auth = Router();
 
@@ -94,4 +95,10 @@ auth.post("/auth/register", [BindDto(RegisterDto)], async (req: Request<any, any
 
     // TODO: email verification?
     return res.status(201).json({});
+});
+
+auth.post("/auth/logout", [isAuthenticated], async (req: Request, res: Response) => {
+    res.clearCookie(Config.key<string>("AUTH_COOKIE"));
+
+    return res.status(200).json({});
 });
