@@ -76,7 +76,7 @@ auth.post("/auth/register", [BindDto(RegisterDto)], async (req: Request<any, any
     if (account) {
         return res.status(401).json({
             message: "Bad Request.",
-            errors: [
+            errors: [ 
                 {
                     property: "email",
                     children: [],
@@ -94,4 +94,9 @@ auth.post("/auth/register", [BindDto(RegisterDto)], async (req: Request<any, any
 
     // TODO: email verification?
     return res.status(201).json({});
+});
+
+auth.post("/auth/logout", async (req: Request, res: Response) => {
+    res.clearCookie(Config.key<string>("AUTH_COOKIE"));
+    return res.status(200).json({});
 });
