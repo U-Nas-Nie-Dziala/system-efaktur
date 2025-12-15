@@ -15,7 +15,7 @@ const submit = async () => {
   loading.value = true;
   await new Promise((resolve) => setTimeout(resolve, 800));
   loading.value = false;
-  router.push("/auth/login");
+  router.push({ name: "login" });
 };
 </script>
 
