@@ -1,4 +1,4 @@
-import { DataSource } from "typeorm";
+import { DataSource, EntityTarget, ObjectLiteral, Repository } from "typeorm";
 import { Config } from "./config";
 import { User } from "../models/User";
 import { Token } from "../models/Token";
@@ -35,4 +35,8 @@ export class Database {
     public static get dataSource(): DataSource {
         return this.ds;
     }
+}
+
+export function useRepository<T extends ObjectLiteral>(entity: EntityTarget<T>): Repository<T> {
+    return Database.dataSource.getRepository(entity);
 }

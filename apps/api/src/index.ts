@@ -11,9 +11,11 @@ app.use(express.json());
 const s = initServer();
 
 import { health } from "./actions/health";
+import { registerAccount } from "./actions/auth/register";
 
 const router = s.router(contract, {
-    health: health,
+    health,
+    registerAccount,
 });
 
 createExpressEndpoints(contract, router, app, {});
