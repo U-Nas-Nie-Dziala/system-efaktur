@@ -12,10 +12,12 @@ const s = initServer();
 
 import { health } from "./actions/health";
 import { registerAccount } from "./actions/auth/register";
+import { loginAccount } from "./actions/auth/login";
 
 const router = s.router(contract, {
     health,
     registerAccount,
+    loginAccount,
 });
 
 createExpressEndpoints(contract, router, app, {});

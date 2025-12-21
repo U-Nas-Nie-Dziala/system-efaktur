@@ -16,6 +16,9 @@ export class Token {
     @ManyToOne(() => User, (user) => user.tokens)
     user: User;
 
+    @Column({ name: "type" })
+    type: "access_token" | "refresh_token";
+
     @Column({ name: "invalidated", type: "boolean" })
     invalidated: boolean;
 
