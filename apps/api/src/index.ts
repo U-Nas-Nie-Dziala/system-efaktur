@@ -5,9 +5,21 @@ import { contract } from "@repo/contract";
 import { Config } from "./core/config";
 import { authMiddleware } from "./core/authentication";
 import { Database } from "./core/database";
+import helmet from "helmet";
+import cors from "cors";
 
 const app = express();
 
+app.use(helmet());
+app.use(
+    cors({
+        credentials: true,
+        preflightContinue: false,
+        optionsSuccessStatus: 202,
+        origin: "*",
+        methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+    })
+);
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
