@@ -8,6 +8,7 @@ import registerSchema from "./schemas/registerAccount";
 import loginSchema from "./schemas/loginAccount";
 import tokensSchema from "./schemas/tokenAccount";
 import changePasswordSchema from "./schemas/changePassword";
+import changePersonalSchema from "./schemas/changePersonal";
 
 export const contract = c.router({
     health: {
@@ -72,6 +73,22 @@ export const contract = c.router({
                 message: z.string(),
             }),
         },
+        metadata: {
+            auth: true,
+        },
+    },
+    changePersonal: {
+        method: "POST",
+        path: "/me/change-personal",
+        body: changePersonalSchema,
+        responses: {
+            200: z.object({
+                message: z.string(),
+            }),
+        },
+        headers: z.object({
+            authorization: z.string(),
+        }),
         metadata: {
             auth: true,
         },
