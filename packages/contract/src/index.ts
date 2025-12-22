@@ -40,6 +40,17 @@ export const contract = c.router({
             }),
         },
     },
+    meInfo: {
+        method: "GET",
+        path: "/me/info",
+        responses: {},
+        headers: z.object({
+            authorization: z.string(),
+        }),
+        metadata: {
+            auth: true,
+        },
+    },
 });
 
 export type HealthRequest = ServerInferRequest<typeof contract.health>;
@@ -48,3 +59,5 @@ export type RegisterAccountRequest = ServerInferRequest<typeof contract.register
 export type RegisterAccountResponse = ServerInferResponses<typeof contract.registerAccount>;
 export type LoginAccountRequest = ServerInferRequest<typeof contract.loginAccount>;
 export type LoginAccountResponse = ServerInferResponses<typeof contract.loginAccount>;
+export type MeInfoRequest = ServerInferRequest<typeof contract.meInfo>;
+export type MeInfoResponse = ServerInferResponses<typeof contract.meInfo>;

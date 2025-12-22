@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import { DataSource, EntityTarget, ObjectLiteral, Repository } from "typeorm";
 import { Config } from "./config";
 import { User } from "../models/User";

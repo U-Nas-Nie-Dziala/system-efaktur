@@ -13,15 +13,41 @@ const s = initServer();
 import { health } from "./actions/health";
 import { registerAccount } from "./actions/auth/register";
 import { loginAccount } from "./actions/auth/login";
+import { meInfo } from "./actions/me/info";
+import { Database } from "./core/database";
+import { Config } from "./core/config";
+import { authMiddleware } from "./core/authentication";
 
-const router = s.router(contract, {
-    health,
-    registerAccount,
-    loginAccount,
-});
+const start = async () => {
+    Config.validateEnv();
 
-createExpressEndpoints(contract, router, app, {});
+    const router = s.router(contract, {
+        health,
+        registerAccount,
+        loginAccount,
+        meInfo,
+    });
 
-app.listen(3000, () => {
-    //
-});
+    createExpressEndpoints(contract, router, app, {
+        globalMiddleware: [
+            async (req, res, next) => {
+                const meta = (req.tsRestRoute as any).metadata as { auth: true };
+
+                if (!meta) {
+                    return next();
+                }
+
+                return await authMiddleware(req as express.Request, res, next);
+            },
+        ],
+    });
+
+    await Database.init();
+
+    const PORT = Config.key<string>("APP_PORT");
+
+    app.listen(PORT, () => {
+        console.info(`Server running at: http://localhost:${PORT}`);
+    });
+};
+start();
