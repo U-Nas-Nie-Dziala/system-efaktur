@@ -23,6 +23,8 @@ const submit = async () => {
     loading.value = false;
 
     if (res.status == 200) {
+        localStorage.setItem("access_token", res.body.access_token);
+        localStorage.setItem("refresh_token", res.body.refresh_token);
         router.push({ name: "home" });
         return;
     }
