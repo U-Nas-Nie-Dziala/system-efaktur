@@ -15,11 +15,22 @@ export const refreshTokens = async (ctx: Route["ctx"]): Promise<Route["response"
         };
     }
 
+    const result = await AuthenticationService.refreshTokens(ctx.req.auth!.payload, refreshTokenPayload.payload);
+
+    if (!result) {
+        return {
+            status: 400,
+            body: {
+                message: "Nie udało się odświeżyć tokenów.",
+            },
+        };
+    }
+
     return {
         status: 200,
         body: {
-            access_token: "",
-            refresh_token: "",
+            access_token: result.access_token,
+            refresh_token: result.refresh_token,
         },
     };
 };
