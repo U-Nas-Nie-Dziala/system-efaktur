@@ -7,6 +7,7 @@ const c = initContract();
 import registerSchema from "./schemas/registerAccount";
 import loginSchema from "./schemas/loginAccount";
 import tokensSchema from "./schemas/tokenAccount";
+import changePasswordSchema from "./schemas/changePassword";
 
 export const contract = c.router({
     health: {
@@ -54,6 +55,25 @@ export const contract = c.router({
             400: z.object({
                 message: z.string(),
             }),
+        },
+    },
+    changePassword: {
+        method: "POST",
+        path: "/me/change-password",
+        body: changePasswordSchema,
+        headers: z.object({
+            authorization: z.string(),
+        }),
+        responses: {
+            200: z.object({
+                message: z.string(),
+            }),
+            400: z.object({
+                message: z.string(),
+            }),
+        },
+        metadata: {
+            auth: true,
         },
     },
     meInfo: {

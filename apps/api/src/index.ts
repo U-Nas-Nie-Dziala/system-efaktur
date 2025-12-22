@@ -30,6 +30,7 @@ import { registerAccount } from "./actions/auth/register";
 import { loginAccount } from "./actions/auth/login";
 import { refreshTokens } from "./actions/auth/token";
 import { meInfo } from "./actions/me/info";
+import { changePassword } from "./actions/me/changePassword";
 
 const start = async () => {
     Config.validateEnv();
@@ -40,6 +41,7 @@ const start = async () => {
         loginAccount,
         meInfo,
         refreshTokens,
+        changePassword,
     });
 
     createExpressEndpoints(contract, router, app, {
