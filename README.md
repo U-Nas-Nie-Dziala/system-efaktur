@@ -28,7 +28,7 @@ npm install
 
 2.2. Pole `SCS_KSEF_API=` należy uzupełnić kluczem dostępowym do usługi SCS, który można uzyskać od @venoxdevpl. Klucz jest wymagany do poprawnego generowania plików XML na bazie pliku logicznego FA(3).
 
-2.3. Uruchomienie aplikacji klineta: `npm run dev:web`.
+2.3. Uruchomienie aplikacji klienta: `npm run dev:web`.
 
 2.4. Uruchomienie aplikacji serwera: `npm run dev:api`.
 
