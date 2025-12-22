@@ -1,11 +1,6 @@
 import { Entity, UpdateDateColumn, CreateDateColumn, Column, ManyToOne, PrimaryGeneratedColumn, Index } from "typeorm";
 import { User } from "./User";
 
-export interface ITokenContract {
-    user: User;
-    invalidated: boolean;
-}
-
 @Entity({
     name: "tokens",
 })

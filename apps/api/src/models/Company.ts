@@ -20,26 +20,10 @@ export enum CompanyType {
     INNE = "Inna forma prawna",
 }
 
-export interface ICompanyContract {
-    name: string;
-    type: CompanyType;
-    nip: string;
-    regon: string;
-    bdo?: string;
-    krs?: string;
-    street: string;
-    address: string;
-    zipcode: string;
-    city: string;
-    country: string;
-    registerDate: Date;
-    vat: boolean;
-}
-
 @Entity({
     name: "companies",
 })
-export class Company implements ICompanyContract {
+export class Company {
     @PrimaryGeneratedColumn("uuid")
     id: string;
 

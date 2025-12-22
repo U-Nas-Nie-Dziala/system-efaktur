@@ -59,7 +59,13 @@ export const contract = c.router({
     meInfo: {
         method: "GET",
         path: "/me/info",
-        responses: {},
+        responses: {
+            200: z.object({
+                firstname: z.string(),
+                lastname: z.string(),
+                hasCompany: z.boolean(),
+            }),
+        },
         headers: z.object({
             authorization: z.string(),
         }),

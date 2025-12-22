@@ -9,7 +9,12 @@ type Route = RouteCtx<typeof contract.loginAccount>;
 export const loginAccount = async (ctx: Route["ctx"]): Promise<Route["response"]> => {
     const userRepository = useRepository(User);
 
-    const account = await userRepository.findOneBy({ email: ctx.body.email });
+    const account = await userRepository.findOne({
+        where: { email: ctx.body.email },
+        relations: {
+            company: true,
+        },
+    });
 
     if (!account) {
         return {

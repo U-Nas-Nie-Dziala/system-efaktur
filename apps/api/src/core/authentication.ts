@@ -15,7 +15,7 @@ interface JwtPayload {
 declare global {
     namespace Express {
         interface Request {
-            auth: {
+            auth?: {
                 payload: JwtPayload;
                 token: Token;
             };
