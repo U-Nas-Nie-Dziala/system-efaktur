@@ -1,6 +1,6 @@
 import { initClient } from "@ts-rest/core";
-import { api } from "@repo/contract";
+import { contract } from "@repo/contract";
 
-export const client = initClient(api, {
+export const client = initClient(contract, {
     baseUrl: "http://localhost:3000",
 });
