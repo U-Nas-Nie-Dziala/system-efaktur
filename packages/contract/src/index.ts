@@ -29,8 +29,8 @@ export const contract = c.router({
         body: loginSchema,
         responses: {
             200: z.object({
-                accessToken: z.string(),
-                refreshToken: z.string(),
+                access_token: z.string(),
+                refresh_token: z.string(),
             }),
             400: z.object({
                 message: z.string(),
