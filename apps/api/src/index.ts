@@ -2,6 +2,9 @@ import "reflect-metadata";
 import { createExpressEndpoints, initServer } from "@ts-rest/express";
 import express from "express";
 import { contract } from "@repo/contract";
+import { Config } from "./core/config";
+import { authMiddleware } from "./core/authentication";
+import { Database } from "./core/database";
 
 const app = express();
 
@@ -13,10 +16,8 @@ const s = initServer();
 import { health } from "./actions/health";
 import { registerAccount } from "./actions/auth/register";
 import { loginAccount } from "./actions/auth/login";
+import { refreshTokens } from "./actions/auth/token";
 import { meInfo } from "./actions/me/info";
-import { Database } from "./core/database";
-import { Config } from "./core/config";
-import { authMiddleware } from "./core/authentication";
 
 const start = async () => {
     Config.validateEnv();
@@ -26,6 +27,7 @@ const start = async () => {
         registerAccount,
         loginAccount,
         meInfo,
+        refreshTokens,
     });
 
     createExpressEndpoints(contract, router, app, {

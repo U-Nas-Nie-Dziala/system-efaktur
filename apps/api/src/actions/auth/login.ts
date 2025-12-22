@@ -1,10 +1,12 @@
-import type { LoginAccountRequest, LoginAccountResponse } from "@repo/contract";
+import { contract, RouteCtx } from "@repo/contract";
 import { useRepository } from "../../core/database";
 import { User } from "../../models/User";
 import * as bcrypt from "bcrypt";
 import { AuthenticationService } from "../../core/authentication";
 
-export const loginAccount = async (ctx: LoginAccountRequest): Promise<LoginAccountResponse> => {
+type Route = RouteCtx<typeof contract.loginAccount>;
+
+export const loginAccount = async (ctx: Route["ctx"]): Promise<Route["response"]> => {
     const userRepository = useRepository(User);
 
     const account = await userRepository.findOneBy({ email: ctx.body.email });

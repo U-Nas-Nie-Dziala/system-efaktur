@@ -1,9 +1,11 @@
-import type { RegisterAccountRequest, RegisterAccountResponse } from "@repo/contract";
+import { contract, RouteCtx } from "@repo/contract";
 import { useRepository } from "../../core/database";
 import { User } from "../../models/User";
 import * as bcrypt from "bcrypt";
 
-export const registerAccount = async (ctx: RegisterAccountRequest): Promise<RegisterAccountResponse> => {
+type Route = RouteCtx<typeof contract.registerAccount>;
+
+export const registerAccount = async (ctx: Route["ctx"]): Promise<Route["response"]> => {
     const userRepository = useRepository(User);
 
     const account = await userRepository.findOneBy({

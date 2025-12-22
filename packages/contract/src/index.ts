@@ -1,10 +1,12 @@
-import { initContract, ServerInferRequest, ServerInferResponses } from "@ts-rest/core";
+import { AppRoute, initContract, ServerInferRequest, ServerInferResponses, AppRouter } from "@ts-rest/core";
+import { Request, Response } from "express";
 import { z } from "zod";
 
 const c = initContract();
 
 import registerSchema from "./schemas/registerAccount";
 import loginSchema from "./schemas/loginAccount";
+import tokensSchema from "./schemas/tokenAccount";
 
 export const contract = c.router({
     health: {
@@ -40,6 +42,20 @@ export const contract = c.router({
             }),
         },
     },
+    refreshTokens: {
+        method: "POST",
+        path: "/auth/tokens",
+        body: tokensSchema,
+        responses: {
+            200: z.object({
+                access_token: z.string(),
+                refresh_token: z.string(),
+            }),
+            400: z.object({
+                message: z.string(),
+            }),
+        },
+    },
     meInfo: {
         method: "GET",
         path: "/me/info",
@@ -53,11 +69,10 @@ export const contract = c.router({
     },
 });
 
-export type HealthRequest = ServerInferRequest<typeof contract.health>;
-export type HealthResponse = ServerInferResponses<typeof contract.health>;
-export type RegisterAccountRequest = ServerInferRequest<typeof contract.registerAccount>;
-export type RegisterAccountResponse = ServerInferResponses<typeof contract.registerAccount>;
-export type LoginAccountRequest = ServerInferRequest<typeof contract.loginAccount>;
-export type LoginAccountResponse = ServerInferResponses<typeof contract.loginAccount>;
-export type MeInfoRequest = ServerInferRequest<typeof contract.meInfo>;
-export type MeInfoResponse = ServerInferResponses<typeof contract.meInfo>;
+export type RouteCtx<T extends AppRoute | AppRouter> = {
+    ctx: ServerInferRequest<T> & {
+        req: Request;
+        res: Response;
+    };
+    response: ServerInferResponses<T>;
+};
