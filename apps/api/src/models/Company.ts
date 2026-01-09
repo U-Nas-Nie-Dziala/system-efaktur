@@ -1,5 +1,14 @@
-import { Column, CreateDateColumn, Entity, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import {
+    Column,
+    CreateDateColumn,
+    Entity,
+    OneToMany,
+    OneToOne,
+    PrimaryGeneratedColumn,
+    UpdateDateColumn,
+} from "typeorm";
 import { User } from "./User";
+import { Contractor } from "./Contractor";
 
 export enum CompanyType {
     JDG = "Jednoosobowa działalność gospodarcza",
@@ -74,4 +83,7 @@ export class Company {
 
     @OneToOne(() => User, (user) => user.company)
     user: User;
+
+    @OneToMany(() => Contractor, (c) => c.company)
+    contractors: Contractor[];
 }
