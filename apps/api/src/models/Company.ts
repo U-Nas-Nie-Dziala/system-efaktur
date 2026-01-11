@@ -9,6 +9,7 @@ import {
 } from "typeorm";
 import { User } from "./User";
 import { Contractor } from "./Contractor";
+import { Product } from "./Product";
 
 export enum CompanyType {
     JDG = "Jednoosobowa działalność gospodarcza",
@@ -86,4 +87,7 @@ export class Company {
 
     @OneToMany(() => Contractor, (c) => c.company)
     contractors: Contractor[];
+
+    @OneToMany(() => Product, (p) => p.company)
+    products: Product[];
 }

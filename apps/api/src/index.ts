@@ -36,6 +36,10 @@ import { contractorsList } from "./actions/contractors/list";
 import { contractorsCreate } from "./actions/contractors/create";
 import { contractorsUpdate } from "./actions/contractors/update";
 import { contractorsDelete } from "./actions/contractors/delete";
+import { productsList } from "./actions/products/list";
+import { productsCreate } from "./actions/products/create";
+import { productsUpdate } from "./actions/products/update";
+import { productsDelete } from "./actions/products/delete";
 
 const start = async () => {
     Config.validateEnv();
@@ -52,6 +56,10 @@ const start = async () => {
         contractorsCreate,
         contractorsUpdate,
         contractorsDelete,
+        productsList,
+        productsCreate,
+        productsUpdate,
+        productsDelete,
     });
 
     createExpressEndpoints(contract, router, app, {

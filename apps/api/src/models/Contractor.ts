@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Company } from "./Company";
 
 @Entity({
@@ -34,4 +34,10 @@ export class Contractor {
 
     @ManyToOne(() => Company, (c) => c.contractors)
     company: Company;
+
+    @CreateDateColumn({ name: "created_at" })
+    created_at: Date;
+
+    @UpdateDateColumn({ name: "updated_at" })
+    updated_at: Date;
 }

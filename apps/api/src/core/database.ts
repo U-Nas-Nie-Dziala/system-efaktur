@@ -4,6 +4,8 @@ import { Config } from "./config";
 import { User } from "../models/User";
 import { Token } from "../models/Token";
 import { Company } from "../models/Company";
+import { Contractor } from "../models/Contractor";
+import { Product } from "../models/Product";
 
 export class Database {
     private static ds: DataSource;
@@ -19,7 +21,7 @@ export class Database {
                 username: Config.key<string>("DB_USER"),
                 password: Config.key<string>("DB_PASS"),
                 database: Config.key<string>("DB_NAME"),
-                entities: [User, Token, Company],
+                entities: [User, Token, Company, Contractor, Product],
                 timezone: "Z",
                 synchronize: true,
             });

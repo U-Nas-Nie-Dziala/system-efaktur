@@ -11,6 +11,8 @@ import changePasswordSchema from "./schemas/changePassword";
 import changePersonalSchema from "./schemas/changePersonal";
 import contractorsCreate from "./schemas/contractorsCreate";
 import contractorsUpdate from "./schemas/contractorsUpdate";
+import productsCreate from "./schemas/productsCreate";
+import productsUpdate from "./schemas/productsUpdate";
 
 export const contract = c.router({
     health: {
@@ -164,6 +166,74 @@ export const contract = c.router({
     contractorsDelete: {
         method: "DELETE",
         path: "/contractors/:id",
+        pathParams: z.object({
+            id: z.string().uuid(),
+        }),
+        responses: {
+            204: z.object({}),
+            404: z.object({ message: z.string() }),
+        },
+        headers: z.object({
+            authorization: z.string(),
+        }),
+        metadata: {
+            auth: true,
+        },
+    },
+    productsList: {
+        method: "GET",
+        path: "/products",
+        responses: {
+            200: z.array(
+                z.object({
+                    id: z.string(),
+                })
+            ),
+        },
+        headers: z.object({
+            authorization: z.string(),
+        }),
+        metadata: {
+            auth: true,
+        },
+    },
+    productsCreate: {
+        method: "POST",
+        path: "/products",
+        body: productsCreate,
+        responses: {
+            200: z.object({}),
+        },
+        headers: z.object({
+            authorization: z.string(),
+        }),
+        metadata: {
+            auth: true,
+        },
+    },
+    productsUpdate: {
+        method: "PATCH",
+        path: "/products/:id",
+        pathParams: z.object({
+            id: z.string().uuid(),
+        }),
+        body: productsUpdate,
+        responses: {
+            404: z.object({
+                message: z.string(),
+            }),
+            200: z.object({}),
+        },
+        headers: z.object({
+            authorization: z.string(),
+        }),
+        metadata: {
+            auth: true,
+        },
+    },
+    productsDelete: {
+        method: "DELETE",
+        path: "/products/:id",
         pathParams: z.object({
             id: z.string().uuid(),
         }),
