@@ -9,6 +9,8 @@ import loginSchema from "./schemas/loginAccount";
 import tokensSchema from "./schemas/tokenAccount";
 import changePasswordSchema from "./schemas/changePassword";
 import changePersonalSchema from "./schemas/changePersonal";
+import contractorsCreate from "./schemas/contractorsCreate";
+import contractorsUpdate from "./schemas/contractorsUpdate";
 
 export const contract = c.router({
     health: {
@@ -102,6 +104,72 @@ export const contract = c.router({
                 lastname: z.string(),
                 hasCompany: z.boolean(),
             }),
+        },
+        headers: z.object({
+            authorization: z.string(),
+        }),
+        metadata: {
+            auth: true,
+        },
+    },
+    contractorsList: {
+        method: "GET",
+        path: "/contractors",
+        responses: {
+            200: z.array(
+                z.object({
+                    id: z.string(),
+                })
+            ),
+        },
+        headers: z.object({
+            authorization: z.string(),
+        }),
+        metadata: {
+            auth: true,
+        },
+    },
+    contractorsCreate: {
+        method: "POST",
+        path: "/contractors",
+        body: contractorsCreate,
+        responses: {
+            200: z.object({}),
+        },
+        headers: z.object({
+            authorization: z.string(),
+        }),
+        metadata: {
+            auth: true,
+        },
+    },
+    contractorsUpdate: {
+        method: "PATCH",
+        path: "/contractors/:id",
+        pathParams: z.object({
+            id: z.string().uuid(),
+        }),
+        body: contractorsUpdate,
+        responses: {
+            404: z.object({ message: z.string() }),
+            200: z.object({}),
+        },
+        headers: z.object({
+            authorization: z.string(),
+        }),
+        metadata: {
+            auth: true,
+        },
+    },
+    contractorsDelete: {
+        method: "DELETE",
+        path: "/contractors/:id",
+        pathParams: z.object({
+            id: z.string().uuid(),
+        }),
+        responses: {
+            204: z.object({}),
+            404: z.object({ message: z.string() }),
         },
         headers: z.object({
             authorization: z.string(),

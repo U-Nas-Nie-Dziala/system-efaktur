@@ -32,6 +32,10 @@ import { refreshTokens } from "./actions/auth/token";
 import { meInfo } from "./actions/me/info";
 import { changePassword } from "./actions/me/changePassword";
 import { changePersonal } from "./actions/me/changePersonal";
+import { contractorsList } from "./actions/contractors/list";
+import { contractorsCreate } from "./actions/contractors/create";
+import { contractorsUpdate } from "./actions/contractors/update";
+import { contractorsDelete } from "./actions/contractors/delete";
 
 const start = async () => {
     Config.validateEnv();
@@ -44,6 +48,10 @@ const start = async () => {
         refreshTokens,
         changePassword,
         changePersonal,
+        contractorsList,
+        contractorsCreate,
+        contractorsUpdate,
+        contractorsDelete,
     });
 
     createExpressEndpoints(contract, router, app, {
