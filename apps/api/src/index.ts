@@ -42,6 +42,7 @@ import { productsUpdate } from "./actions/products/update";
 import { productsDelete } from "./actions/products/delete";
 import { setKsefToken } from "./actions/me/ksefToken";
 import { setCompanyData } from "./actions/me/setCompanyData";
+import { SocketService } from "./services/SocketService";
 
 const start = async () => {
     Config.validateEnv();
@@ -87,5 +88,7 @@ const start = async () => {
     app.listen(PORT, () => {
         console.info(`Server running at: http://localhost:${PORT}`);
     });
+
+    SocketService.initServer();
 };
 start();
