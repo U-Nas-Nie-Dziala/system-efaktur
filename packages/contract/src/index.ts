@@ -189,6 +189,15 @@ export const contract = c.router({
             200: z.array(
                 z.object({
                     id: z.string(),
+                    name: z.string(),
+                    description: z.string(),
+                    type: z.enum(["PRODUCT", "SERVICE"]),
+                    unit: z.string(),
+                    price_netto: z.number(),
+                    price_brutto: z.number(),
+                    vat_rate: z.string(),
+                    created_at: z.coerce.date(),
+                    updated_at: z.coerce.date(),
                 })
             ),
         },
@@ -205,6 +214,7 @@ export const contract = c.router({
         body: productsCreate,
         responses: {
             200: z.object({}),
+            400: z.object({ message: z.string() }),
         },
         headers: z.object({
             authorization: z.string(),
