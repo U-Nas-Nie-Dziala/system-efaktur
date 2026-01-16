@@ -14,6 +14,7 @@ import contractorsUpdate from "./schemas/contractorsUpdate";
 import productsCreate from "./schemas/productsCreate";
 import productsUpdate from "./schemas/productsUpdate";
 import ksefToken from "./schemas/ksefToken";
+import companyData from "./schemas/companyData";
 
 export const contract = c.router({
     health: {
@@ -262,6 +263,20 @@ export const contract = c.router({
             }),
         },
         body: ksefToken,
+        headers: z.object({
+            authorization: z.string(),
+        }),
+        metadata: {
+            auth: true,
+        },
+    },
+    setCompanyData: {
+        method: "PUT",
+        path: "/@me/company",
+        responses: {
+            200: z.object({}),
+        },
+        body: companyData,
         headers: z.object({
             authorization: z.string(),
         }),
