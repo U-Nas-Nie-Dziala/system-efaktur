@@ -10,6 +10,7 @@ import {
 import { User } from "./User";
 import { Contractor } from "./Contractor";
 import { Product } from "./Product";
+import { KsefSession } from "./KsefSession";
 
 export const CompanyTypes = [
     "Jednoosobowa działalność gospodarcza",
@@ -97,4 +98,7 @@ export class Company {
 
     @Column({ type: "varchar", length: 255, nullable: true })
     ksefTokenPassword?: string;
+
+    @OneToMany(() => KsefSession, (ks) => ks.company)
+    ksefSessions: KsefSession[];
 }
