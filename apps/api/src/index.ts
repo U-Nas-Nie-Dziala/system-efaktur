@@ -40,6 +40,7 @@ import { productsList } from "./actions/products/list";
 import { productsCreate } from "./actions/products/create";
 import { productsUpdate } from "./actions/products/update";
 import { productsDelete } from "./actions/products/delete";
+import { setKsefToken } from "./actions/me/ksefToken";
 
 const start = async () => {
     Config.validateEnv();
@@ -60,6 +61,7 @@ const start = async () => {
         productsCreate,
         productsUpdate,
         productsDelete,
+        setKsefToken,
     });
 
     createExpressEndpoints(contract, router, app, {

@@ -13,6 +13,7 @@ import contractorsCreate from "./schemas/contractorsCreate";
 import contractorsUpdate from "./schemas/contractorsUpdate";
 import productsCreate from "./schemas/productsCreate";
 import productsUpdate from "./schemas/productsUpdate";
+import ksefToken from "./schemas/ksefToken";
 
 export const contract = c.router({
     health: {
@@ -241,6 +242,26 @@ export const contract = c.router({
             204: z.object({}),
             404: z.object({ message: z.string() }),
         },
+        headers: z.object({
+            authorization: z.string(),
+        }),
+        metadata: {
+            auth: true,
+        },
+    },
+    setKsefToken: {
+        method: "PUT",
+        path: "/@me/ksef-token",
+        responses: {
+            200: z.object({}),
+            404: z.object({
+                message: z.string(),
+            }),
+            409: z.object({
+                message: z.string(),
+            }),
+        },
+        body: ksefToken,
         headers: z.object({
             authorization: z.string(),
         }),

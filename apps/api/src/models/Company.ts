@@ -90,4 +90,10 @@ export class Company {
 
     @OneToMany(() => Product, (p) => p.company)
     products: Product[];
+
+    @Column({ type: "text", nullable: true })
+    ksefToken?: string;
+
+    @Column({ type: "varchar", length: 255, nullable: true })
+    ksefTokenPassword?: string;
 }
