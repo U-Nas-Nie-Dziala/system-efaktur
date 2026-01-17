@@ -15,7 +15,7 @@ export class Product {
     name: string;
 
     @Column({ type: "varchar", length: 256 })
-    description: string;
+    description?: string;
 
     @Column({ type: "enum", enum: ["PRODUCT", "SERVICE"] })
     type: "PRODUCT" | "SERVICE";

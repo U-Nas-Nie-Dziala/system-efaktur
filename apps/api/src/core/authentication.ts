@@ -118,7 +118,9 @@ export class AuthenticationService {
                     invalidated: false,
                 },
                 relations: {
-                    user: true,
+                    user: {
+                        company: true,
+                    },
                 },
             });
 
