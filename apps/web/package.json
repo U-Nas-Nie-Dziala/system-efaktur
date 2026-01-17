@@ -16,7 +16,8 @@
     "socket.io-client": "^4.8.3",
     "vue": "^3.5.26",
     "vue-router": "^4.6.4",
-    "vuetify": "^3.11.4"
+    "vuetify": "^3.11.4",
+    "zod": "^4.3.5"
   },
   "devDependencies": {
     "@types/node": "^24.10.4",
