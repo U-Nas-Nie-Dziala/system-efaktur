@@ -97,6 +97,7 @@
 import { reactive, ref, watch } from "vue";
 import type { VForm } from "vuetify/components";
 import type { IProduct, IProductUpdateBody } from "../../api";
+import { contract } from "../../api";
 
 type ProductType = "PRODUCT" | "SERVICE";
 
@@ -158,9 +159,9 @@ watch(
     { immediate: true }
 );
 
-const submit = () => {
+const submit = async () => {
     if (!formValid.value || !props.product) return;
-    emit("update", {
+    const payload: IProductUpdateBody = {
         name: productForm.name,
         description: productForm.description,
         type: productForm.type,
@@ -168,7 +169,12 @@ const submit = () => {
         price_netto: Number(productForm.price_netto),
         price_brutto: Number(productForm.price_brutto),
         vat_rate: productForm.vat_rate,
-    });
+    };
+    const validation = await contract.productsUpdate.body.safeParseAsync(payload);
+    if (!validation.success) {
+        return;
+    }
+    emit("update", payload);
 };
 
 const handleDelete = () => {

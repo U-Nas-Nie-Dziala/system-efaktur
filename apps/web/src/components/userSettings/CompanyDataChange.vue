@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { reactive, ref } from "vue";
-import { client, getAuthHeaders, type ICompanyDataBody } from "../../api";
+import { client, getAuthHeaders, type ICompanyDataBody, contract } from "../../api";
 
 const snackbar = reactive({
     show: false,
@@ -72,22 +72,28 @@ const submit = async () => {
             showSnackbar("Uzupełnij wymagane pola.", "error");
             return;
         }
+        const payload: ICompanyDataBody = {
+            name: companyState.name,
+            type: companyState.select,
+            nip: companyState.nip,
+            regon: companyState.regon,
+            bdo: companyState.bdo,
+            krs: companyState.krs,
+            street: companyState.street,
+            address: companyState.address,
+            zipcode: companyState.zipcode,
+            city: companyState.city,
+            country: companyState.country,
+            registerDate: companyState.registerDate,
+            vat: companyState.vat,
+        } as ICompanyDataBody;
+        const validation = await contract.setCompanyData.body.safeParseAsync(payload);
+        if (!validation.success) {
+            showSnackbar("Sprawdź poprawność danych firmy.", "error");
+            return;
+        }
         const response = await client.setCompanyData({
-            body: {
-                name: companyState.name,
-                type: companyState.select,
-                nip: companyState.nip,
-                regon: companyState.regon,
-                bdo: companyState.bdo,
-                krs: companyState.krs,
-                street: companyState.street,
-                address: companyState.address,
-                zipcode: companyState.zipcode,
-                city: companyState.city,
-                country: companyState.country,
-                registerDate: companyState.registerDate,
-                vat: companyState.vat,
-            } as ICompanyDataBody,
+            body: payload,
             headers: getAuthHeaders(),
         });
         if (response.status === 200) {

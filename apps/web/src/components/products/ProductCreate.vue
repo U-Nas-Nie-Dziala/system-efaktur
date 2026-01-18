@@ -91,6 +91,7 @@
 import { reactive, ref } from "vue";
 import type { VForm } from "vuetify/components";
 import type { IProductCreateBody } from "../../api";
+import { contract } from "../../api";
 
 type ProductType = "PRODUCT" | "SERVICE";
 
@@ -128,7 +129,7 @@ const rules = {
 const submit = async () => {
     const result = await form.value?.validate();
     if (!result?.valid) return;
-    emit("create", {
+    const payload: IProductCreateBody = {
         name: productForm.name,
         description: productForm.description,
         type: productForm.type,
@@ -136,7 +137,12 @@ const submit = async () => {
         price_netto: Number(productForm.price_netto),
         price_brutto: Number(productForm.price_brutto),
         vat_rate: productForm.vat_rate,
-    });
+    };
+    const validation = await contract.productsCreate.body.safeParseAsync(payload);
+    if (!validation.success) {
+        return;
+    }
+    emit("create", payload);
 };
 
 const reset = () => {
