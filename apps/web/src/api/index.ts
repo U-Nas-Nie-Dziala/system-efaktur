@@ -22,5 +22,4 @@ export type IProduct = ClientInferResponses<typeof contract.productsList, 200>["
 
 export type ICompanyDataBody = ClientInferRequest<typeof contract.setCompanyData>["body"];
 
-
 export { contract };
