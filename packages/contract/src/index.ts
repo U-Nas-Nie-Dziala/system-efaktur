@@ -123,6 +123,14 @@ export const contract = c.router({
             200: z.array(
                 z.object({
                     id: z.string(),
+                    own_name: z.string(),
+                    name: z.string(),
+                    nip: z.string(),
+                    street: z.string(),
+                    address: z.string(),
+                    zipcode: z.string(),
+                    city: z.string(),
+                    country: z.string(),
                 })
             ),
         },
@@ -190,7 +198,7 @@ export const contract = c.router({
                 z.object({
                     id: z.string(),
                     name: z.string(),
-                    description: z.string(),
+                    description: z.string().optional(),
                     type: z.enum(["PRODUCT", "SERVICE"]),
                     unit: z.string(),
                     price_netto: z.number(),

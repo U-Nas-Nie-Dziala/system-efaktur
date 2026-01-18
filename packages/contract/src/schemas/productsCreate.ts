@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export default z.object({
     name: z.string().max(64),
-    description: z.string().max(256),
+    description: z.string().max(256).optional(),
     type: z.enum(["PRODUCT", "SERVICE"]),
     unit: z.string().max(16),
     price_netto: z.number().min(0),

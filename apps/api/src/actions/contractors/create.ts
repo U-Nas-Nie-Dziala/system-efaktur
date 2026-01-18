@@ -6,7 +6,18 @@ export type Route = RouteCtx<typeof contract.contractorsCreate>;
 
 export const contractorsCreate = async (ctx: Route["ctx"]): Promise<Route["response"]> => {
     const contractorsRepository = useRepository<Contractor>(Contractor);
-    const c = contractorsRepository.create({ ...ctx.body, company: { user: { id: ctx.req.auth?.payload.userId } } });
+
+    if (!ctx.req.auth?.token.user.company) {
+        return {
+            status: 400,
+            body: { message: "Brak przypisanej firmy użytkownika." },
+        };
+    }
+
+    const c = contractorsRepository.create({
+        ...ctx.body,
+        company: ctx.req.auth?.token.user.company,
+    });
 
     await contractorsRepository.save(c);
 

@@ -10,11 +10,22 @@ const form = ref<ILoginBody>({
     // remember: false,
 });
 const loading = ref(false);
+const alert = ref<string | null>(null);
+const fieldErrors = ref<{ email?: string; password?: string }>({});
 
 const submit = async () => {
+    alert.value = null;
+    fieldErrors.value = {};
+
     const validation = await contract.loginAccount.body.safeParseAsync(form.value);
 
     if (!validation.success) {
+        const errors = validation.error.flatten().fieldErrors;
+        fieldErrors.value = {
+            email: errors.email?.[0],
+            password: errors.password?.[0],
+        };
+        alert.value = "Sprawdź poprawność danych logowania.";
         return;
     }
 
@@ -28,8 +39,13 @@ const submit = async () => {
         router.push({ name: "home" });
         return;
     }
+    if (res.status === 400 || res.status === 404) {
+        const body = res.body as { message?: string };
+        alert.value = body.message || "Nieprawidłowy email lub hasło.";
+        return;
+    }
 
-    // TODO: obsługa błędów
+    alert.value = "Nie udało się zalogować. Spróbuj ponownie.";
 };
 </script>
 
@@ -46,6 +62,9 @@ const submit = async () => {
                     </div>
 
                     <v-form @submit.prevent="submit">
+                        <v-alert v-if="alert" type="error" variant="tonal" class="mb-4">
+                            {{ alert }}
+                        </v-alert>
                         <v-text-field
                             v-model="form.email"
                             label="Adres e-mail"
@@ -53,6 +72,7 @@ const submit = async () => {
                             autocomplete="email"
                             required
                             variant="outlined"
+                            :error-messages="fieldErrors.email"
                         />
                         <v-text-field
                             v-model="form.password"
@@ -61,6 +81,7 @@ const submit = async () => {
                             autocomplete="current-password"
                             required
                             variant="outlined"
+                            :error-messages="fieldErrors.password"
                         />
                         <!-- <v-checkbox v-model="form.remember" label="Zapamiętaj mnie" density="comfortable" /> -->
 

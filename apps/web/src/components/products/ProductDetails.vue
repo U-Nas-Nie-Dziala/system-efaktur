@@ -142,9 +142,9 @@ watch(
     (product) => {
         if (product) {
             Object.assign(productForm, {
-                name: product.name,
                 description: product.description,
                 type: product.type,
+                name: product.name,
                 unit: product.unit,
                 price_netto: product.price_netto,
                 price_brutto: product.price_brutto,
