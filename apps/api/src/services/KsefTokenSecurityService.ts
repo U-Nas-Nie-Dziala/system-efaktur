@@ -47,4 +47,24 @@ export class KsefTokenSecurityService {
         const cryptr = new Cryptr(this.createKey(password), { encoding: "hex" });
         return cryptr.decrypt(encrypted);
     }
+
+    public static async encrypt(plain: string) {
+        const cryptr = new Cryptr(Config.key<string>("APP_SECRET"), { encoding: "hex" });
+        return cryptr.encrypt(plain);
+    }
+
+    public static async decrypt(encrypted: string) {
+        const cryptr = new Cryptr(Config.key<string>("APP_SECRET"), { encoding: "hex" });
+        return cryptr.encrypt(encrypted);
+    }
+
+    public static async encryptJson<T = any>(data: T) {
+        const cryptr = new Cryptr(Config.key<string>("APP_SECRET"), { encoding: "hex" });
+        return cryptr.encrypt(JSON.stringify(data));
+    }
+
+    public static async decryptJson<T = any>(encrypted: string) {
+        const cryptr = new Cryptr(Config.key<string>("APP_SECRET"), { encoding: "hex" });
+        return JSON.parse(cryptr.decrypt(encrypted)) as T;
+    }
 }

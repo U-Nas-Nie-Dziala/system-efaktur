@@ -57,6 +57,8 @@ export class SocketService {
         });
 
         this.io.on("connection", (socket: Client) => {
+            socket.join(`user:${socket.data.payload.userId}`);
+
             socket.on("auth:refresh-token", async (accessToken: string, refreshToken: string) => {
                 const accessTokenPayload = await AuthenticationService.validateToken(accessToken, "access_token");
                 const refreshTokenPayload = await AuthenticationService.validateToken(refreshToken, "refresh_token");

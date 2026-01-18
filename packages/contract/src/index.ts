@@ -15,6 +15,7 @@ import productsCreate from "./schemas/productsCreate";
 import productsUpdate from "./schemas/productsUpdate";
 import ksefToken from "./schemas/ksefToken";
 import companyData from "./schemas/companyData";
+import openSession from "./schemas/openSession";
 
 export const contract = c.router({
     health: {
@@ -313,6 +314,38 @@ export const contract = c.router({
             200: z.object({}),
         },
         body: companyData,
+        headers: z.object({
+            authorization: z.string(),
+        }),
+        metadata: {
+            auth: true,
+        },
+    },
+    ksefOpenSession: {
+        method: "POST",
+        path: "/ksef/open-session",
+        responses: {
+            200: z.object({
+                id: z.string(),
+                message: z.string(),
+            }),
+            400: z.object({
+                message: z.string(),
+            }),
+            403: z.object({
+                message: z.string(),
+            }),
+            404: z.object({
+                message: z.string(),
+            }),
+            409: z.object({
+                message: z.string(),
+            }),
+            500: z.object({
+                message: z.string(),
+            }),
+        },
+        body: openSession,
         headers: z.object({
             authorization: z.string(),
         }),

@@ -34,6 +34,9 @@ export class KsefSession {
     @Column({ type: "varchar", nullable: true })
     refreshTokenExpiry?: string;
 
+    @Column({ type: "text", nullable: true })
+    data?: string;
+
     @CreateDateColumn({ name: "created_at" })
     created_at: Date;
 

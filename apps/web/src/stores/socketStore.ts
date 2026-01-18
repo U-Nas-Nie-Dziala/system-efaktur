@@ -34,6 +34,10 @@ export const useSocketStore = defineStore("socketStore", {
                 localStorage.setItem("refresh_token", refreshToken);
                 console.info("Tokens refreshed.");
             });
+
+            this.$state.server.on("ksef:session-open", (id: string) => {
+                console.info("Session open:", id);
+            });
         },
 
         mountAutoRefreshToken() {
