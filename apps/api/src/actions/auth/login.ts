@@ -2,7 +2,7 @@ import { contract, RouteCtx } from "@repo/contract";
 import { useRepository } from "../../core/database";
 import { User } from "../../models/User";
 import * as bcrypt from "bcrypt";
-import { AuthenticationService } from "../../core/authentication";
+import { AuthenticationService } from "../../services/AuthenticationService";
 
 type Route = RouteCtx<typeof contract.loginAccount>;
 

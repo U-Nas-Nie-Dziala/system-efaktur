@@ -1,6 +1,6 @@
 import z from "zod";
 
 export default z.object({
-    token: z.string().max(1024),
+    token: z.string().max(256),
     password: z.string().min(8),
 });

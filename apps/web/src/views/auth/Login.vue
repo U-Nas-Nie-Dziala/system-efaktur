@@ -2,6 +2,7 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { ILoginBody, client, contract } from "../../api";
+import { useSocketStore } from "../../stores/socketStore";
 
 const router = useRouter();
 const form = ref<ILoginBody>({
@@ -12,6 +13,7 @@ const form = ref<ILoginBody>({
 const loading = ref(false);
 const alert = ref<string | null>(null);
 const fieldErrors = ref<{ email?: string; password?: string }>({});
+const socketStore = useSocketStore();
 
 const submit = async () => {
     alert.value = null;
@@ -36,6 +38,9 @@ const submit = async () => {
     if (res.status == 200) {
         localStorage.setItem("access_token", res.body.access_token);
         localStorage.setItem("refresh_token", res.body.refresh_token);
+
+        socketStore.tryConnect();
+
         router.push({ name: "home" });
         return;
     }

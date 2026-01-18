@@ -1,5 +1,5 @@
 import { contract, RouteCtx } from "@repo/contract";
-import { AuthenticationService } from "../../core/authentication";
+import { AuthenticationService } from "../../services/AuthenticationService";
 
 export type Route = RouteCtx<typeof contract.refreshTokens>;
 

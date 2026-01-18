@@ -106,7 +106,25 @@ export const contract = c.router({
             200: z.object({
                 firstname: z.string(),
                 lastname: z.string(),
+                email: z.string(),
                 hasCompany: z.boolean(),
+                company: z
+                    .object({
+                        id: z.string(),
+                        name: z.string(),
+                        type: z.string(),
+                        nip: z.string().optional(),
+                        regon: z.string(),
+                        bdo: z.string().optional(),
+                        krs: z.string().optional(),
+                        street: z.string(),
+                        address: z.string(),
+                        zipcode: z.string(),
+                        city: z.string(),
+                        country: z.string(),
+                        registerDate: z.date(),
+                    })
+                    .optional(),
             }),
         },
         headers: z.object({

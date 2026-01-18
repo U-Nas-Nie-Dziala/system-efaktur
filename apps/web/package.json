@@ -13,6 +13,8 @@
     "@mdi/font": "^7.4.47",
     "@repo/contract": "^1.0.0",
     "@ts-rest/core": "^3.52.1",
+    "jwt-decode": "^4.0.0",
+    "pinia": "^3.0.4",
     "socket.io-client": "^4.8.3",
     "vue": "^3.5.26",
     "vue-router": "^4.6.4",

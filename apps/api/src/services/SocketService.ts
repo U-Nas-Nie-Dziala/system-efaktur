@@ -1,5 +1,20 @@
-import { Server, Socket } from "socket.io";
+import { Server, Socket, DefaultEventsMap } from "socket.io";
 import { Config } from "../core/config";
+import { JwtPayload } from "../core/authentication";
+import { Token } from "../models/Token";
+import { AuthenticationService } from "./AuthenticationService";
+
+interface SocketData {
+    payload: JwtPayload;
+    token: Token;
+}
+
+type Client = Socket<
+    DefaultEventsMap, // eventy PRZYCHODZĄCE od klienta
+    DefaultEventsMap, // eventy WYSYŁANE do klienta
+    DefaultEventsMap, // eventy między serwerami (redis / adapter)
+    SocketData // socket.data
+>;
 
 export class SocketService {
     private static instance: SocketService;
@@ -26,14 +41,53 @@ export class SocketService {
             path: "/socket",
         });
 
-        this.io.use(async (socket, next) => {
-            console.log(socket.handshake.auth);
-            socket.data.userId = "venox";
+        this.io.use(async (socket: Client, next) => {
+            if (!socket.handshake.auth.token) {
+                return next(new Error("missing access token"));
+            }
+
+            const validation = await AuthenticationService.validateToken(socket.handshake.auth.token, "access_token");
+
+            if (!validation) {
+                return next(new Error("unauthorized"));
+            }
+
+            socket.data = validation;
             return next();
         });
 
-        this.io.on("connection", (socket) => {
-            console.log(socket.data);
+        this.io.on("connection", (socket: Client) => {
+            socket.on("auth:refresh-token", async (accessToken: string, refreshToken: string) => {
+                const accessTokenPayload = await AuthenticationService.validateToken(accessToken, "access_token");
+                const refreshTokenPayload = await AuthenticationService.validateToken(refreshToken, "refresh_token");
+
+                if (!refreshTokenPayload || !accessTokenPayload) return;
+
+                const result = await AuthenticationService.refreshTokens(
+                    accessTokenPayload.payload,
+                    refreshTokenPayload.payload
+                );
+
+                if (!result) return;
+
+                socket.emit("auth:refresh-state", result.access_token, result.refresh_token);
+            });
+
+            socket.on("auth:logout", async (accessToken: string, refreshToken: string) => {
+                const accessTokenPayload = await AuthenticationService.validateToken(accessToken, "access_token");
+                const refreshTokenPayload = await AuthenticationService.validateToken(refreshToken, "refresh_token");
+
+                if (!refreshTokenPayload || !accessTokenPayload) return;
+
+                const result = await AuthenticationService.invalidateTokens(
+                    accessTokenPayload.payload,
+                    refreshTokenPayload.payload
+                );
+
+                if (!result) return;
+
+                socket.disconnect(true);
+            });
         });
     }
 }

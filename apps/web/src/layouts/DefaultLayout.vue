@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { RouterView, useRouter } from "vue-router";
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import Footer from "../components/Footer.vue";
 import ThemeSwitcher from "../components/ThemeSwitcher.vue";
+import { useSocketStore } from "../stores/socketStore";
 
 const placeholderLinks = [
     {
@@ -22,12 +23,20 @@ const placeholderLinks = [
 
 const drawer = ref(true);
 const router = useRouter();
+const socketStore = useSocketStore();
 
 const logout = () => {
+    socketStore.tryDisconnect();
     localStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");
     router.push({ name: "login" });
 };
+
+onMounted(() => {
+    if (!socketStore.$state.server?.connected) {
+        socketStore.tryConnect();
+    }
+});
 </script>
 
 <template>

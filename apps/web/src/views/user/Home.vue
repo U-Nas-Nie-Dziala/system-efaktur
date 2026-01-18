@@ -4,7 +4,7 @@ import { useRouter } from "vue-router";
 import { client } from "../../api";
 
 const fetchInfo = async () => {
-    const res = client.meInfo({
+    const res = await client.meInfo({
         headers: {
             authorization: `Bearer ${localStorage.getItem("access_token")}`,
         },

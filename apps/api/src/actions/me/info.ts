@@ -10,7 +10,9 @@ export const meInfo = async (ctx: Route["ctx"]): Promise<Route["response"]> => {
         body: {
             firstname: user.firstname,
             lastname: user.lastname,
+            email: user.email,
             hasCompany: user.company ? true : false,
+            company: user.company,
         },
     };
 };
