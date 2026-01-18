@@ -2,9 +2,9 @@ export enum KsefEnvironment {
     // Środowisko produkcyjne
     PRODUCTION = "https://ksef.mf.gov.pl/api",
     // Środowisko demo
-    DEMO = "https://api-demo.ksef.mf.gov.pl/v2",
+    DEMO = "https://api-demo.ksef.mf.gov.pl",
     // Środowisko testowe
-    TEST = "https://api-test.ksef.mf.gov.pl/v2",
+    TEST = "https://api-test.ksef.mf.gov.pl",
 }
 
 export enum KsefIdentifierType {
@@ -101,22 +101,6 @@ export interface KsefApiError {
     code?: number;
     message?: string;
     details?: string;
-}
-
-export interface FileMetadata {
-    hashSHA: string; // base64
-    fileSize: number; // bajty
-}
-
-/**
- * Dane szyfrowania sesji
- * Generowane przy otwieraniu sesji interaktywnej
- */
-export interface EncryptionData {
-    cipherKey: Buffer; // 32 bajty
-    cipherIv: Buffer; // 16 bajtów
-    encryptedSymmetricKey: string; // RSA-OAEP, Base64
-    initializationVector: string; // iV w Base64
 }
 
 export class KsefClient {}
