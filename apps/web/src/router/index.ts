@@ -28,7 +28,7 @@ const routes: RouteRecordRaw[] = [
     children: [
       {
         path: "home",
-        name: "home",
+        name: "home", 
         component: () => import("../views/user/Home.vue"),
       },
       {
@@ -81,9 +81,9 @@ export const router = createRouter({
 });
 
 router.beforeEach(async (to) => {
-  if (!to.matched.some((route) => route.meta?.requiresCompany)) {
+  if (!to.meta?.requiresCompany){
     return true;
-  }
+  };
 
   const token = localStorage.getItem("access_token");
   if (!token) {
@@ -105,13 +105,10 @@ router.beforeEach(async (to) => {
   if (!companyGateToastShown) {
     companyGateToastShown = true;
     toast.warning(
-      "Brak dostępu: uzupełnij dane firmy w ustawieniach. Kliknij, aby przejść.",
+      "Brak dostępu: uzupełnij dane firmy w ustawieniach.",
       {
         timeout: 6000,
-        closeOnClick: false,
-        onClick: () => {
-          router.push({ name: "settings", hash: "#company-settings" });
-        },
+        closeOnClick: false
       }
     );
     setTimeout(() => {
