@@ -147,7 +147,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <v-row dense justify="center" class="mt-6">
+    <v-row dense justify="center" class="mt-6" id="company-settings">
         <v-col cols="12" md="8">
             <v-card elevation="2" :disabled="loading">
                 <v-card-title

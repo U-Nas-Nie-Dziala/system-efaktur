@@ -3,6 +3,11 @@ import {
   createRouter,
   type RouteRecordRaw,
 } from "vue-router";
+import { client, getAuthHeaders } from "../api";
+import { createToastInterface } from "vue-toastification";
+
+const toast = createToastInterface();
+let companyGateToastShown = false;
 
 const routes: RouteRecordRaw[] = [
   {
@@ -30,16 +35,19 @@ const routes: RouteRecordRaw[] = [
         path: "invoices",
         name: "invoices",
         component: () => import("../views/user/Invoices.vue"),
+        meta: { requiresCompany: true },
       },
       {
         path: "clients",
         name: "clients",
         component: () => import("../views/user/Clients.vue"),
+        meta: { requiresCompany: true },
       },
       {
         path: "products",
         name: "products",
         component: () => import("../views/user/Products.vue"),
+        meta: { requiresCompany: true },
       },
       {
         path: "settings",
@@ -70,4 +78,46 @@ const routes: RouteRecordRaw[] = [
 export const router = createRouter({
   history: createWebHistory(),
   routes: routes,
+});
+
+router.beforeEach(async (to) => {
+  if (!to.matched.some((route) => route.meta?.requiresCompany)) {
+    return true;
+  }
+
+  const token = localStorage.getItem("access_token");
+  if (!token) {
+    return { name: "login" };
+  }
+
+  try {
+    const response = await client.meInfo({
+      headers: getAuthHeaders(),
+    });
+
+    if (response.status === 200 && response.body.hasCompany) {
+      return true;
+    }
+  } catch {
+    // fallthrough to settings
+  }
+
+  if (!companyGateToastShown) {
+    companyGateToastShown = true;
+    toast.warning(
+      "Brak dostępu: uzupełnij dane firmy w ustawieniach. Kliknij, aby przejść.",
+      {
+        timeout: 6000,
+        closeOnClick: false,
+        onClick: () => {
+          router.push({ name: "settings", hash: "#company-settings" });
+        },
+      }
+    );
+    setTimeout(() => {
+      companyGateToastShown = false;
+    }, 6500);
+  }
+
+  return { name: "settings", hash: "#company-settings" };
 });
