@@ -5,14 +5,6 @@
                 <h1 class="text-h4">Towary i usługi</h1>
                 <p class="text-subtitle-1 text-grey">Zarządzaj listą produktów i usług</p>
             </v-col>
-            <v-col cols="auto" class="d-flex align-center">
-                <v-btn color="#d63031" prepend-icon="mdi:mdi-plus" class="mr-2" @click="createDialog = true">
-                    Dodaj towar/usługę
-                </v-btn>
-                <v-btn color="error" variant="text" :disabled="selected.length === 0" @click="confirmDelete(selected)">
-                    Usuń zaznaczone
-                </v-btn>
-            </v-col>
         </v-row>
 
         <v-row class="mb-4">
@@ -37,6 +29,19 @@
                     hide-details
                     clearable
                 />
+            </v-col>
+            <v-col cols="auto" class="d-flex align-center">
+                <v-btn color="#d63031" prepend-icon="mdi:mdi-plus" class="mr-2" @click="createDialog = true">
+                    Dodaj towar/usługę
+                </v-btn>
+                <v-btn
+                    color="error"
+                    variant="outlined"
+                    :disabled="selected.length === 0"
+                    @click="confirmDelete(selected)"
+                >
+                    Usuń zaznaczone
+                </v-btn>
             </v-col>
         </v-row>
 
