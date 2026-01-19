@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { RouterView, useRouter } from "vue-router";
-import { onMounted, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import Footer from "../components/Footer.vue";
 import ThemeSwitcher from "../components/ThemeSwitcher.vue";
 import { useSocketStore } from "../stores/socketStore";
+import OpenSessionModal from "../components/OpenSessionModal.vue";
+import { client, getAuthHeaders } from "../api";
 
 const placeholderLinks = [
     {
@@ -25,11 +27,23 @@ const drawer = ref(true);
 const router = useRouter();
 const socketStore = useSocketStore();
 
+const ksefSessionState = computed(() => {
+    return socketStore.$state.session;
+});
+
 const logout = () => {
     socketStore.tryDisconnect();
     localStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");
     router.push({ name: "login" });
+};
+
+const closeSession = async () => {
+    const res = await client.ksefCloseSession({
+        headers: getAuthHeaders(),
+    });
+
+    console.log(res);
 };
 
 onMounted(() => {
@@ -56,6 +70,7 @@ onMounted(() => {
                     <v-btn v-bind="props" icon="mdi:mdi-account-circle" class="text-white"></v-btn>
                 </template>
                 <v-list density="compact">
+                    <OpenSessionModal />
                     <v-list-item prepend-icon="mdi:mdi-logout" title="Wyloguj" @click="logout" />
                 </v-list>
             </v-menu>
@@ -77,6 +92,20 @@ onMounted(() => {
         </v-navigation-drawer>
 
         <v-main class="fill-height">
+            <v-card v-if="ksefSessionState.open" variant="tonal" color="warning">
+                <v-alert
+                    variant="tonal"
+                    color="warning"
+                    icon="mdi:mdi-information"
+                    :title="`Sesja ważna do: ${new Date(ksefSessionState.validUntil!).toLocaleString()}`"
+                    text="Sesja interaktywna systemu KSeF jest otwarta. Możesz bezpiecznie podpisywać i przesyłać faktury do KSeF."
+                />
+
+                <v-card-actions class="d-flex flex-row justify-end">
+                    <v-btn @click="closeSession" text="Zamknij sesję" />
+                </v-card-actions>
+            </v-card>
+
             <v-container fluid>
                 <RouterView />
             </v-container>

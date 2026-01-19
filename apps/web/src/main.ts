@@ -10,6 +10,8 @@ import * as directives from "vuetify/directives";
 import App from "./App.vue";
 import { router } from "./router";
 import { pinia } from "./stores";
+import Toast from "vue-toastification";
+import "vue-toastification/dist/index.css";
 
 const app = createApp(App);
 
@@ -32,5 +34,19 @@ const vuetify = createVuetify({
 app.use(pinia);
 app.use(router);
 app.use(vuetify);
+app.use(Toast, {
+    position: "top-right",
+    timeout: 6000,
+    closeOnClick: false,
+    pauseOnFocusLoss: false,
+    pauseOnHover: true,
+    draggable: false,
+    draggablePercent: 0.6,
+    showCloseButtonOnHover: false,
+    hideProgressBar: false,
+    closeButton: "button",
+    icon: true,
+    rtl: false,
+});
 
 app.mount("#app");

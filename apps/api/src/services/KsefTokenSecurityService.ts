@@ -19,7 +19,7 @@ type ITokenDecryptionParams = {
 
 export class KsefTokenSecurityService {
     public static async encryptPassword(plain: string) {
-        return await bcrypt.hash(plain, 15);
+        return await bcrypt.hash(plain, 13);
     }
 
     private static async checkPassword(plain: string, password: string): Promise<boolean> {
@@ -55,7 +55,7 @@ export class KsefTokenSecurityService {
 
     public static async decrypt(encrypted: string) {
         const cryptr = new Cryptr(Config.key<string>("APP_SECRET"), { encoding: "hex" });
-        return cryptr.encrypt(encrypted);
+        return cryptr.decrypt(encrypted);
     }
 
     public static async encryptJson<T = any>(data: T) {

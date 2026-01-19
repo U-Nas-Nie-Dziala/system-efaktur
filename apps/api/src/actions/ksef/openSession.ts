@@ -39,6 +39,28 @@ export const ksefOpenSession = async (ctx: Route["ctx"]): Promise<Route["respons
         encrypted: company.ksefToken,
     });
 
+    const sessionRepository = useRepository<KsefSession>(KsefSession);
+
+    const isAlreadySessionOpen = await sessionRepository.findOneBy({
+        status: "OPEN",
+        company: {
+            id: company.id,
+        },
+    });
+
+    if (isAlreadySessionOpen) {
+        SocketService.io
+            .to(`user:${ctx.req.auth!.payload.userId}`)
+            .emit("ksef:session-open", isAlreadySessionOpen.id, isAlreadySessionOpen.sessionValidUntil);
+
+        return {
+            status: 409,
+            body: {
+                message: "Sesja interaktywna jest już otwarta.",
+            },
+        };
+    }
+
     const ksef = new KsefClient({
         environment: KsefEnvironment.TEST,
         identifierType: KsefIdentifierType.NIP,
@@ -46,10 +68,9 @@ export const ksefOpenSession = async (ctx: Route["ctx"]): Promise<Route["respons
         token: token,
     });
 
-    const { accessToken, accessTokenExpiry, refreshToken, refreshTokenExpiry } = await ksef.authenticateWithToken();
-    const { referenceNumber, timestamp, validUntil } = await ksef.openOnlineSession(accessToken);
+    const { accessToken, accessValidUntil, refreshToken, refreshValidUntil } = await ksef.authenticateWithToken();
+    const { referenceNumber, validUntil } = await ksef.openOnlineSession(accessToken);
     const sessionData = ksef.getEncryptionData();
-
     if (!sessionData) {
         // nie powinno się wydarzyć
         return {
@@ -60,15 +81,12 @@ export const ksefOpenSession = async (ctx: Route["ctx"]): Promise<Route["respons
         };
     }
 
-    const sessionRepository = useRepository<KsefSession>(KsefSession);
-
     const s = sessionRepository.create({
         company: company,
         status: "OPEN",
-        accessTokenExpiry,
-        refreshTokenExpiry,
         sessionReferenceNumber: referenceNumber,
-        sessionTimestamp: timestamp,
+        accessValidUntil: accessValidUntil,
+        refreshValidUntil: refreshValidUntil,
         sessionValidUntil: validUntil,
         data: await KsefTokenSecurityService.encryptJson(sessionData),
         accessToken: await KsefTokenSecurityService.encrypt(accessToken),
@@ -77,7 +95,7 @@ export const ksefOpenSession = async (ctx: Route["ctx"]): Promise<Route["respons
 
     const { id } = await sessionRepository.save(s);
 
-    SocketService.io.to(`user:${ctx.req.auth!.payload.userId}`).emit("ksef:session-open", id);
+    SocketService.io.to(`user:${ctx.req.auth!.payload.userId}`).emit("ksef:session-open", id, validUntil);
 
     return {
         status: 200,

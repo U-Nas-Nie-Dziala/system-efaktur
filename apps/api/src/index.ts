@@ -44,6 +44,7 @@ import { setKsefToken } from "./actions/me/ksefToken";
 import { setCompanyData } from "./actions/me/setCompanyData";
 import { SocketService } from "./services/SocketService";
 import { ksefOpenSession } from "./actions/ksef/openSession";
+import { ksefCloseSession } from "./actions/ksef/closeSession";
 
 const start = async () => {
     Config.validateEnv();
@@ -67,6 +68,7 @@ const start = async () => {
         setKsefToken,
         setCompanyData,
         ksefOpenSession,
+        ksefCloseSession,
     });
 
     createExpressEndpoints(contract, router, app, {

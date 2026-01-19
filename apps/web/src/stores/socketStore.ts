@@ -3,10 +3,14 @@ import { io, Socket } from "socket.io-client";
 import { jwtDecode } from "jwt-decode";
 
 export const useSocketStore = defineStore("socketStore", {
-    state(): { server?: Socket; interval?: NodeJS.Timeout } {
+    state(): { server?: Socket; interval?: NodeJS.Timeout; session: { open: boolean; validUntil?: string } } {
         return {
             server: undefined,
             interval: undefined,
+            session: {
+                open: false,
+                validUntil: undefined,
+            },
         };
     },
 
@@ -35,8 +39,16 @@ export const useSocketStore = defineStore("socketStore", {
                 console.info("Tokens refreshed.");
             });
 
-            this.$state.server.on("ksef:session-open", (id: string) => {
-                console.info("Session open:", id);
+            this.$state.server.on("ksef:session-open", (id: string, validUntil: string) => {
+                this.$state.session.validUntil = validUntil;
+                this.$state.session.open = true;
+                console.info("Session open:", id, "Valid until: ", validUntil);
+            });
+
+            this.$state.server.on("ksef:session-close", (id: string) => {
+                this.$state.session.open = false;
+                this.$state.session.validUntil = undefined;
+                console.info("Session closed:", id);
             });
         },
 

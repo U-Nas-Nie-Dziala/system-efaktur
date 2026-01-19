@@ -13,9 +13,6 @@ export class KsefSession {
     sessionReferenceNumber: string; // ksef session ID
 
     @Column({ type: "varchar" })
-    sessionTimestamp: string;
-
-    @Column({ type: "varchar" })
     sessionValidUntil: string;
 
     @Column({ type: "varchar", length: 6 })
@@ -25,14 +22,14 @@ export class KsefSession {
     @Column({ type: "text", nullable: true })
     accessToken?: string;
 
-    @Column({ type: "varchar", nullable: true })
-    accessTokenExpiry?: string;
+    @Column({ type: "varchar", length: 64, nullable: true })
+    accessValidUntil?: string;
 
     @Column({ type: "text", nullable: true })
     refreshToken?: string;
 
-    @Column({ type: "varchar", nullable: true })
-    refreshTokenExpiry?: string;
+    @Column({ type: "varchar", length: 64, nullable: true })
+    refreshValidUntil?: string;
 
     @Column({ type: "text", nullable: true })
     data?: string;

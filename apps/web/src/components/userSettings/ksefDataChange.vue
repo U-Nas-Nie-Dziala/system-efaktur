@@ -1,20 +1,81 @@
 <script setup lang="ts">
+import { contract } from "@repo/contract";
 import { reactive, ref } from "vue";
-const state = reactive({
-    kseftoken: "",
-    password: "",
+import { client, getAuthHeaders } from "../../api";
+import { useToast } from "vue-toastification";
+import { ZodError } from "zod";
+const state = reactive<{
+    input: {
+        token: string;
+        password: string;
+    };
+    errors: {
+        token: string[];
+        password: string[];
+    };
+}>({
+    input: {
+        token: "",
+        password: "",
+    },
+
+    errors: {
+        token: [],
+        password: [],
+    },
 });
 
+const clearErrors = (field: "password" | "token") => {
+    state.errors[field] = [];
+};
+
+const reset = () => {
+    state.errors.password = [];
+    state.errors.token = [];
+    state.input.password = "";
+    state.input.token = "";
+};
+
+const $toast = useToast();
 const loading = ref(false);
 const show = ref(false);
 
-const submit = (e: Event) => {
-    e.preventDefault();
-    loading.value = true;
-    console.log("User data changed:", state.kseftoken, state.password);
-    setTimeout(() => {
+const submit = async () => {
+    try {
+        const data = await contract.setKsefToken.body.parseAsync(state.input);
+        loading.value = true;
+        const response = await client.setKsefToken({
+            body: data,
+            headers: getAuthHeaders(),
+        });
+
+        if (response.status == 404) {
+            $toast.error(response.body.message);
+        } else if (response.status == 409) {
+            $toast.error(response.body.message);
+        } else if (response.status == 200) {
+            reset();
+            $toast.success("Token został zapisany.");
+        } else {
+            $toast.error("Wystąpił błąd.");
+        }
+    } catch (e) {
+        const err = e as unknown;
+        console.log(err);
+        if (err instanceof ZodError) {
+            err.issues.forEach((v) => {
+                if (v.path.join(".") === "token") {
+                    state.errors.token.push(v.message);
+                }
+
+                if (v.path.join(".") === "password") {
+                    state.errors.password.push(v.message);
+                }
+            });
+        }
+    } finally {
         loading.value = false;
-    }, 3000);
+    }
 };
 </script>
 
@@ -37,7 +98,7 @@ const submit = (e: Event) => {
                 <v-expand-transition>
                     <div v-show="show">
                         <!-- Zmiana danych użytkownika -->
-                        <v-form @submit="submit" class="pb-4">
+                        <v-form @submit.prevent="submit" class="pb-4">
                             <div class="d-flex justify-center pt-4">
                                 <v-card variant="text"> </v-card>
                             </div>
@@ -45,9 +106,12 @@ const submit = (e: Event) => {
                                 <v-row>
                                     <v-col cols="12" md="6">
                                         <v-text-field
-                                            v-model="state.kseftoken"
+                                            v-model="state.input.token"
+                                            :error="state.errors.token.length > 0"
+                                            :error-messages="state.errors.token"
+                                            @update:model-value="clearErrors('token')"
                                             type="password"
-                                            :counter="64"
+                                            :counter="256"
                                             label="Token KSeF"
                                             variant="outlined"
                                             density="compact"
@@ -57,7 +121,10 @@ const submit = (e: Event) => {
 
                                     <v-col cols="12" md="6">
                                         <v-text-field
-                                            v-model="state.password"
+                                            v-model="state.input.password"
+                                            :error="state.errors.password.length > 0"
+                                            :error-messages="state.errors.password"
+                                            @update:model-value="clearErrors('password')"
                                             :counter="64"
                                             type="password"
                                             label="Podaj hasło"

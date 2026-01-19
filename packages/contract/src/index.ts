@@ -16,6 +16,7 @@ import productsUpdate from "./schemas/productsUpdate";
 import ksefToken from "./schemas/ksefToken";
 import companyData from "./schemas/companyData";
 import openSession from "./schemas/openSession";
+import error from "./schemas/error";
 
 export const contract = c.router({
     health: {
@@ -31,7 +32,7 @@ export const contract = c.router({
         body: registerSchema,
         responses: {
             201: z.object({}),
-            419: z.object({ message: z.string() }),
+            419: error,
         },
     },
     loginAccount: {
@@ -43,12 +44,8 @@ export const contract = c.router({
                 access_token: z.string(),
                 refresh_token: z.string(),
             }),
-            400: z.object({
-                message: z.string(),
-            }),
-            404: z.object({
-                message: z.string(),
-            }),
+            400: error,
+            404: error,
         },
     },
     refreshTokens: {
@@ -60,9 +57,7 @@ export const contract = c.router({
                 access_token: z.string(),
                 refresh_token: z.string(),
             }),
-            400: z.object({
-                message: z.string(),
-            }),
+            400: error,
         },
     },
     changePassword: {
@@ -76,9 +71,7 @@ export const contract = c.router({
             200: z.object({
                 message: z.string(),
             }),
-            400: z.object({
-                message: z.string(),
-            }),
+            400: error,
         },
         metadata: {
             auth: true,
@@ -182,7 +175,7 @@ export const contract = c.router({
         }),
         body: contractorsUpdate,
         responses: {
-            404: z.object({ message: z.string() }),
+            404: error,
             200: z.object({}),
         },
         headers: z.object({
@@ -200,7 +193,7 @@ export const contract = c.router({
         }),
         responses: {
             204: z.object({}),
-            404: z.object({ message: z.string() }),
+            404: error,
         },
         headers: z.object({
             authorization: z.string(),
@@ -241,7 +234,7 @@ export const contract = c.router({
         body: productsCreate,
         responses: {
             200: z.object({}),
-            400: z.object({ message: z.string() }),
+            400: error,
         },
         headers: z.object({
             authorization: z.string(),
@@ -258,9 +251,7 @@ export const contract = c.router({
         }),
         body: productsUpdate,
         responses: {
-            404: z.object({
-                message: z.string(),
-            }),
+            404: error,
             200: z.object({}),
         },
         headers: z.object({
@@ -278,7 +269,7 @@ export const contract = c.router({
         }),
         responses: {
             204: z.object({}),
-            404: z.object({ message: z.string() }),
+            404: error,
         },
         headers: z.object({
             authorization: z.string(),
@@ -292,12 +283,8 @@ export const contract = c.router({
         path: "/@me/ksef-token",
         responses: {
             200: z.object({}),
-            404: z.object({
-                message: z.string(),
-            }),
-            409: z.object({
-                message: z.string(),
-            }),
+            404: error,
+            409: error,
         },
         body: ksefToken,
         headers: z.object({
@@ -329,23 +316,29 @@ export const contract = c.router({
                 id: z.string(),
                 message: z.string(),
             }),
-            400: z.object({
-                message: z.string(),
-            }),
-            403: z.object({
-                message: z.string(),
-            }),
-            404: z.object({
-                message: z.string(),
-            }),
-            409: z.object({
-                message: z.string(),
-            }),
-            500: z.object({
-                message: z.string(),
-            }),
+            400: error,
+            403: error,
+            404: error,
+            409: error,
+            500: error,
         },
         body: openSession,
+        headers: z.object({
+            authorization: z.string(),
+        }),
+        metadata: {
+            auth: true,
+        },
+    },
+    ksefCloseSession: {
+        method: "DELETE",
+        path: "/ksef/close-session",
+        responses: {
+            200: z.object({}),
+            400: error,
+            404: error,
+            500: error,
+        },
         headers: z.object({
             authorization: z.string(),
         }),
