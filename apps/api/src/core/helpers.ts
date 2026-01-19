@@ -1,3 +1,5 @@
+import { randomBytes } from "crypto";
+
 export function validateNIP(nip: string): boolean {
     const cleanNip = nip.replace(/[-\s]/g, "");
 
@@ -12,4 +14,9 @@ export function validateNIP(nip: string): boolean {
     }
 
     return sum % 11 === parseInt(cleanNip[9]);
+}
+
+export function randomInvoiceId() {
+    const date = new Date();
+    return `${date.getFullYear()}/${date.getUTCMonth() + 1}/${date.getUTCDate()}/${randomBytes(3).toString("hex").toUpperCase()}`;
 }

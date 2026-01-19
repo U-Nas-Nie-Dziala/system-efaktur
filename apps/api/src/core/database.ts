@@ -7,6 +7,7 @@ import { Company } from "../models/Company";
 import { Contractor } from "../models/Contractor";
 import { Product } from "../models/Product";
 import { KsefSession } from "../models/KsefSession";
+import { Invoice } from "../models/Invoice";
 
 export class Database {
     private static ds: DataSource;
@@ -22,7 +23,7 @@ export class Database {
                 username: Config.key<string>("DB_USER"),
                 password: Config.key<string>("DB_PASS"),
                 database: Config.key<string>("DB_NAME"),
-                entities: [User, Token, Company, Contractor, Product, KsefSession],
+                entities: [User, Token, Company, Contractor, Product, KsefSession, Invoice],
                 timezone: "Z",
                 synchronize: true,
             });

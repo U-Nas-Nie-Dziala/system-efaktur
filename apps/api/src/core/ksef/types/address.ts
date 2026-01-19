@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import { XmlElement } from "../decorators";
-import { TKodyKrajowUE } from "./enums";
 import { TZnakowy, TGLN } from "./simple-types";
+import { TKodyKrajowUE } from "@repo/contract/ksef/enums";
 
 /**
  * Adres - tag: TAdres

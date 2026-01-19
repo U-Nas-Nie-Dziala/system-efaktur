@@ -22,7 +22,7 @@ import {
     TRodzajTransportu,
     TStawkaPodatku,
     TTypKorekty,
-} from "./enums";
+} from "@repo/contract/ksef/enums";
 import { DaneIdentyfikacyjneNabywcy, Podmiot1K, Podmiot2K, RachunekBankowy } from "./entities";
 import { TAdres } from "./address";
 

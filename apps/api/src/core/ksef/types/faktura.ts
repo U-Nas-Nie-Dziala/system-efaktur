@@ -8,6 +8,7 @@ import { TZnakowy } from "./simple-types";
 import { Podmiot1, Podmiot2, Podmiot3, PodmiotUpowazniony } from "./entities";
 import { Naglowek } from "./header";
 import { Zalacznik } from "./invoice-items";
+import { Fa } from "./invoice";
 
 export class Stopka {
     @XmlElement({ name: "Informacje", order: 1 })
@@ -52,8 +53,8 @@ export class Faktura {
     @XmlElement({ name: "PodmiotUpowazniony", order: 5 })
     podmiotUpowazniony?: PodmiotUpowazniony;
 
-    // @XmlElement({ name: "Fa", order: 6, required: true })
-    // fa: Fa;
+    @XmlElement({ name: "Fa", order: 6, required: true })
+    fa: Fa;
 
     @XmlElement({ name: "Stopka", order: 7 })
     stopka?: Stopka;

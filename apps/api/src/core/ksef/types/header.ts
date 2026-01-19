@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import { XmlAttribute, XmlElement, XmlNamespace } from "../decorators";
-import { TKodFormularza } from "./enums";
+import { TKodFormularza } from "@repo/contract/ksef/enums";
 
 export class KodFormularzaFa {
     @XmlAttribute({ name: "kodSystemowy", required: true })

@@ -12,7 +12,7 @@
 
         "baseUrl": ".",
         "paths": {
-            "@repo/contract": ["packages/contract/src"]
+            "@repo/contract/*": ["packages/contract/src/*"]
         },
 
         "skipLibCheck": true,

@@ -19,7 +19,7 @@ import {
     TRolaPodmiotu3,
     TRolaPodmiotuUpowaznionego,
     TStatusInfoPodatnika,
-} from "./enums";
+} from "@repo/contract/ksef/enums";
 import { TAdres } from "./address";
 
 export class DaneIdentyfikacyjnePodatnika {

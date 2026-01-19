@@ -1,4 +1,4 @@
-export * from "./enums";
+export * from "@repo/contract/ksef/enums";
 export * from "./simple-types";
 export * from "./address";
 export * from "./entities";

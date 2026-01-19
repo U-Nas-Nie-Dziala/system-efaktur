@@ -11,6 +11,7 @@ import { User } from "./User";
 import { Contractor } from "./Contractor";
 import { Product } from "./Product";
 import { KsefSession } from "./KsefSession";
+import { Invoice } from "./Invoice";
 
 export const CompanyTypes = [
     "Jednoosobowa działalność gospodarcza",
@@ -101,4 +102,7 @@ export class Company {
 
     @OneToMany(() => KsefSession, (ks) => ks.company)
     ksefSessions: KsefSession[];
+
+    @OneToMany(() => Invoice, (i) => i.company)
+    invoices: Invoice[];
 }
