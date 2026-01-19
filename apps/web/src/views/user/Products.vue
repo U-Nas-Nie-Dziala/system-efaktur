@@ -6,6 +6,9 @@
                 <p class="text-subtitle-1 text-grey">Zarządzaj listą produktów i usług</p>
             </v-col>
             <v-col cols="auto" class="d-flex align-center">
+                <v-btn color="#d63031" prepend-icon="mdi:mdi-plus" class="mr-2" @click="createDialog = true">
+                    Dodaj towar/usługę
+                </v-btn>
                 <v-btn color="error" variant="text" :disabled="selected.length === 0" @click="confirmDelete(selected)">
                     Usuń zaznaczone
                 </v-btn>
@@ -37,12 +40,6 @@
             </v-col>
         </v-row>
 
-        <v-row class="mb-4">
-            <v-col cols="12">
-                <ProductCreate ref="createRef" :loading="creating" @create="createProduct" />
-            </v-col>
-        </v-row>
-
         <v-card>
             <v-data-table
                 :headers="headers"
@@ -52,10 +49,32 @@
                 show-select
                 return-object
                 item-value="id"
-                v-model:selected="selected"
+                v-model="selected"
                 hover
                 class="elevation-1"
             >
+                <template #header.data-table-select="{ allSelected, someSelected, selectAll }">
+                    <v-checkbox-btn
+                        :model-value="allSelected"
+                        :indeterminate="someSelected && !allSelected"
+                        @update:model-value="selectAll"
+                        color="primary"
+                        true-icon="mdi:mdi-checkbox-marked"
+                        false-icon="mdi:mdi-checkbox-blank-outline"
+                        indeterminate-icon="mdi:mdi-minus-box"
+                    />
+                </template>
+
+                <template #item.data-table-select="{ internalItem, isSelected, toggleSelect }">
+                    <v-checkbox-btn
+                        :model-value="isSelected(internalItem)"
+                        @update:model-value="() => toggleSelect(internalItem)"
+                        color="primary"
+                        true-icon="mdi:mdi-checkbox-marked"
+                        false-icon="mdi:mdi-checkbox-blank-outline"
+                        indeterminate-icon="mdi:mdi-minus-box"
+                    />
+                </template>
                 <!-- Template do customowego formatowania komórek działa razem z #items i #no-data to jest poprawnie -->
                 <template #item.type="{ item }">
                     <v-chip :color="item.type === 'PRODUCT' ? 'primary' : 'secondary'" size="small">
@@ -98,6 +117,10 @@
             />
         </v-dialog>
 
+        <v-dialog v-model="createDialog" max-width="900">
+            <ProductCreate ref="createRef" :loading="creating" @create="createProduct" />
+        </v-dialog>
+
         <v-dialog v-model="deleteDialog" max-width="420">
             <v-card>
                 <v-card-title class="text-h6">Potwierdź usunięcie</v-card-title>
@@ -134,6 +157,7 @@ const deleting = ref(false);
 const search = ref("");
 const filterType = ref<"PRODUCT" | "SERVICE" | null>(null);
 const detailsDialog = ref(false);
+const createDialog = ref(false);
 const deleteDialog = ref(false);
 const createRef = ref<InstanceType<typeof ProductCreate> | null>(null);
 
@@ -195,6 +219,7 @@ const createProduct = async (payload: Parameters<typeof client.productsCreate>[0
             showSnackbar("Produkt/usługa została dodana", "success");
             await fetchProducts();
             createRef.value?.reset();
+            createDialog.value = false;
         } else if (response.status === 400) {
             const body = response.body as { message?: string };
             showSnackbar(body.message || "Nieprawidłowe dane", "error");
@@ -232,6 +257,7 @@ const updateProduct = async (payload: Parameters<typeof client.productsUpdate>[0
         if (response.status === 200) {
             showSnackbar("Produkt/usługa została zaktualizowana", "success");
             await fetchProducts();
+            closeDetails();
         } else if (response.status === 404) {
             showSnackbar("Nie znaleziono wpisu", "error");
         }
@@ -262,6 +288,9 @@ const deleteProducts = async () => {
         showSnackbar("Usunięto wybrane elementy", "success");
         await fetchProducts();
         selected.value = [];
+        if (selectedProduct.value && deleteTargets.value.some((p) => p.id === selectedProduct.value!.id)) {
+            closeDetails();
+        }
         deleteDialog.value = false;
         deleteTargets.value = [];
     } catch (error) {
