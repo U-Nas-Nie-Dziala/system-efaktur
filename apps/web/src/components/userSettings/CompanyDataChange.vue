@@ -81,6 +81,7 @@ const loadCompanyData = async () => {
             companyState.registerDate = company.registerDate
                 ? new Date(company.registerDate).toISOString().split("T")[0]
                 : null;
+            companyState.vat = Boolean(company.vat);
         }
     } catch {
         // silent
