@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reactive, ref } from "vue";
+import { reactive, ref, onMounted } from "vue";
 import { client, getAuthHeaders, type ICompanyDataBody, contract } from "../../api";
 
 const snackbar = reactive({
@@ -60,6 +60,33 @@ const companyState = reactive<{
 const show = ref(false);
 const loading = ref(false);
 
+const loadCompanyData = async () => {
+    try {
+        const response = await client.meInfo({
+            headers: getAuthHeaders(),
+        });
+        if (response.status === 200 && response.body.company) {
+            const company = response.body.company;
+            companyState.name = company.name;
+            companyState.select = company.type;
+            companyState.nip = company.nip || "";
+            companyState.regon = company.regon || "";
+            companyState.bdo = company.bdo || "";
+            companyState.krs = company.krs || "";
+            companyState.street = company.street;
+            companyState.address = company.address;
+            companyState.zipcode = company.zipcode;
+            companyState.city = company.city;
+            companyState.country = company.country;
+            companyState.registerDate = company.registerDate
+                ? new Date(company.registerDate).toISOString().split("T")[0]
+                : null;
+        }
+    } catch {
+        // silent
+    }
+};
+
 const submit = async () => {
     loading.value = true;
     try {
@@ -113,6 +140,10 @@ const showSnackbar = (message: string, color: string) => {
     snackbar.color = color;
     snackbar.show = true;
 };
+
+onMounted(() => {
+    loadCompanyData();
+});
 </script>
 
 <template>
@@ -288,6 +319,9 @@ const showSnackbar = (message: string, color: string) => {
                                             value="true"
                                             :true-value="true"
                                             :false-value="false"
+                                            true-icon="mdi:mdi-checkbox-marked"
+                                            false-icon="mdi:mdi-checkbox-blank-outline"
+                                            indeterminate-icon="mdi:mdi-minus-box"
                                             required
                                         ></v-checkbox-btn>
                                     </v-col>
