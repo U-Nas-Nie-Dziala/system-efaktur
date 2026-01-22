@@ -17,14 +17,14 @@ export class Database {
     public static async init() {
         if (this.ds == null) {
             this.ds = new DataSource({
-                type: "mysql",
+                type: "postgres",
                 host: Config.key<string>("DB_HOST"),
                 port: Config.key<number>("DB_PORT"),
                 username: Config.key<string>("DB_USER"),
                 password: Config.key<string>("DB_PASS"),
                 database: Config.key<string>("DB_NAME"),
                 entities: [User, Token, Company, Contractor, Product, KsefSession, Invoice],
-                timezone: "Z",
+
                 synchronize: true,
             });
 

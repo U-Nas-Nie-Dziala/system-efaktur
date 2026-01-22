@@ -16,5 +16,9 @@
     },
     "volta": {
         "node": "22.20.0"
+    },
+    "dependencies": {
+        "pg": "^8.17.2",
+        "pg-hstore": "^2.3.4"
     }
 }
