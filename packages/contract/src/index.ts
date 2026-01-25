@@ -17,6 +17,8 @@ import ksefToken from "./schemas/ksefToken";
 import companyData from "./schemas/companyData";
 import openSession from "./schemas/openSession";
 import error from "./schemas/error";
+import invoiceCreate from "./schemas/invoiceCreate";
+import invoiceUpdate from "./schemas/invoiceUpdate";
 
 export const contract = c.router({
     health: {
@@ -338,6 +340,110 @@ export const contract = c.router({
             400: error,
             404: error,
             500: error,
+        },
+        headers: z.object({
+            authorization: z.string(),
+        }),
+        metadata: {
+            auth: true,
+        },
+    },
+    invoicesList: {
+        method: "GET",
+        path: "/invoices",
+        responses: {
+            200: z.array(z.unknown()),
+        },
+        headers: z.object({
+            authorization: z.string(),
+        }),
+        metadata: {
+            auth: true,
+        },
+    },
+    invoicesCreate: {
+        method: "POST",
+        path: "/invoices",
+        body: invoiceCreate,
+        responses: {
+            400: error,
+            200: z.object({
+                id: z.string(),
+            }),
+        },
+        headers: z.object({
+            authorization: z.string(),
+        }),
+        metadata: {
+            auth: true,
+        },
+    },
+    invoicesUpdate: {
+        method: "PATCH",
+        path: "/invoices/:id",
+        pathParams: z.object({
+            id: z.string(),
+        }),
+        body: invoiceUpdate,
+        responses: {
+            400: error,
+            404: error,
+            200: z.object({ id: z.string() }),
+        },
+        headers: z.object({
+            authorization: z.string(),
+        }),
+        metadata: {
+            auth: true,
+        },
+    },
+    invoicesFind: {
+        method: "GET",
+        path: "/invoices/:id",
+        pathParams: z.object({
+            id: z.string(),
+        }),
+        responses: {
+            400: error,
+            404: error,
+            200: z.unknown(),
+        },
+        headers: z.object({
+            authorization: z.string(),
+        }),
+        metadata: {
+            auth: true,
+        },
+    },
+    invoicesSave: {
+        method: "POST",
+        path: "/invoices/:id/save",
+        pathParams: z.object({
+            id: z.string(),
+        }),
+        body: null,
+        responses: {
+            400: error,
+            404: error,
+            200: z.object({}),
+        },
+        headers: z.object({
+            authorization: z.string(),
+        }),
+        metadata: {
+            auth: true,
+        },
+    },
+    invoicesDelete: {
+        method: "DELETE",
+        path: "/invoices/:id",
+        pathParams: z.object({
+            id: z.string(),
+        }),
+        responses: {
+            400: error,
+            404: error,
+            200: z.object({}),
         },
         headers: z.object({
             authorization: z.string(),

@@ -45,6 +45,12 @@ import { setCompanyData } from "./actions/me/setCompanyData";
 import { SocketService } from "./services/SocketService";
 import { ksefOpenSession } from "./actions/ksef/openSession";
 import { ksefCloseSession } from "./actions/ksef/closeSession";
+import { invoicesList } from "./actions/invoices/list";
+import { invoicesCreate } from "./actions/invoices/create";
+import { invoicesUpdate } from "./actions/invoices/update";
+import { invoicesFind } from "./actions/invoices/find";
+import { invoicesSave } from "./actions/invoices/save";
+import { invoicesDelete } from "./actions/invoices/delete";
 
 const start = async () => {
     Config.validateEnv();
@@ -69,6 +75,12 @@ const start = async () => {
         setCompanyData,
         ksefOpenSession,
         ksefCloseSession,
+        invoicesList,
+        invoicesCreate,
+        invoicesUpdate,
+        invoicesFind,
+        invoicesSave,
+        invoicesDelete,
     });
 
     createExpressEndpoints(contract, router, app, {
