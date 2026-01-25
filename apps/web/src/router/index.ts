@@ -37,6 +37,18 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresCompany: true },
       },
       {
+        path: "invoices/:id",
+        name: "invoice-preview",
+        component: () => import("../views/user/invoices/InvoicePreview.vue"),
+        meta: { requiresCompany: true },
+      },
+      {
+        path: "invoices/:id/edit",
+        name: "invoice-edit",
+        component: () => import("../views/user/invoices/InvoiceEdit.vue"),
+        meta: { requiresCompany: true },
+      },
+      {
         path: "clients",
         name: "clients",
         component: () => import("../views/user/Clients.vue"),
@@ -46,6 +58,12 @@ const routes: RouteRecordRaw[] = [
         path: "products",
         name: "products",
         component: () => import("../views/user/Products.vue"),
+        meta: { requiresCompany: true },
+      },
+      {
+        path: "ksef-send",
+        name: "ksef-send",
+        component: () => import("../views/user/KsefSend.vue"),
         meta: { requiresCompany: true },
       },
       {

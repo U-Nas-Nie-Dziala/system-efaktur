@@ -95,9 +95,16 @@
                             </v-btn>
                         </template>
                     </v-tooltip>
+                    <v-tooltip text="Podgląd faktury" location="top">
+                        <template #activator="{ props }">
+                            <v-btn v-bind="props" size="small" variant="text" @click="goToPreview(item)">
+                                <v-icon>mdi:mdi-eye</v-icon>
+                            </v-btn>
+                        </template>
+                    </v-tooltip>
                     <v-tooltip text="Edytuj fakturę" location="top">
                         <template #activator="{ props }">
-                            <v-btn v-bind="props" size="small" variant="text" @click="openDetails(item)">
+                            <v-btn v-bind="props" size="small" variant="text" @click="goToEdit(item)">
                                 <v-icon>mdi:mdi-pencil</v-icon>
                             </v-btn>
                         </template>
@@ -118,20 +125,6 @@
                 </template>
             </v-data-table>
         </v-card>
-
-        <v-dialog v-model="detailsDialog" fullscreen>
-            <InvoiceForm
-                :invoice="selectedInvoice"
-                :contractors="contractors"
-                :products="products"
-                :company="company"
-                :loading="updating"
-                title="Edytuj fakturę"
-                submit-label="Zapisz"
-                @submit="updateInvoice"
-                @close="closeDetails"
-            />
-        </v-dialog>
 
         <v-dialog v-model="createDialog" fullscreen>
             <InvoiceForm
@@ -165,6 +158,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue";
+import { useRouter } from "vue-router";
 import {
     client,
     getAuthHeaders,
@@ -190,15 +184,14 @@ type InvoiceRow = {
 
 const loading = ref(false);
 const creating = ref(false);
-const updating = ref(false);
 const deleting = ref(false);
 const savingId = ref<string | null>(null);
 const search = ref("");
-const detailsDialog = ref(false);
 const createDialog = ref(false);
 const deleteDialog = ref(false);
 const createRef = ref<InstanceType<typeof InvoiceForm> | null>(null);
 const { showToast } = useAppToast();
+const router = useRouter();
 
 const invoices = ref<IInvoice[]>([]);
 const contractors = ref<IContractor[]>([]);
@@ -206,7 +199,6 @@ const products = ref<IProduct[]>([]);
 const company = ref<IMeInfo["company"] | null>(null);
 
 const selected = ref<InvoiceRow[]>([]);
-const selectedInvoice = ref<IInvoice | null>(null);
 const deleteTargets = ref<InvoiceRow[]>([]);
 
 const headers = [
@@ -334,42 +326,16 @@ const createInvoice = async (payload: IInvoiceCreateBody) => {
     }
 };
 
-const openDetails = (row: InvoiceRow) => {
-    selectedInvoice.value = row.raw;
-    detailsDialog.value = true;
+const goToPreview = (row: InvoiceRow) => {
+    router.push({ name: "invoice-preview", params: { id: row.id } });
 };
 
-const closeDetails = () => {
-    detailsDialog.value = false;
-    selectedInvoice.value = null;
+const goToEdit = (row: InvoiceRow) => {
+    router.push({ name: "invoice-edit", params: { id: row.id } });
 };
 
 const closeCreate = () => {
     createDialog.value = false;
-};
-
-const updateInvoice = async (payload: IInvoiceCreateBody) => {
-    if (!selectedInvoice.value) return;
-    updating.value = true;
-    try {
-        const response = await client.invoicesUpdate({
-            params: { id: selectedInvoice.value.id },
-            body: payload,
-            headers: getAuthHeaders(),
-        });
-        if (response.status === 200) {
-            showToast("Faktura została zaktualizowana", "success");
-            await fetchInvoices();
-            closeDetails();
-        } else if (response.status === 400 || response.status === 404) {
-            const body = response.body as { message?: string };
-            showToast(body.message || "Nie udało się zaktualizować faktury", "error");
-        }
-    } catch (error) {
-        showToast("Wystąpił błąd podczas zapisywania", "error");
-    } finally {
-        updating.value = false;
-    }
 };
 
 const saveInvoice = async (row: InvoiceRow) => {
@@ -423,9 +389,6 @@ const deleteInvoices = async () => {
         }
         await fetchInvoices();
         selected.value = [];
-        if (selectedInvoice.value && deleteTargets.value.some((row) => row.raw.id === selectedInvoice.value?.id)) {
-            closeDetails();
-        }
         deleteDialog.value = false;
         deleteTargets.value = [];
     } catch (error) {
