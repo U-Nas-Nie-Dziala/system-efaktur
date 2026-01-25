@@ -2,9 +2,9 @@ import { RouteCtx, contract } from "@repo/contract";
 import { useRepository } from "../../core/database";
 import { Invoice } from "../../models/Invoice";
 
-export type Route = RouteCtx<typeof contract.invoiceCreate>;
+export type Route = RouteCtx<typeof contract.invoicesCreate>;
 
-export const invoiceCreate = async (ctx: Route["ctx"]): Promise<Route["response"]> => {
+export const invoicesCreate = async (ctx: Route["ctx"]): Promise<Route["response"]> => {
     if (!ctx.req.auth?.token.user.company) {
         return {
             status: 400,

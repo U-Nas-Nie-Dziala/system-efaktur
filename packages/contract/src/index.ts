@@ -18,6 +18,7 @@ import companyData from "./schemas/companyData";
 import openSession from "./schemas/openSession";
 import error from "./schemas/error";
 import invoiceCreate from "./schemas/invoiceCreate";
+import invoiceUpdate from "./schemas/invoiceUpdate";
 
 export const contract = c.router({
     health: {
@@ -360,7 +361,7 @@ export const contract = c.router({
             auth: true,
         },
     },
-    invoiceCreate: {
+    invoicesCreate: {
         method: "POST",
         path: "/invoices",
         body: invoiceCreate,
@@ -371,6 +372,25 @@ export const contract = c.router({
             200: z.object({
                 id: z.string(),
             }),
+        },
+        headers: z.object({
+            authorization: z.string(),
+        }),
+        metadata: {
+            auth: true,
+        },
+    },
+    invoicesUpdate: {
+        method: "PATCH",
+        path: "/invoices/:id",
+        pathParams: z.object({
+            id: z.string(),
+        }),
+        body: invoiceUpdate,
+        responses: {
+            400: z.object({ message: z.string() }),
+            404: z.object({ message: z.string() }),
+            200: z.object({ id: z.string() }),
         },
         headers: z.object({
             authorization: z.string(),
