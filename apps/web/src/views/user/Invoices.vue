@@ -81,12 +81,34 @@
                 </template>
 
                 <template #item.actions="{ item }">
-                    <v-btn size="small" variant="text" @click="openDetails(item)">
-                        <v-icon>mdi:mdi-pencil</v-icon>
-                    </v-btn>
-                    <v-btn size="small" variant="text" @click="confirmDelete([item])">
-                        <v-icon>mdi:mdi-delete</v-icon>
-                    </v-btn>
+                    <v-tooltip text="Zapisz fakturę" location="top">
+                        <template #activator="{ props }">
+                            <v-btn
+                                v-bind="props"
+                                size="small"
+                                variant="text"
+                                :loading="savingId === item.id"
+                                :disabled="!canSave(item) || savingId !== null"
+                                @click="saveInvoice(item)"
+                            >
+                                <v-icon>mdi:mdi-content-save</v-icon>
+                            </v-btn>
+                        </template>
+                    </v-tooltip>
+                    <v-tooltip text="Edytuj fakturę" location="top">
+                        <template #activator="{ props }">
+                            <v-btn v-bind="props" size="small" variant="text" @click="openDetails(item)">
+                                <v-icon>mdi:mdi-pencil</v-icon>
+                            </v-btn>
+                        </template>
+                    </v-tooltip>
+                    <v-tooltip text="Usuń fakturę" location="top">
+                        <template #activator="{ props }">
+                            <v-btn v-bind="props" size="small" variant="text" @click="confirmDelete([item])">
+                                <v-icon>mdi:mdi-delete</v-icon>
+                            </v-btn>
+                        </template>
+                    </v-tooltip>
                 </template>
 
                 <template #no-data>
@@ -170,6 +192,7 @@ const loading = ref(false);
 const creating = ref(false);
 const updating = ref(false);
 const deleting = ref(false);
+const savingId = ref<string | null>(null);
 const search = ref("");
 const detailsDialog = ref(false);
 const createDialog = ref(false);
@@ -211,6 +234,8 @@ const getStatus = (invoice: IInvoice) => {
     }
     return { label: "Zapisana", color: "info" };
 };
+
+const canSave = (row: InvoiceRow) => row.raw.draft && !row.raw.signed;
 
 const tableItems = computed<InvoiceRow[]>(() =>
     invoices.value.map((invoice) => {
@@ -344,6 +369,31 @@ const updateInvoice = async (payload: IInvoiceCreateBody) => {
         showToast("Wystąpił błąd podczas zapisywania", "error");
     } finally {
         updating.value = false;
+    }
+};
+
+const saveInvoice = async (row: InvoiceRow) => {
+    if (!canSave(row)) {
+        showToast("Ta faktura została już zapisana", "info");
+        return;
+    }
+    savingId.value = row.id;
+    try {
+        const response = await client.invoicesSave({
+            params: { id: row.raw.id },
+            headers: getAuthHeaders(),
+        });
+        if (response.status === 200) {
+            showToast("Faktura została zapisana", "success");
+            await fetchInvoices();
+        } else {
+            const body = response.body as { message?: string };
+            showToast(body.message || "Nie udało się zapisać faktury", "error");
+        }
+    } catch (error) {
+        showToast("Wystąpił błąd podczas zapisywania faktury", "error");
+    } finally {
+        savingId.value = null;
     }
 };
 

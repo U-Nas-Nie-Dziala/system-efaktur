@@ -1,50 +1,85 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
-import { client } from "../../api";
-
-const fetchInfo = async () => {
-    const res = await client.meInfo({
-        headers: {
-            authorization: `Bearer ${localStorage.getItem("access_token")}`,
-        },
-    });
-
-    console.log(res);
-    // TODO: jeżeli res.body.hasCompany == false, ograniczamy korzystanie z aplikacji
-    // cd: wymuszamy wprowadzenie danych firmy
-};
-
-onMounted(async () => {
-    await fetchInfo();
-});
+import { client, getAuthHeaders, type IContractor, type IInvoice } from "../../api";
+import { useAppToast } from "../../composables/useAppToast";
 
 const router = useRouter();
+const { showToast } = useAppToast();
 
-const stats = ref([
+const invoices = ref<IInvoice[]>([]);
+const contractors = ref<IContractor[]>([]);
+
+const formatAmount = (value: string | number | undefined) => {
+    if (!value) return "0.00";
+    const amount = Number(value);
+    return Number.isFinite(amount) ? amount.toFixed(2) : String(value);
+};
+
+const totalRevenue = computed(() => {
+    return invoices.value
+        .filter((invoice) => !invoice.draft)
+        .reduce((sum, invoice) => {
+            const amount = Number(invoice.body?.fa?.kwotaBrutto ?? 0);
+            return sum + (Number.isFinite(amount) ? amount : 0);
+        }, 0);
+});
+
+const pendingCount = computed(() => invoices.value.filter((invoice) => invoice.draft).length);
+const signedCount = computed(() => invoices.value.filter((invoice) => invoice.signed).length);
+
+const stats = computed(() => [
     {
         icon: "mdi:mdi-file-document",
         title: "Faktury",
-        value: "0",
+        value: String(invoices.value.length),
         color: "#ff6b6b",
     },
     {
         icon: "mdi:mdi-account-group",
         title: "Kontrahenci",
-        value: "0",
+        value: String(contractors.value.length),
         color: "#ee5a6f",
     },
     {
         icon: "mdi:mdi-currency-usd",
         title: "Przychody",
-        value: "0 zł",
+        value: `${totalRevenue.value.toFixed(2)} zł`,
         color: "#d63031",
     },
     {
         icon: "mdi:mdi-clock-outline",
         title: "Oczekujące",
-        value: "0",
+        value: String(pendingCount.value),
         color: "#c0392b",
+    },
+]);
+
+const recentInvoices = computed(() => {
+    return [...invoices.value]
+        .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+        .slice(0, 5)
+        .map((invoice) => ({
+            id: invoice.id,
+            number: invoice.body?.fa?.numerFaktury ?? "-",
+            buyer:
+                invoice.nabywca?.podmiot2?.daneIdentyfikacyjne?.nazwa ??
+                invoice.nabywca?.podmiot2?.daneIdentyfikacyjne?.nip ??
+                "-",
+            date: invoice.body?.fa?.dataWystawienia ?? "-",
+            amount: formatAmount(invoice.body?.fa?.kwotaBrutto),
+            currency: invoice.body?.fa?.waluta ?? "PLN",
+            draft: invoice.draft,
+            signed: invoice.signed,
+        }));
+});
+
+const statsDetails = computed(() => [
+    { label: "Podpisane", value: String(signedCount.value) },
+    { label: "Robocze", value: String(pendingCount.value) },
+    {
+        label: "Średnia kwota",
+        value: `${(invoices.value.length ? totalRevenue.value / invoices.value.length : 0).toFixed(2)} zł`,
     },
 ]);
 
@@ -60,7 +95,35 @@ const quickActions = ref([
     { icon: "mdi:mdi-cog", title: "Ustawienia", color: "#c0392b", route: "settings" },
 ]);
 
-const recentInvoices = ref([]);
+const fetchInvoices = async () => {
+    try {
+        const response = await client.invoicesList({
+            headers: getAuthHeaders(),
+        });
+        if (response.status === 200) {
+            invoices.value = response.body;
+        }
+    } catch (error) {
+        showToast("Wystąpił błąd podczas pobierania faktur", "error");
+    }
+};
+
+const fetchContractors = async () => {
+    try {
+        const response = await client.contractorsList({
+            headers: getAuthHeaders(),
+        });
+        if (response.status === 200) {
+            contractors.value = response.body;
+        }
+    } catch (error) {
+        showToast("Wystąpił błąd podczas pobierania kontrahentów", "error");
+    }
+};
+
+onMounted(async () => {
+    await Promise.all([fetchInvoices(), fetchContractors()]);
+});
 </script>
 
 <template>
@@ -155,6 +218,27 @@ const recentInvoices = ref([]);
                             </div>
                             <v-btn color="#d63031" class="mt-4" prepend-icon="mdi:mdi-plus"> Utwórz fakturę </v-btn>
                         </div>
+                        <v-list v-else density="compact">
+                            <v-list-item
+                                v-for="invoice in recentInvoices"
+                                :key="invoice.id"
+                                :title="invoice.number"
+                                :subtitle="`${invoice.buyer} • ${invoice.date}`"
+                            >
+                                <template #append>
+                                    <div class="text-right">
+                                        <div class="text-subtitle-2">{{ invoice.amount }} {{ invoice.currency }}</div>
+                                        <v-chip
+                                            size="x-small"
+                                            variant="tonal"
+                                            :color="invoice.signed ? 'success' : invoice.draft ? 'warning' : 'info'"
+                                        >
+                                            {{ invoice.signed ? "Podpisana" : invoice.draft ? "Robocza" : "Zapisana" }}
+                                        </v-chip>
+                                    </div>
+                                </template>
+                            </v-list-item>
+                        </v-list>
                     </v-card-text>
                 </v-card>
             </v-col>
@@ -180,10 +264,14 @@ const recentInvoices = ref([]);
                     </v-card-title>
                     <v-divider></v-divider>
                     <v-card-text>
-                        <div class="text-center py-8">
-                            <v-icon size="48" color="grey-lighten-1">mdi:mdi-chart-bar-stacked</v-icon>
-                            <div class="text-caption mt-4 text-medium-emphasis">Statystyki wkrótce dostępne</div>
-                        </div>
+                        <v-row>
+                            <v-col v-for="item in statsDetails" :key="item.label" cols="12">
+                                <div class="d-flex align-center justify-space-between">
+                                    <span class="text-caption text-medium-emphasis">{{ item.label }}</span>
+                                    <span class="text-subtitle-2 font-weight-medium">{{ item.value }}</span>
+                                </div>
+                            </v-col>
+                        </v-row>
                     </v-card-text>
                 </v-card>
                 <v-card elevation="2" class="mt-4">
