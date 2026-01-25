@@ -5,11 +5,6 @@
                 <h1 class="text-h4">Towary i usługi</h1>
                 <p class="text-subtitle-1 text-grey">Zarządzaj listą produktów i usług</p>
             </v-col>
-            <v-col cols="auto" class="d-flex align-center">
-                <v-btn color="error" variant="text" :disabled="selected.length === 0" @click="confirmDelete(selected)">
-                    Usuń zaznaczone
-                </v-btn>
-            </v-col>
         </v-row>
 
         <v-row class="mb-4">
@@ -35,11 +30,18 @@
                     clearable
                 />
             </v-col>
-        </v-row>
-
-        <v-row class="mb-4">
-            <v-col cols="12">
-                <ProductCreate ref="createRef" :loading="creating" @create="createProduct" />
+            <v-col cols="auto" class="d-flex align-center">
+                <v-btn color="#d63031" prepend-icon="mdi:mdi-plus" class="mr-2" @click="createDialog = true">
+                    Dodaj towar/usługę
+                </v-btn>
+                <v-btn
+                    color="error"
+                    variant="outlined"
+                    :disabled="selected.length === 0"
+                    @click="confirmDelete(selected)"
+                >
+                    Usuń zaznaczone
+                </v-btn>
             </v-col>
         </v-row>
 
@@ -52,10 +54,32 @@
                 show-select
                 return-object
                 item-value="id"
-                v-model:selected="selected"
+                v-model="selected"
                 hover
                 class="elevation-1"
             >
+                <template #header.data-table-select="{ allSelected, someSelected, selectAll }">
+                    <v-checkbox-btn
+                        :model-value="allSelected"
+                        :indeterminate="someSelected && !allSelected"
+                        @update:model-value="selectAll"
+                        color="primary"
+                        true-icon="mdi:mdi-checkbox-marked"
+                        false-icon="mdi:mdi-checkbox-blank-outline"
+                        indeterminate-icon="mdi:mdi-minus-box"
+                    />
+                </template>
+
+                <template #item.data-table-select="{ internalItem, isSelected, toggleSelect }">
+                    <v-checkbox-btn
+                        :model-value="isSelected(internalItem)"
+                        @update:model-value="() => toggleSelect(internalItem)"
+                        color="primary"
+                        true-icon="mdi:mdi-checkbox-marked"
+                        false-icon="mdi:mdi-checkbox-blank-outline"
+                        indeterminate-icon="mdi:mdi-minus-box"
+                    />
+                </template>
                 <!-- Template do customowego formatowania komórek działa razem z #items i #no-data to jest poprawnie -->
                 <template #item.type="{ item }">
                     <v-chip :color="item.type === 'PRODUCT' ? 'primary' : 'secondary'" size="small">
@@ -98,6 +122,10 @@
             />
         </v-dialog>
 
+        <v-dialog v-model="createDialog" max-width="900">
+            <ProductCreate ref="createRef" :loading="creating" @create="createProduct" />
+        </v-dialog>
+
         <v-dialog v-model="deleteDialog" max-width="420">
             <v-card>
                 <v-card-title class="text-h6">Potwierdź usunięcie</v-card-title>
@@ -111,21 +139,15 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
-
-        <v-snackbar v-model="snackbar.show" :color="snackbar.color" :timeout="3000">
-            {{ snackbar.message }}
-            <template #actions>
-                <v-btn variant="text" @click="snackbar.show = false">Zamknij</v-btn>
-            </template>
-        </v-snackbar>
     </v-container>
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed, onMounted } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { client, getAuthHeaders, type IProduct } from "../../api";
 import ProductCreate from "../../components/products/ProductCreate.vue";
 import ProductDetails from "../../components/products/ProductDetails.vue";
+import { useAppToast } from "../../composables/useAppToast";
 
 const loading = ref(false);
 const creating = ref(false);
@@ -134,8 +156,10 @@ const deleting = ref(false);
 const search = ref("");
 const filterType = ref<"PRODUCT" | "SERVICE" | null>(null);
 const detailsDialog = ref(false);
+const createDialog = ref(false);
 const deleteDialog = ref(false);
 const createRef = ref<InstanceType<typeof ProductCreate> | null>(null);
+const { showToast } = useAppToast();
 
 const products = ref<IProduct[]>([]);
 const selected = ref<IProduct[]>([]);
@@ -157,12 +181,6 @@ const headers = [
     { title: "Akcje", key: "actions", sortable: false, align: "center" as const },
 ];
 
-const snackbar = reactive({
-    show: false,
-    message: "",
-    color: "success",
-});
-
 const fetchProducts = async () => {
     loading.value = true;
     try {
@@ -173,7 +191,7 @@ const fetchProducts = async () => {
             products.value = response.body;
         }
     } catch (error) {
-        showSnackbar("Wystąpił błąd podczas pobierania danych", "error");
+        showToast("Wystąpił błąd podczas pobierania danych", "error");
     } finally {
         loading.value = false;
     }
@@ -184,7 +202,7 @@ const createProduct = async (payload: Parameters<typeof client.productsCreate>[0
     try {
         const token = localStorage.getItem("access_token");
         if (!token) {
-            showSnackbar("Brak tokenu autoryzacji. Zaloguj się ponownie.", "error");
+            showToast("Brak tokenu autoryzacji. Zaloguj się ponownie.", "error");
             return;
         }
         const response = await client.productsCreate({
@@ -192,19 +210,20 @@ const createProduct = async (payload: Parameters<typeof client.productsCreate>[0
             headers: getAuthHeaders(),
         });
         if (response.status === 200) {
-            showSnackbar("Produkt/usługa została dodana", "success");
+            showToast("Produkt/usługa została dodana", "success");
             await fetchProducts();
             createRef.value?.reset();
+            createDialog.value = false;
         } else if (response.status === 400) {
             const body = response.body as { message?: string };
-            showSnackbar(body.message || "Nieprawidłowe dane", "error");
+            showToast(body.message || "Nieprawidłowe dane", "error");
         } else if (response.status === 401 || response.status === 403) {
-            showSnackbar("Brak uprawnień. Zaloguj się ponownie.", "error");
+            showToast("Brak uprawnień. Zaloguj się ponownie.", "error");
         } else {
-            showSnackbar("Nie udało się dodać produktu/usługi", "error");
+            showToast("Nie udało się dodać produktu/usługi", "error");
         }
     } catch (error) {
-        showSnackbar("Wystąpił błąd podczas dodawania", "error");
+        showToast("Wystąpił błąd podczas dodawania", "error");
     } finally {
         creating.value = false;
     }
@@ -230,13 +249,14 @@ const updateProduct = async (payload: Parameters<typeof client.productsUpdate>[0
             headers: getAuthHeaders(),
         });
         if (response.status === 200) {
-            showSnackbar("Produkt/usługa została zaktualizowana", "success");
+            showToast("Produkt/usługa została zaktualizowana", "success");
             await fetchProducts();
+            closeDetails();
         } else if (response.status === 404) {
-            showSnackbar("Nie znaleziono wpisu", "error");
+            showToast("Nie znaleziono wpisu", "error");
         }
     } catch (error) {
-        showSnackbar("Wystąpił błąd podczas zapisywania", "error");
+        showToast("Wystąpił błąd podczas zapisywania", "error");
     } finally {
         updating.value = false;
     }
@@ -259,13 +279,16 @@ const deleteProducts = async () => {
                 })
             )
         );
-        showSnackbar("Usunięto wybrane elementy", "success");
+        showToast("Usunięto wybrane elementy", "success");
         await fetchProducts();
         selected.value = [];
+        if (selectedProduct.value && deleteTargets.value.some((p) => p.id === selectedProduct.value!.id)) {
+            closeDetails();
+        }
         deleteDialog.value = false;
         deleteTargets.value = [];
     } catch (error) {
-        showSnackbar("Wystąpił błąd podczas usuwania", "error");
+        showToast("Wystąpił błąd podczas usuwania", "error");
     } finally {
         deleting.value = false;
     }
@@ -281,12 +304,6 @@ const formatCurrency = (value: number) => {
 };
 
 const formatType = (type: "PRODUCT" | "SERVICE") => (type === "PRODUCT" ? "Towar" : "Usługa");
-
-const showSnackbar = (message: string, color: string) => {
-    snackbar.message = message;
-    snackbar.color = color;
-    snackbar.show = true;
-};
 
 onMounted(() => {
     fetchProducts();

@@ -3,6 +3,10 @@ import {
   createRouter,
   type RouteRecordRaw,
 } from "vue-router";
+import { client, getAuthHeaders } from "../api";
+import { useToast } from "vue-toastification";
+
+const toast = useToast();
 
 const routes: RouteRecordRaw[] = [
   {
@@ -23,23 +27,26 @@ const routes: RouteRecordRaw[] = [
     children: [
       {
         path: "home",
-        name: "home",
+        name: "home", 
         component: () => import("../views/user/Home.vue"),
       },
       {
         path: "invoices",
         name: "invoices",
         component: () => import("../views/user/Invoices.vue"),
+        meta: { requiresCompany: true },
       },
       {
         path: "clients",
         name: "clients",
         component: () => import("../views/user/Clients.vue"),
+        meta: { requiresCompany: true },
       },
       {
         path: "products",
         name: "products",
         component: () => import("../views/user/Products.vue"),
+        meta: { requiresCompany: true },
       },
       {
         path: "settings",
@@ -70,4 +77,31 @@ const routes: RouteRecordRaw[] = [
 export const router = createRouter({
   history: createWebHistory(),
   routes: routes,
+});
+
+router.beforeEach(async (to) => {
+  if (!to.meta?.requiresCompany){
+    return true;
+  };
+
+  const token = localStorage.getItem("access_token");
+  if (!token) {
+    return { name: "login" };
+  }
+
+  try {
+    const response = await client.meInfo({
+      headers: getAuthHeaders(),
+    });
+
+    if (response.status === 200 && response.body.hasCompany) {
+      return true;
+    }
+  } catch {
+    // fallthrough to settings
+  }
+
+  toast.warning("Brak dostępu: uzupełnij dane firmy w ustawieniach.");
+
+  return { name: "settings", hash: "#company-settings" };
 });

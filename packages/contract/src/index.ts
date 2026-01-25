@@ -119,6 +119,7 @@ export const contract = c.router({
                         city: z.string(),
                         country: z.string(),
                         registerDate: z.date(),
+                        vat: z.boolean().optional(),
                     })
                     .optional(),
             }),
