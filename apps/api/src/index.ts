@@ -48,6 +48,7 @@ import { ksefCloseSession } from "./actions/ksef/closeSession";
 import { invoicesList } from "./actions/invoices/list";
 import { invoicesCreate } from "./actions/invoices/create";
 import { invoicesUpdate } from "./actions/invoices/update";
+import { invoicesFind } from "./actions/invoices/find";
 
 const start = async () => {
     Config.validateEnv();
@@ -75,6 +76,7 @@ const start = async () => {
         invoicesList,
         invoicesCreate,
         invoicesUpdate,
+        invoicesFind,
     });
 
     createExpressEndpoints(contract, router, app, {

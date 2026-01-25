@@ -366,9 +366,7 @@ export const contract = c.router({
         path: "/invoices",
         body: invoiceCreate,
         responses: {
-            400: z.object({
-                message: z.string(),
-            }),
+            400: error,
             200: z.object({
                 id: z.string(),
             }),
@@ -388,8 +386,8 @@ export const contract = c.router({
         }),
         body: invoiceUpdate,
         responses: {
-            400: z.object({ message: z.string() }),
-            404: z.object({ message: z.string() }),
+            400: error,
+            404: error,
             200: z.object({ id: z.string() }),
         },
         headers: z.object({
@@ -397,6 +395,18 @@ export const contract = c.router({
         }),
         metadata: {
             auth: true,
+        },
+    },
+    invoicesFind: {
+        method: "GET",
+        path: "/invoices/:id",
+        pathParams: z.object({
+            id: z.string(),
+        }),
+        responses: {
+            400: error,
+            404: error,
+            200: z.unknown(),
         },
     },
 });
