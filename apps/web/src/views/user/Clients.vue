@@ -125,7 +125,7 @@ import { ref, computed, onMounted } from "vue";
 import { client, getAuthHeaders, type IContractor } from "../../api";
 import ContractorCreate from "../../components/contractors/ContractorCreate.vue";
 import ContractorDetails from "../../components/contractors/ContractorDetails.vue";
-import { useToast } from "vue-toastification";
+import { useAppToast } from "../../composables/useAppToast";
 
 const loading = ref(false);
 const creating = ref(false);
@@ -136,7 +136,7 @@ const detailsDialog = ref(false);
 const createDialog = ref(false);
 const deleteDialog = ref(false);
 const createRef = ref<InstanceType<typeof ContractorCreate> | null>(null);
-const toast = useToast();
+const { showToast } = useAppToast();
 
 const contractors = ref<IContractor[]>([]);
 const selected = ref<IContractor[]>([]);
@@ -267,22 +267,6 @@ const deleteContractors = async () => {
     } finally {
         deleting.value = false;
     }
-};
-
-const showToast = (message: string, type: "success" | "error" | "info" | "warning") => {
-    if (type === "success") {
-        toast.success(message);
-        return;
-    }
-    if (type === "error") {
-        toast.error(message);
-        return;
-    }
-    if (type === "warning") {
-        toast.warning(message);
-        return;
-    }
-    toast.info(message);
 };
 
 onMounted(() => {

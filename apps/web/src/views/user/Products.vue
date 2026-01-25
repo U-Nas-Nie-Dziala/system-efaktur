@@ -147,7 +147,7 @@ import { ref, computed, onMounted } from "vue";
 import { client, getAuthHeaders, type IProduct } from "../../api";
 import ProductCreate from "../../components/products/ProductCreate.vue";
 import ProductDetails from "../../components/products/ProductDetails.vue";
-import { useToast } from "vue-toastification";
+import { useAppToast } from "../../composables/useAppToast";
 
 const loading = ref(false);
 const creating = ref(false);
@@ -159,7 +159,7 @@ const detailsDialog = ref(false);
 const createDialog = ref(false);
 const deleteDialog = ref(false);
 const createRef = ref<InstanceType<typeof ProductCreate> | null>(null);
-const toast = useToast();
+const { showToast } = useAppToast();
 
 const products = ref<IProduct[]>([]);
 const selected = ref<IProduct[]>([]);
@@ -304,22 +304,6 @@ const formatCurrency = (value: number) => {
 };
 
 const formatType = (type: "PRODUCT" | "SERVICE") => (type === "PRODUCT" ? "Towar" : "Usługa");
-
-const showToast = (message: string, type: "success" | "error" | "info" | "warning") => {
-    if (type === "success") {
-        toast.success(message);
-        return;
-    }
-    if (type === "error") {
-        toast.error(message);
-        return;
-    }
-    if (type === "warning") {
-        toast.warning(message);
-        return;
-    }
-    toast.info(message);
-};
 
 onMounted(() => {
     fetchProducts();

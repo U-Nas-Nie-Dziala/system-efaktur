@@ -134,7 +134,7 @@ import { ref, computed, onMounted } from "vue";
 import { client, getAuthHeaders, type IProduct } from "../../api";
 import ProductCreate from "../../components/products/ProductCreate.vue";
 import ProductDetails from "../../components/products/ProductDetails.vue";
-import { useToast } from "vue-toastification";
+import { useAppToast } from "../../composables/useAppToast";
 
 const loading = ref(false);
 const creating = ref(false);
@@ -146,7 +146,7 @@ const detailsDialog = ref(false);
 const createDialog = ref(false);
 const deleteDialog = ref(false);
 const createRef = ref<InstanceType<typeof ProductCreate> | null>(null);
-const toast = useToast();
+const { showToast } = useAppToast();
 
 const products = ref<IProduct[]>([]);
 const selected = ref<IProduct[]>([]);
@@ -285,22 +285,6 @@ const filteredProducts = computed(() => {
     if (!filterType.value) return products.value;
     return products.value.filter((p: IProduct) => p.type === filterType.value);
 });
-
-const showToast = (message: string, type: "success" | "error" | "info" | "warning") => {
-    if (type === "success") {
-        toast.success(message);
-        return;
-    }
-    if (type === "error") {
-        toast.error(message);
-        return;
-    }
-    if (type === "warning") {
-        toast.warning(message);
-        return;
-    }
-    toast.info(message);
-};
 
 onMounted(() => {
     fetchProducts();
