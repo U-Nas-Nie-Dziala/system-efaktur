@@ -434,6 +434,24 @@ export const contract = c.router({
             auth: true,
         },
     },
+    invoicesDelete: {
+        method: "DELETE",
+        path: "/invoices/:id",
+        pathParams: z.object({
+            id: z.string(),
+        }),
+        responses: {
+            400: error,
+            404: error,
+            200: z.object({}),
+        },
+        headers: z.object({
+            authorization: z.string(),
+        }),
+        metadata: {
+            auth: true,
+        },
+    },
 });
 
 export type RouteCtx<T extends AppRoute | AppRouter> = {
