@@ -19,17 +19,6 @@
                     clearable
                 />
             </v-col>
-            <v-col cols="12" md="3">
-                <v-select
-                    v-model="filterType"
-                    :items="productTypes"
-                    label="Typ"
-                    variant="outlined"
-                    density="compact"
-                    hide-details
-                    clearable
-                />
-            </v-col>
             <v-col cols="auto" class="d-flex align-center">
                 <v-btn color="#d63031" prepend-icon="mdi:mdi-plus" class="mr-2" @click="createDialog = true">
                     Dodaj fakturę
@@ -48,7 +37,7 @@
         <v-card>
             <v-data-table
                 :headers="headers"
-                :items="filteredProducts"
+                :items="tableItems"
                 :search="search"
                 :loading="loading"
                 show-select
@@ -81,9 +70,19 @@
                     />
                 </template>
 
+                <template #item.amount="{ item }">
+                    <span>{{ item.amount }}</span>
+                </template>
+
+                <template #item.status="{ item }">
+                    <v-chip size="small" :color="item.statusColor" variant="tonal">
+                        {{ item.status }}
+                    </v-chip>
+                </template>
+
                 <template #item.actions="{ item }">
                     <v-btn size="small" variant="text" @click="openDetails(item)">
-                        <v-icon>mdi:mdi-eye</v-icon>
+                        <v-icon>mdi:mdi-pencil</v-icon>
                     </v-btn>
                     <v-btn size="small" variant="text" @click="confirmDelete([item])">
                         <v-icon>mdi:mdi-delete</v-icon>
@@ -98,19 +97,32 @@
             </v-data-table>
         </v-card>
 
-        <v-dialog v-model="detailsDialog" max-width="900">
-            <ProductDetails
-                :product="selectedProduct"
-                :saving="updating"
-                :deleting="deleting"
+        <v-dialog v-model="detailsDialog" fullscreen>
+            <InvoiceForm
+                :invoice="selectedInvoice"
+                :contractors="contractors"
+                :products="products"
+                :company="company"
+                :loading="updating"
+                title="Edytuj fakturę"
+                submit-label="Zapisz"
+                @submit="updateInvoice"
                 @close="closeDetails"
-                @update="updateProduct"
-                @delete="confirmDelete([$event])"
             />
         </v-dialog>
 
         <v-dialog v-model="createDialog" fullscreen>
-            <ProductCreate ref="createRef" :loading="creating" @create="createProduct" />
+            <InvoiceForm
+                ref="createRef"
+                :contractors="contractors"
+                :products="products"
+                :company="company"
+                :loading="creating"
+                title="Nowa faktura"
+                submit-label="Dodaj"
+                @submit="createInvoice"
+                @close="closeCreate"
+            />
         </v-dialog>
 
         <v-dialog v-model="deleteDialog" max-width="420">
@@ -122,7 +134,7 @@
                 <v-card-actions>
                     <v-spacer />
                     <v-btn variant="text" @click="deleteDialog = false">Anuluj</v-btn>
-                    <v-btn color="error" :loading="deleting" @click="deleteProducts">Usuń</v-btn>
+                    <v-btn color="error" :loading="deleting" @click="deleteInvoices">Usuń</v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
@@ -131,45 +143,124 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue";
-import { client, getAuthHeaders, type IProduct } from "../../api";
-import ProductCreate from "../../components/products/ProductCreate.vue";
-import ProductDetails from "../../components/products/ProductDetails.vue";
+import {
+    client,
+    getAuthHeaders,
+    type IContractor,
+    type IInvoice,
+    type IInvoiceCreateBody,
+    type IMeInfo,
+    type IProduct,
+} from "../../api";
+import InvoiceForm from "../../components/invoices/InvoiceForm.vue";
 import { useAppToast } from "../../composables/useAppToast";
+
+type InvoiceRow = {
+    id: string;
+    number: string;
+    issueDate: string;
+    buyer: string;
+    amount: string;
+    status: string;
+    statusColor: string;
+    raw: IInvoice;
+};
 
 const loading = ref(false);
 const creating = ref(false);
 const updating = ref(false);
 const deleting = ref(false);
 const search = ref("");
-const filterType = ref<"PRODUCT" | "SERVICE" | null>(null);
 const detailsDialog = ref(false);
 const createDialog = ref(false);
 const deleteDialog = ref(false);
-const createRef = ref<InstanceType<typeof ProductCreate> | null>(null);
+const createRef = ref<InstanceType<typeof InvoiceForm> | null>(null);
 const { showToast } = useAppToast();
 
+const invoices = ref<IInvoice[]>([]);
+const contractors = ref<IContractor[]>([]);
 const products = ref<IProduct[]>([]);
-const selected = ref<IProduct[]>([]);
-const selectedProduct = ref<IProduct | null>(null);
-const deleteTargets = ref<IProduct[]>([]);
+const company = ref<IMeInfo["company"] | null>(null);
 
-const productTypes = [
-    { title: "Towar", value: "PRODUCT" },
-    { title: "Usługa", value: "SERVICE" },
-];
+const selected = ref<InvoiceRow[]>([]);
+const selectedInvoice = ref<IInvoice | null>(null);
+const deleteTargets = ref<InvoiceRow[]>([]);
 
 const headers = [
-    { title: "Nazwa", key: "name", sortable: true },
-    { title: "Typ", key: "type", sortable: true },
-    { title: "Jednostka", key: "unit", sortable: true },
-    { title: "Ceny", key: "prices", sortable: false },
-    { title: "VAT", key: "vat_rate", sortable: true },
-    { title: "Opis", key: "description", sortable: false },
+    { title: "Numer", key: "number", sortable: true },
+    { title: "Data wystawienia", key: "issueDate", sortable: true },
+    { title: "Nabywca", key: "buyer", sortable: true },
+    { title: "Kwota", key: "amount", sortable: true },
+    { title: "Status", key: "status", sortable: true },
     { title: "Akcje", key: "actions", sortable: false, align: "center" as const },
 ];
 
-const fetchProducts = async () => {
+const formatAmount = (value: string | number | undefined, currency: string | undefined) => {
+    if (!value) return "-";
+    const amount = Number(value);
+    const formatted = Number.isFinite(amount) ? amount.toFixed(2) : String(value);
+    return `${formatted} ${currency ?? ""}`.trim();
+};
+
+const getStatus = (invoice: IInvoice) => {
+    if (invoice.signed) {
+        return { label: "Podpisana", color: "success" };
+    }
+    if (invoice.draft) {
+        return { label: "Robocza", color: "warning" };
+    }
+    return { label: "Zapisana", color: "info" };
+};
+
+const tableItems = computed<InvoiceRow[]>(() =>
+    invoices.value.map((invoice) => {
+        const status = getStatus(invoice);
+        return {
+            id: invoice.id,
+            number: invoice.body?.fa?.numerFaktury ?? "-",
+            issueDate: invoice.body?.fa?.dataWystawienia ?? "-",
+            buyer:
+                invoice.nabywca?.podmiot2?.daneIdentyfikacyjne?.nazwa ??
+                invoice.nabywca?.podmiot2?.daneIdentyfikacyjne?.nip ??
+                "-",
+            amount: formatAmount(invoice.body?.fa?.kwotaBrutto, invoice.body?.fa?.waluta),
+            status: status.label,
+            statusColor: status.color,
+            raw: invoice,
+        };
+    })
+);
+
+const fetchInvoices = async () => {
     loading.value = true;
+    try {
+        const response = await client.invoicesList({
+            headers: getAuthHeaders(),
+        });
+        if (response.status === 200) {
+            invoices.value = response.body;
+        }
+    } catch (error) {
+        showToast("Wystąpił błąd podczas pobierania faktur", "error");
+    } finally {
+        loading.value = false;
+    }
+};
+
+const fetchContractors = async () => {
+    try {
+        const response = await client.contractorsList({
+            headers: getAuthHeaders(),
+        });
+        if (response.status === 200) {
+            contractors.value = response.body;
+        }
+    } catch (error) {
+        showToast("Wystąpił błąd podczas pobierania kontrahentów", "error");
+    }
+};
+
+const fetchProducts = async () => {
     try {
         const response = await client.productsList({
             headers: getAuthHeaders(),
@@ -178,69 +269,76 @@ const fetchProducts = async () => {
             products.value = response.body;
         }
     } catch (error) {
-        showToast("Wystąpił błąd podczas pobierania danych", "error");
-    } finally {
-        loading.value = false;
+        showToast("Wystąpił błąd podczas pobierania towarów/usług", "error");
     }
 };
 
-const createProduct = async (payload: Parameters<typeof client.productsCreate>[0]["body"]) => {
+const fetchCompany = async () => {
+    try {
+        const response = await client.meInfo({
+            headers: getAuthHeaders(),
+        });
+        if (response.status === 200) {
+            company.value = response.body.company ?? null;
+        }
+    } catch (error) {
+        showToast("Wystąpił błąd podczas pobierania danych firmy", "error");
+    }
+};
+
+const createInvoice = async (payload: IInvoiceCreateBody) => {
     creating.value = true;
     try {
-        const token = localStorage.getItem("access_token");
-        if (!token) {
-            showToast("Brak tokenu autoryzacji. Zaloguj się ponownie.", "error");
-            return;
-        }
-        const response = await client.productsCreate({
+        const response = await client.invoicesCreate({
             body: payload,
             headers: getAuthHeaders(),
         });
         if (response.status === 200) {
-            showToast("Produkt/usługa została dodana", "success");
-            await fetchProducts();
+            showToast("Faktura została utworzona", "success");
+            await fetchInvoices();
             createRef.value?.reset();
             createDialog.value = false;
         } else if (response.status === 400) {
             const body = response.body as { message?: string };
             showToast(body.message || "Nieprawidłowe dane", "error");
-        } else if (response.status === 401 || response.status === 403) {
-            showToast("Brak uprawnień. Zaloguj się ponownie.", "error");
-        } else {
-            showToast("Nie udało się dodać produktu/usługi", "error");
         }
     } catch (error) {
-        showToast("Wystąpił błąd podczas dodawania", "error");
+        showToast("Wystąpił błąd podczas tworzenia faktury", "error");
     } finally {
         creating.value = false;
     }
 };
 
-const openDetails = (product: IProduct) => {
-    selectedProduct.value = product;
+const openDetails = (row: InvoiceRow) => {
+    selectedInvoice.value = row.raw;
     detailsDialog.value = true;
 };
 
 const closeDetails = () => {
     detailsDialog.value = false;
-    selectedProduct.value = null;
+    selectedInvoice.value = null;
 };
 
-const updateProduct = async (payload: Parameters<typeof client.productsUpdate>[0]["body"]) => {
-    if (!selectedProduct.value) return;
+const closeCreate = () => {
+    createDialog.value = false;
+};
+
+const updateInvoice = async (payload: IInvoiceCreateBody) => {
+    if (!selectedInvoice.value) return;
     updating.value = true;
     try {
-        const response = await client.productsUpdate({
-            params: { id: selectedProduct.value.id },
+        const response = await client.invoicesUpdate({
+            params: { id: selectedInvoice.value.id },
             body: payload,
             headers: getAuthHeaders(),
         });
         if (response.status === 200) {
-            showToast("Produkt/usługa została zaktualizowana", "success");
-            await fetchProducts();
+            showToast("Faktura została zaktualizowana", "success");
+            await fetchInvoices();
             closeDetails();
-        } else if (response.status === 404) {
-            showToast("Nie znaleziono wpisu", "error");
+        } else if (response.status === 400 || response.status === 404) {
+            const body = response.body as { message?: string };
+            showToast(body.message || "Nie udało się zaktualizować faktury", "error");
         }
     } catch (error) {
         showToast("Wystąpił błąd podczas zapisywania", "error");
@@ -249,27 +347,33 @@ const updateProduct = async (payload: Parameters<typeof client.productsUpdate>[0
     }
 };
 
-const confirmDelete = (targets: IProduct[]) => {
+const confirmDelete = (targets: InvoiceRow[]) => {
     deleteTargets.value = targets;
     deleteDialog.value = true;
 };
 
-const deleteProducts = async () => {
+const deleteInvoices = async () => {
     if (!deleteTargets.value.length) return;
     deleting.value = true;
     try {
-        await Promise.all(
-            deleteTargets.value.map((product) =>
-                client.productsDelete({
-                    params: { id: product.id },
+        const results = await Promise.all(
+            deleteTargets.value.map((row) =>
+                client.invoicesDelete({
+                    params: { id: row.raw.id },
                     headers: getAuthHeaders(),
                 })
             )
         );
-        showToast("Usunięto wybrane elementy", "success");
-        await fetchProducts();
+        const failed = results.filter((result) => result.status !== 200);
+        if (failed.length) {
+            const message = (failed[0].body as { message?: string })?.message;
+            showToast(message || "Nie udało się usunąć wszystkich faktur", "error");
+        } else {
+            showToast("Usunięto wybrane faktury", "success");
+        }
+        await fetchInvoices();
         selected.value = [];
-        if (selectedProduct.value && deleteTargets.value.some((p) => p.id === selectedProduct.value!.id)) {
+        if (selectedInvoice.value && deleteTargets.value.some((row) => row.raw.id === selectedInvoice.value?.id)) {
             closeDetails();
         }
         deleteDialog.value = false;
@@ -281,12 +385,10 @@ const deleteProducts = async () => {
     }
 };
 
-const filteredProducts = computed(() => {
-    if (!filterType.value) return products.value;
-    return products.value.filter((p: IProduct) => p.type === filterType.value);
-});
-
 onMounted(() => {
+    fetchInvoices();
+    fetchContractors();
     fetchProducts();
+    fetchCompany();
 });
 </script>

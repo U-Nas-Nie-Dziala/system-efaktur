@@ -20,6 +20,12 @@ export type IProductCreateBody = ClientInferRequest<typeof contract.productsCrea
 export type IProductUpdateBody = ClientInferRequest<typeof contract.productsUpdate>["body"];
 export type IProduct = ClientInferResponses<typeof contract.productsList, 200>["body"][number];
 
+export type IInvoiceCreateBody = ClientInferRequest<typeof contract.invoicesCreate>["body"];
+export type IInvoiceUpdateBody = ClientInferRequest<typeof contract.invoicesUpdate>["body"];
+export type IInvoice = ClientInferResponses<typeof contract.invoicesList, 200>["body"][number];
+
+export type IMeInfo = ClientInferResponses<typeof contract.meInfo, 200>["body"];
+
 export type ICompanyDataBody = ClientInferRequest<typeof contract.setCompanyData>["body"];
 
 export { contract };
