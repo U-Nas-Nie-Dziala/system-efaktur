@@ -301,6 +301,7 @@ import {
     type IProduct,
 } from "../../api";
 import { TFormaPlatnosci, TKodWaluty, TKodyKrajowUE, TRodzajFaktury, TStawkaPodatku } from "@repo/contract/ksef/enums";
+import { randomInvoiceId } from "./../../composables/helpers";
 
 type InvoiceLine = {
     id: string;
@@ -345,7 +346,7 @@ const defaultForm = () => ({
         kraj: TKodyKrajowUE.PL,
     },
     faktura: {
-        numer: "",
+        numer: randomInvoiceId(),
         dataWystawienia: today(),
         dataDostawy: "",
         miejsceWystawienia: "",

@@ -471,6 +471,25 @@ export const contract = c.router({
             auth: true,
         },
     },
+    invoicesSign: {
+        method: "PUT",
+        path: "/invoices/:id",
+        pathParams: z.object({
+            id: z.string(),
+        }),
+        body: null,
+        responses: {
+            400: error,
+            404: error,
+            200: z.object({}),
+        },
+        headers: z.object({
+            authorization: z.string(),
+        }),
+        metadata: {
+            auth: true,
+        },
+    },
 });
 
 export type RouteCtx<T extends AppRoute | AppRouter> = {
