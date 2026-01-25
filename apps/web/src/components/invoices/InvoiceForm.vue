@@ -14,7 +14,7 @@
                 <v-row>
                     <v-col cols="12" md="6">
                         <v-autocomplete
-                            v-model="formState.selectedContractorId"
+                            v-model="formState.wybranyKontrahentId"
                             :items="contractorOptions"
                             label="Wybierz kontrahenta (kopiuje dane)"
                             item-title="title"
@@ -34,7 +34,7 @@
                     </v-col>
                     <v-col cols="12" md="6">
                         <v-text-field
-                            v-model="formState.buyer.name"
+                            v-model="formState.nabywca.nazwa"
                             label="Nazwa kontrahenta"
                             :rules="[rules.required]"
                             variant="outlined"
@@ -42,7 +42,7 @@
                     </v-col>
                     <v-col cols="12" md="6">
                         <v-text-field
-                            v-model="formState.buyer.nip"
+                            v-model="formState.nabywca.nip"
                             label="NIP"
                             :rules="[rules.required, rules.nip]"
                             variant="outlined"
@@ -51,18 +51,18 @@
                     </v-col>
                     <v-col cols="12" md="6">
                         <v-text-field
-                            v-model="formState.buyer.street"
+                            v-model="formState.nabywca.ulica"
                             label="Ulica"
                             :rules="[rules.required]"
                             variant="outlined"
                         />
                     </v-col>
                     <v-col cols="12" md="6">
-                        <v-text-field v-model="formState.buyer.address" label="Numer domu/lokalu" variant="outlined" />
+                        <v-text-field v-model="formState.nabywca.numer" label="Numer domu/lokalu" variant="outlined" />
                     </v-col>
                     <v-col cols="12" md="4">
                         <v-text-field
-                            v-model="formState.buyer.zipcode"
+                            v-model="formState.nabywca.kodPocztowy"
                             label="Kod pocztowy"
                             :rules="[rules.required, rules.zipcode]"
                             variant="outlined"
@@ -70,7 +70,7 @@
                     </v-col>
                     <v-col cols="12" md="4">
                         <v-text-field
-                            v-model="formState.buyer.city"
+                            v-model="formState.nabywca.miasto"
                             label="Miasto"
                             :rules="[rules.required]"
                             variant="outlined"
@@ -78,7 +78,7 @@
                     </v-col>
                     <v-col cols="12" md="4">
                         <v-select
-                            v-model="formState.buyer.country"
+                            v-model="formState.nabywca.kraj"
                             :items="countryOptions"
                             label="Kraj"
                             :rules="[rules.required]"
@@ -95,7 +95,7 @@
                     </v-col>
                     <v-col cols="12" md="4">
                         <v-text-field
-                            v-model="formState.invoice.number"
+                            v-model="formState.faktura.numer"
                             label="Numer faktury"
                             :rules="[rules.required]"
                             variant="outlined"
@@ -104,7 +104,7 @@
                     </v-col>
                     <v-col cols="12" md="4">
                         <v-text-field
-                            v-model="formState.invoice.issueDate"
+                            v-model="formState.faktura.dataWystawienia"
                             label="Data wystawienia"
                             type="date"
                             :rules="[rules.required]"
@@ -113,7 +113,7 @@
                     </v-col>
                     <v-col cols="12" md="4">
                         <v-text-field
-                            v-model="formState.invoice.saleDate"
+                            v-model="formState.faktura.dataDostawy"
                             label="Data dostawy"
                             type="date"
                             variant="outlined"
@@ -121,14 +121,14 @@
                     </v-col>
                     <v-col cols="12" md="4">
                         <v-text-field
-                            v-model="formState.invoice.place"
+                            v-model="formState.faktura.miejsceWystawienia"
                             label="Miejsce wystawienia"
                             variant="outlined"
                         />
                     </v-col>
                     <v-col cols="12" md="4">
                         <v-select
-                            v-model="formState.invoice.currency"
+                            v-model="formState.faktura.waluta"
                             :items="currencyOptions"
                             label="Waluta"
                             :rules="[rules.required]"
@@ -137,7 +137,7 @@
                     </v-col>
                     <v-col cols="12" md="4">
                         <v-select
-                            v-model="formState.invoice.type"
+                            v-model="formState.faktura.rodzaj"
                             :items="invoiceTypeOptions"
                             label="Rodzaj faktury"
                             :rules="[rules.required]"
@@ -146,7 +146,7 @@
                     </v-col>
                     <v-col cols="12" md="4">
                         <v-select
-                            v-model="formState.invoice.paymentMethod"
+                            v-model="formState.faktura.formaPlatnosci"
                             :items="paymentMethodOptions"
                             label="Forma płatności"
                             variant="outlined"
@@ -155,7 +155,7 @@
                     </v-col>
                     <v-col cols="12" md="4">
                         <v-text-field
-                            v-model="formState.invoice.paymentDueDate"
+                            v-model="formState.faktura.terminPlatnosci"
                             label="Termin płatności"
                             type="date"
                             variant="outlined"
@@ -163,7 +163,7 @@
                     </v-col>
                     <v-col cols="12" md="4">
                         <v-text-field
-                            v-model="formState.invoice.paymentDescription"
+                            v-model="formState.faktura.opisPlatnosci"
                             label="Opis płatności"
                             variant="outlined"
                         />
@@ -179,14 +179,14 @@
                     </v-col>
                 </v-row>
 
-                <v-row v-for="(line, index) in formState.positions" :key="line.id" class="mb-4">
+                <v-row v-for="(line, index) in formState.pozycje" :key="line.id" class="mb-4">
                     <v-col cols="12">
                         <v-card variant="outlined">
                             <v-card-text>
                                 <v-row>
                                     <v-col cols="12" md="4">
                                         <v-autocomplete
-                                            v-model="line.productId"
+                                            v-model="line.produktId"
                                             :items="productOptions"
                                             label="Wybierz towar/usługę (kopiuje dane)"
                                             item-title="title"
@@ -198,18 +198,18 @@
                                     </v-col>
                                     <v-col cols="12" md="4">
                                         <v-text-field
-                                            v-model="line.name"
+                                            v-model="line.nazwa"
                                             label="Nazwa"
                                             :rules="[rules.required]"
                                             variant="outlined"
                                         />
                                     </v-col>
                                     <v-col cols="12" md="4">
-                                        <v-text-field v-model="line.unit" label="Jednostka" variant="outlined" />
+                                        <v-text-field v-model="line.jednostka" label="Jednostka" variant="outlined" />
                                     </v-col>
                                     <v-col cols="12" md="3">
                                         <v-text-field
-                                            v-model.number="line.quantity"
+                                            v-model.number="line.ilosc"
                                             label="Ilość"
                                             type="number"
                                             :rules="[rules.required, rules.positive]"
@@ -218,7 +218,7 @@
                                     </v-col>
                                     <v-col cols="12" md="3">
                                         <v-text-field
-                                            v-model.number="line.priceNetto"
+                                            v-model.number="line.cenaNetto"
                                             label="Cena netto"
                                             type="number"
                                             :rules="[rules.required, rules.nonNegative]"
@@ -227,7 +227,7 @@
                                     </v-col>
                                     <v-col cols="12" md="3">
                                         <v-select
-                                            v-model="line.vatRate"
+                                            v-model="line.stawkaVat"
                                             :items="vatRateOptions"
                                             label="Stawka VAT"
                                             :rules="[rules.required]"
@@ -238,7 +238,7 @@
                                         <div>
                                             <div class="text-caption text-grey">Wartość brutto</div>
                                             <div class="text-subtitle-1 font-weight-medium">
-                                                {{ formatAmount(getLineGross(line)) }} {{ formState.invoice.currency }}
+                                                {{ formatAmount(getLineGross(line)) }} {{ formState.faktura.waluta }}
                                             </div>
                                         </div>
                                     </v-col>
@@ -248,7 +248,7 @@
                                 <v-btn
                                     variant="text"
                                     color="error"
-                                    :disabled="formState.positions.length === 1"
+                                    :disabled="formState.pozycje.length === 1"
                                     @click="removePosition(index)"
                                 >
                                     Usuń pozycję
@@ -263,16 +263,14 @@
                         <v-card variant="tonal">
                             <v-card-text>
                                 <div class="text-caption text-grey">Razem netto</div>
-                                <div class="text-h6">
-                                    {{ formatAmount(totals.net) }} {{ formState.invoice.currency }}
-                                </div>
+                                <div class="text-h6">{{ formatAmount(totals.net) }} {{ formState.faktura.waluta }}</div>
                                 <div class="text-caption text-grey mt-2">VAT</div>
                                 <div class="text-subtitle-1">
-                                    {{ formatAmount(totals.vat) }} {{ formState.invoice.currency }}
+                                    {{ formatAmount(totals.vat) }} {{ formState.faktura.waluta }}
                                 </div>
                                 <div class="text-caption text-grey mt-2">Razem brutto</div>
                                 <div class="text-h6">
-                                    {{ formatAmount(totals.gross) }} {{ formState.invoice.currency }}
+                                    {{ formatAmount(totals.gross) }} {{ formState.faktura.waluta }}
                                 </div>
                             </v-card-text>
                         </v-card>
@@ -306,12 +304,12 @@ import { TFormaPlatnosci, TKodWaluty, TKodyKrajowUE, TRodzajFaktury, TStawkaPoda
 
 type InvoiceLine = {
     id: string;
-    productId: string | null;
-    name: string;
-    unit: string;
-    quantity: number;
-    priceNetto: number;
-    vatRate: TStawkaPodatku | string;
+    produktId: string | null;
+    nazwa: string;
+    jednostka: string;
+    ilosc: number;
+    cenaNetto: number;
+    stawkaVat: TStawkaPodatku | string;
 };
 
 const props = defineProps<{
@@ -337,28 +335,28 @@ const companyReady = computed(() => Boolean(props.company?.nip && props.company?
 const today = () => new Date().toISOString().slice(0, 10);
 
 const defaultForm = () => ({
-    buyer: {
-        name: "",
+    nabywca: {
+        nazwa: "",
         nip: "",
-        street: "",
-        address: "",
-        zipcode: "",
-        city: "",
-        country: TKodyKrajowUE.PL,
+        ulica: "",
+        numer: "",
+        kodPocztowy: "",
+        miasto: "",
+        kraj: TKodyKrajowUE.PL,
     },
-    invoice: {
-        number: "",
-        issueDate: today(),
-        saleDate: "",
-        place: "",
-        currency: TKodWaluty.PLN,
-        type: TRodzajFaktury.VAT,
-        paymentMethod: undefined as TFormaPlatnosci | undefined,
-        paymentDueDate: "",
-        paymentDescription: "",
+    faktura: {
+        numer: "",
+        dataWystawienia: today(),
+        dataDostawy: "",
+        miejsceWystawienia: "",
+        waluta: TKodWaluty.PLN,
+        rodzaj: TRodzajFaktury.VAT,
+        formaPlatnosci: undefined as TFormaPlatnosci | undefined,
+        terminPlatnosci: "",
+        opisPlatnosci: "",
     },
-    positions: [createDefaultLine()],
-    selectedContractorId: null as string | null,
+    pozycje: [createDefaultLine()],
+    wybranyKontrahentId: null as string | null,
 });
 
 const formState = reactive(defaultForm());
@@ -414,45 +412,45 @@ const rules = {
 function createDefaultLine(): InvoiceLine {
     return {
         id: crypto.randomUUID(),
-        productId: null,
-        name: "",
-        unit: "szt",
-        quantity: 1,
-        priceNetto: 0,
-        vatRate: TStawkaPodatku.STAWKA_23,
+        produktId: null,
+        nazwa: "",
+        jednostka: "szt",
+        ilosc: 1,
+        cenaNetto: 0,
+        stawkaVat: TStawkaPodatku.STAWKA_23,
     };
 }
 
 const addPosition = () => {
-    formState.positions.push(createDefaultLine());
+    formState.pozycje.push(createDefaultLine());
 };
 
 const removePosition = (index: number) => {
-    if (formState.positions.length === 1) return;
-    formState.positions.splice(index, 1);
+    if (formState.pozycje.length === 1) return;
+    formState.pozycje.splice(index, 1);
 };
 
 const applyContractor = (value: string | null) => {
     if (!value) return;
     const contractor = (props.contractors ?? []).find((c) => c.id === value);
     if (!contractor) return;
-    formState.buyer.name = contractor.name;
-    formState.buyer.nip = contractor.nip;
-    formState.buyer.street = contractor.street;
-    formState.buyer.address = contractor.address;
-    formState.buyer.zipcode = contractor.zipcode;
-    formState.buyer.city = contractor.city;
-    formState.buyer.country = (contractor.country as TKodyKrajowUE) || TKodyKrajowUE.PL;
+    formState.nabywca.nazwa = contractor.name;
+    formState.nabywca.nip = contractor.nip;
+    formState.nabywca.ulica = contractor.street;
+    formState.nabywca.numer = contractor.address;
+    formState.nabywca.kodPocztowy = contractor.zipcode;
+    formState.nabywca.miasto = contractor.city;
+    formState.nabywca.kraj = (contractor.country as TKodyKrajowUE) || TKodyKrajowUE.PL;
 };
 
 const applyProduct = (line: InvoiceLine, value: string | null) => {
     if (!value) return;
     const product = (props.products ?? []).find((p) => p.id === value);
     if (!product) return;
-    line.name = product.name;
-    line.unit = product.unit;
-    line.priceNetto = product.price_netto;
-    line.vatRate = product.vat_rate as TStawkaPodatku;
+    line.nazwa = product.name;
+    line.jednostka = product.unit;
+    line.cenaNetto = product.price_netto;
+    line.stawkaVat = product.vat_rate as TStawkaPodatku;
 };
 
 const parseVatRate = (rate: TStawkaPodatku | string) => {
@@ -460,18 +458,18 @@ const parseVatRate = (rate: TStawkaPodatku | string) => {
     return Number.isFinite(numeric) ? numeric : 0;
 };
 
-const getLineNet = (line: InvoiceLine) => Number(line.quantity) * Number(line.priceNetto);
+const getLineNet = (line: InvoiceLine) => Number(line.ilosc) * Number(line.cenaNetto);
 
 const getLineVat = (line: InvoiceLine) => {
     const net = getLineNet(line);
-    const rate = parseVatRate(line.vatRate);
+    const rate = parseVatRate(line.stawkaVat);
     return net * (rate / 100);
 };
 
 const getLineGross = (line: InvoiceLine) => getLineNet(line) + getLineVat(line);
 
 const totals = computed(() => {
-    return formState.positions.reduce(
+    return formState.pozycje.reduce(
         (acc, line) => {
             acc.net += getLineNet(line);
             acc.vat += getLineVat(line);
@@ -489,24 +487,24 @@ const buildPayload = (): IInvoiceCreateBody | null => {
         return null;
     }
 
-    const adresL1 = `${formState.buyer.street} ${formState.buyer.address}`.trim();
-    const adresL2 = `${formState.buyer.zipcode} ${formState.buyer.city}`.trim();
+    const adresL1 = `${formState.nabywca.ulica} ${formState.nabywca.numer}`.trim();
+    const adresL2 = `${formState.nabywca.kodPocztowy} ${formState.nabywca.miasto}`.trim();
 
     const sellerAdresL1 = `${props.company.street} ${props.company.address}`.trim();
     const sellerAdresL2 = `${props.company.zipcode} ${props.company.city}`.trim();
 
-    const pozycje = formState.positions.map((line, index) => {
+    const pozycje = formState.pozycje.map((line, index) => {
         const net = getLineNet(line);
         const vat = getLineVat(line);
         const gross = getLineGross(line);
         return {
             numerWiersza: index + 1,
-            nazwa: line.name,
-            jednostkaMiary: line.unit || undefined,
-            ilosc: Number(line.quantity).toString(),
-            cenaJednostkowaNetto: formatAmount(line.priceNetto),
+            nazwa: line.nazwa,
+            jednostkaMiary: line.jednostka || undefined,
+            ilosc: Number(line.ilosc).toString(),
+            cenaJednostkowaNetto: formatAmount(line.cenaNetto),
             wartoscNetto: formatAmount(net),
-            stawkaVat: line.vatRate as TStawkaPodatku,
+            stawkaVat: line.stawkaVat as TStawkaPodatku,
             kwotaVat: formatAmount(vat),
             wartoscBrutto: formatAmount(gross),
         };
@@ -526,21 +524,21 @@ const buildPayload = (): IInvoiceCreateBody | null => {
         },
         podmiot2: {
             daneIdentyfikacyjne: {
-                nip: formState.buyer.nip || undefined,
-                nazwa: formState.buyer.name || undefined,
+                nip: formState.nabywca.nip || undefined,
+                nazwa: formState.nabywca.nazwa || undefined,
             },
             adres: {
-                kodKraju: formState.buyer.country,
-                adresL1: adresL1 || formState.buyer.street,
+                kodKraju: formState.nabywca.kraj,
+                adresL1: adresL1 || formState.nabywca.ulica,
                 adresL2: adresL2 || undefined,
             },
             jst: 2,
             gv: 2,
         },
         fa: {
-            waluta: formState.invoice.currency,
-            dataWystawienia: formState.invoice.issueDate,
-            numerFaktury: formState.invoice.number,
+            waluta: formState.faktura.waluta,
+            dataWystawienia: formState.faktura.dataWystawienia,
+            numerFaktury: formState.faktura.numer,
             kwotaBrutto: formatAmount(totals.value.gross),
             adnotacje: {
                 metodaKasowa: 2,
@@ -558,19 +556,17 @@ const buildPayload = (): IInvoiceCreateBody | null => {
                     marzyNie: 1,
                 },
             },
-            rodzajFaktury: formState.invoice.type,
+            rodzajFaktury: formState.faktura.rodzaj,
             pozycje,
-            dataDostawy: formState.invoice.saleDate || undefined,
-            miejsceWystawienia: formState.invoice.place || undefined,
+            dataDostawy: formState.faktura.dataDostawy || undefined,
+            miejsceWystawienia: formState.faktura.miejsceWystawienia || undefined,
             platnosc:
-                formState.invoice.paymentMethod ||
-                formState.invoice.paymentDueDate ||
-                formState.invoice.paymentDescription
+                formState.faktura.formaPlatnosci || formState.faktura.terminPlatnosci || formState.faktura.opisPlatnosci
                     ? {
-                          formaPlatnosci: formState.invoice.paymentMethod,
-                          opisPlatnosci: formState.invoice.paymentDescription || undefined,
-                          terminPlatnosci: formState.invoice.paymentDueDate
-                              ? [{ termin: formState.invoice.paymentDueDate }]
+                          formaPlatnosci: formState.faktura.formaPlatnosci,
+                          opisPlatnosci: formState.faktura.opisPlatnosci || undefined,
+                          terminPlatnosci: formState.faktura.terminPlatnosci
+                              ? [{ termin: formState.faktura.terminPlatnosci }]
                               : undefined,
                       }
                     : undefined,
@@ -590,10 +586,10 @@ const submit = async () => {
 
 const reset = () => {
     const defaults = defaultForm();
-    Object.assign(formState.buyer, defaults.buyer);
-    Object.assign(formState.invoice, defaults.invoice);
-    formState.selectedContractorId = defaults.selectedContractorId;
-    formState.positions.splice(0, formState.positions.length, ...defaults.positions);
+    Object.assign(formState.nabywca, defaults.nabywca);
+    Object.assign(formState.faktura, defaults.faktura);
+    formState.wybranyKontrahentId = defaults.wybranyKontrahentId;
+    formState.pozycje.splice(0, formState.pozycje.length, ...defaults.pozycje);
     form.value?.resetValidation();
     formValid.value = false;
 };
@@ -606,46 +602,42 @@ const loadFromInvoice = (invoice?: IInvoice | null) => {
 
     const buyer = invoice.nabywca?.podmiot2;
     const ident = buyer?.daneIdentyfikacyjne;
-    formState.buyer.name = ident?.nazwa ?? "";
-    formState.buyer.nip = ident?.nip ?? "";
+    formState.nabywca.nazwa = ident?.nazwa ?? "";
+    formState.nabywca.nip = ident?.nip ?? "";
     const adres = buyer?.adres;
-    formState.buyer.street = adres?.adresL1 ?? "";
-    formState.buyer.address = "";
-    formState.buyer.zipcode = adres?.adresL2?.split(" ")?.[0] ?? "";
-    formState.buyer.city = adres?.adresL2?.split(" ")?.slice(1).join(" ") ?? "";
-    formState.buyer.country = (adres?.kodKraju as TKodyKrajowUE) ?? TKodyKrajowUE.PL;
+    formState.nabywca.ulica = adres?.adresL1 ?? "";
+    formState.nabywca.numer = "";
+    formState.nabywca.kodPocztowy = adres?.adresL2?.split(" ")?.[0] ?? "";
+    formState.nabywca.miasto = adres?.adresL2?.split(" ")?.slice(1).join(" ") ?? "";
+    formState.nabywca.kraj = (adres?.kodKraju as TKodyKrajowUE) ?? TKodyKrajowUE.PL;
 
     const fa = invoice.body?.fa;
-    formState.invoice.number = fa?.numerFaktury ?? "";
-    formState.invoice.issueDate = fa?.dataWystawienia ?? today();
-    formState.invoice.saleDate = fa?.dataDostawy ?? "";
-    formState.invoice.place = fa?.miejsceWystawienia ?? "";
-    formState.invoice.currency = (fa?.waluta as TKodWaluty) ?? TKodWaluty.PLN;
-    formState.invoice.type = (fa?.rodzajFaktury as TRodzajFaktury) ?? TRodzajFaktury.VAT;
-    formState.invoice.paymentMethod = fa?.platnosc?.formaPlatnosci as TFormaPlatnosci | undefined;
-    formState.invoice.paymentDueDate = fa?.platnosc?.terminPlatnosci?.[0]?.termin ?? "";
-    formState.invoice.paymentDescription = fa?.platnosc?.opisPlatnosci ?? "";
+    formState.faktura.numer = fa?.numerFaktury ?? "";
+    formState.faktura.dataWystawienia = fa?.dataWystawienia ?? today();
+    formState.faktura.dataDostawy = fa?.dataDostawy ?? "";
+    formState.faktura.miejsceWystawienia = fa?.miejsceWystawienia ?? "";
+    formState.faktura.waluta = (fa?.waluta as TKodWaluty) ?? TKodWaluty.PLN;
+    formState.faktura.rodzaj = (fa?.rodzajFaktury as TRodzajFaktury) ?? TRodzajFaktury.VAT;
+    formState.faktura.formaPlatnosci = fa?.platnosc?.formaPlatnosci as TFormaPlatnosci | undefined;
+    formState.faktura.terminPlatnosci = fa?.platnosc?.terminPlatnosci?.[0]?.termin ?? "";
+    formState.faktura.opisPlatnosci = fa?.platnosc?.opisPlatnosci ?? "";
 
     const positions = (fa?.pozycje ?? []).map((position, index) => ({
         id: `${invoice.id}-${index}`,
-        productId: null,
-        name: position.nazwa ?? "",
-        unit: position.jednostkaMiary ?? "szt",
-        quantity: Number(position.ilosc ?? 1),
-        priceNetto: Number(position.cenaJednostkowaNetto ?? 0),
-        vatRate: (position.stawkaVat as TStawkaPodatku) ?? TStawkaPodatku.STAWKA_23,
+        produktId: null,
+        nazwa: position.nazwa ?? "",
+        jednostka: position.jednostkaMiary ?? "szt",
+        ilosc: Number(position.ilosc ?? 1),
+        cenaNetto: Number(position.cenaJednostkowaNetto ?? 0),
+        stawkaVat: (position.stawkaVat as TStawkaPodatku) ?? TStawkaPodatku.STAWKA_23,
     }));
 
-    formState.positions.splice(
-        0,
-        formState.positions.length,
-        ...(positions.length ? positions : [createDefaultLine()])
-    );
+    formState.pozycje.splice(0, formState.pozycje.length, ...(positions.length ? positions : [createDefaultLine()]));
 
     const contractorMatch = (props.contractors ?? []).find(
-        (contractor) => contractor.nip === formState.buyer.nip || contractor.name === formState.buyer.name
+        (contractor) => contractor.nip === formState.nabywca.nip || contractor.name === formState.nabywca.nazwa
     );
-    formState.selectedContractorId = contractorMatch?.id ?? null;
+    formState.wybranyKontrahentId = contractorMatch?.id ?? null;
 };
 
 watch(
