@@ -17,6 +17,7 @@ import ksefToken from "./schemas/ksefToken";
 import companyData from "./schemas/companyData";
 import openSession from "./schemas/openSession";
 import error from "./schemas/error";
+import invoiceCreate from "./schemas/invoiceCreate";
 
 export const contract = c.router({
     health: {
@@ -338,6 +339,38 @@ export const contract = c.router({
             400: error,
             404: error,
             500: error,
+        },
+        headers: z.object({
+            authorization: z.string(),
+        }),
+        metadata: {
+            auth: true,
+        },
+    },
+    invoicesList: {
+        method: "GET",
+        path: "/invoices",
+        responses: {
+            200: z.array(z.unknown()),
+        },
+        headers: z.object({
+            authorization: z.string(),
+        }),
+        metadata: {
+            auth: true,
+        },
+    },
+    invoiceCreate: {
+        method: "POST",
+        path: "/invoices",
+        body: invoiceCreate,
+        responses: {
+            400: z.object({
+                message: z.string(),
+            }),
+            200: z.object({
+                id: z.string(),
+            }),
         },
         headers: z.object({
             authorization: z.string(),
