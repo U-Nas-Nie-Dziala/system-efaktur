@@ -117,21 +117,15 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
-
-        <v-snackbar v-model="snackbar.show" :color="snackbar.color" :timeout="3000">
-            {{ snackbar.message }}
-            <template #actions>
-                <v-btn variant="text" @click="snackbar.show = false">Zamknij</v-btn>
-            </template>
-        </v-snackbar>
     </v-container>
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed, onMounted } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { client, getAuthHeaders, type IContractor } from "../../api";
 import ContractorCreate from "../../components/contractors/ContractorCreate.vue";
 import ContractorDetails from "../../components/contractors/ContractorDetails.vue";
+import { useToast } from "vue-toastification";
 
 const loading = ref(false);
 const creating = ref(false);
@@ -142,6 +136,7 @@ const detailsDialog = ref(false);
 const createDialog = ref(false);
 const deleteDialog = ref(false);
 const createRef = ref<InstanceType<typeof ContractorCreate> | null>(null);
+const toast = useToast();
 
 const contractors = ref<IContractor[]>([]);
 const selected = ref<IContractor[]>([]);
@@ -159,12 +154,6 @@ const headers = [
     { title: "Akcje", key: "actions", sortable: false, align: "center" as const },
 ];
 
-const snackbar = reactive({
-    show: false,
-    message: "",
-    color: "success",
-});
-
 const fetchContractors = async () => {
     loading.value = true;
     try {
@@ -175,7 +164,7 @@ const fetchContractors = async () => {
             contractors.value = response.body;
         }
     } catch (error) {
-        showSnackbar("Wystąpił błąd podczas pobierania danych", "error");
+        showToast("Wystąpił błąd podczas pobierania danych", "error");
     } finally {
         loading.value = false;
     }
@@ -188,7 +177,7 @@ const createContractor = async (payload: Parameters<typeof client.contractorsCre
     try {
         const token = localStorage.getItem("access_token");
         if (!token) {
-            showSnackbar("Brak tokenu autoryzacji. Zaloguj się ponownie.", "error");
+            showToast("Brak tokenu autoryzacji. Zaloguj się ponownie.", "error");
             return;
         }
         const response = await client.contractorsCreate({
@@ -196,20 +185,20 @@ const createContractor = async (payload: Parameters<typeof client.contractorsCre
             headers: getAuthHeaders(),
         });
         if (response.status === 200) {
-            showSnackbar("Produkt/usługa została dodana", "success");
+            showToast("Produkt/usługa została dodana", "success");
             await fetchContractors();
             createRef.value?.reset();
             createDialog.value = false;
         } else if (response.status === 400) {
             const body = response.body as { message?: string };
-            showSnackbar(body.message || "Nieprawidłowe dane", "error");
+            showToast(body.message || "Nieprawidłowe dane", "error");
         } else if (response.status === 401 || response.status === 403) {
-            showSnackbar("Brak uprawnień. Zaloguj się ponownie.", "error");
+            showToast("Brak uprawnień. Zaloguj się ponownie.", "error");
         } else {
-            showSnackbar("Nie udało się dodać produktu/usługi", "error");
+            showToast("Nie udało się dodać produktu/usługi", "error");
         }
     } catch (error) {
-        showSnackbar("Wystąpił błąd podczas dodawania", "error");
+        showToast("Wystąpił błąd podczas dodawania", "error");
     } finally {
         creating.value = false;
     }
@@ -235,14 +224,14 @@ const updateContractor = async (payload: Parameters<typeof client.contractorsUpd
             headers: getAuthHeaders(),
         });
         if (response.status === 200) {
-            showSnackbar("Produkt/usługa została zaktualizowana", "success");
+            showToast("Produkt/usługa została zaktualizowana", "success");
             await fetchContractors();
             closeDetails();
         } else if (response.status === 404) {
-            showSnackbar("Nie znaleziono wpisu", "error");
+            showToast("Nie znaleziono wpisu", "error");
         }
     } catch (error) {
-        showSnackbar("Wystąpił błąd podczas zapisywania", "error");
+        showToast("Wystąpił błąd podczas zapisywania", "error");
     } finally {
         updating.value = false;
     }
@@ -265,7 +254,7 @@ const deleteContractors = async () => {
                 })
             )
         );
-        showSnackbar("Usunięto wybrane elementy", "success");
+        showToast("Usunięto wybrane elementy", "success");
         await fetchContractors();
         selected.value = [];
         if (selectedContractor.value && deleteTargets.value.some((c) => c.id === selectedContractor.value!.id)) {
@@ -274,16 +263,26 @@ const deleteContractors = async () => {
         deleteDialog.value = false;
         deleteTargets.value = [];
     } catch (error) {
-        showSnackbar("Wystąpił błąd podczas usuwania", "error");
+        showToast("Wystąpił błąd podczas usuwania", "error");
     } finally {
         deleting.value = false;
     }
 };
 
-const showSnackbar = (message: string, color: string) => {
-    snackbar.message = message;
-    snackbar.color = color;
-    snackbar.show = true;
+const showToast = (message: string, type: "success" | "error" | "info" | "warning") => {
+    if (type === "success") {
+        toast.success(message);
+        return;
+    }
+    if (type === "error") {
+        toast.error(message);
+        return;
+    }
+    if (type === "warning") {
+        toast.warning(message);
+        return;
+    }
+    toast.info(message);
 };
 
 onMounted(() => {

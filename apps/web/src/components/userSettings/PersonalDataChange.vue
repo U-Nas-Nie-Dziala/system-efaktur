@@ -23,24 +23,21 @@ const loading1 = ref(false);
 const loading2 = ref(false);
 const loading3 = ref(false);
 
-const submit1 = (e: Event) => {
-    e.preventDefault();
+const submit1 = () => {
     loading1.value = true;
     console.log("Personal data changed:", state1.firstname, state1.lastname);
     setTimeout(() => {
         loading1.value = false;
     }, 3000);
 };
-const submit2 = (e: Event) => {
-    e.preventDefault();
+const submit2 = () => {
     loading2.value = true;
     console.log("Email change requested:", state2.newEmail, state2.password);
     setTimeout(() => {
         loading2.value = false;
     }, 3000);
 };
-const submit3 = (e: Event) => {
-    e.preventDefault();
+const submit3 = () => {
     loading3.value = true;
     console.log("Password change requested:", state3.password, state3.newPassword);
     setTimeout(() => {

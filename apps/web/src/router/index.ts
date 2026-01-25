@@ -4,10 +4,9 @@ import {
   type RouteRecordRaw,
 } from "vue-router";
 import { client, getAuthHeaders } from "../api";
-import { createToastInterface } from "vue-toastification";
+import { useToast } from "vue-toastification";
 
-const toast = createToastInterface();
-let companyGateToastShown = false;
+const toast = useToast();
 
 const routes: RouteRecordRaw[] = [
   {
@@ -102,19 +101,7 @@ router.beforeEach(async (to) => {
     // fallthrough to settings
   }
 
-  if (!companyGateToastShown) {
-    companyGateToastShown = true;
-    toast.warning(
-      "Brak dostępu: uzupełnij dane firmy w ustawieniach.",
-      {
-        timeout: 6000,
-        closeOnClick: false
-      }
-    );
-    setTimeout(() => {
-      companyGateToastShown = false;
-    }, 6500);
-  }
+  toast.warning("Brak dostępu: uzupełnij dane firmy w ustawieniach.");
 
   return { name: "settings", hash: "#company-settings" };
 });

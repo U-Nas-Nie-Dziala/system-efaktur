@@ -139,21 +139,15 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
-
-        <v-snackbar v-model="snackbar.show" :color="snackbar.color" :timeout="3000">
-            {{ snackbar.message }}
-            <template #actions>
-                <v-btn variant="text" @click="snackbar.show = false">Zamknij</v-btn>
-            </template>
-        </v-snackbar>
     </v-container>
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed, onMounted } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { client, getAuthHeaders, type IProduct } from "../../api";
 import ProductCreate from "../../components/products/ProductCreate.vue";
 import ProductDetails from "../../components/products/ProductDetails.vue";
+import { useToast } from "vue-toastification";
 
 const loading = ref(false);
 const creating = ref(false);
@@ -165,6 +159,7 @@ const detailsDialog = ref(false);
 const createDialog = ref(false);
 const deleteDialog = ref(false);
 const createRef = ref<InstanceType<typeof ProductCreate> | null>(null);
+const toast = useToast();
 
 const products = ref<IProduct[]>([]);
 const selected = ref<IProduct[]>([]);
@@ -186,12 +181,6 @@ const headers = [
     { title: "Akcje", key: "actions", sortable: false, align: "center" as const },
 ];
 
-const snackbar = reactive({
-    show: false,
-    message: "",
-    color: "success",
-});
-
 const fetchProducts = async () => {
     loading.value = true;
     try {
@@ -202,7 +191,7 @@ const fetchProducts = async () => {
             products.value = response.body;
         }
     } catch (error) {
-        showSnackbar("Wystąpił błąd podczas pobierania danych", "error");
+        showToast("Wystąpił błąd podczas pobierania danych", "error");
     } finally {
         loading.value = false;
     }
@@ -213,7 +202,7 @@ const createProduct = async (payload: Parameters<typeof client.productsCreate>[0
     try {
         const token = localStorage.getItem("access_token");
         if (!token) {
-            showSnackbar("Brak tokenu autoryzacji. Zaloguj się ponownie.", "error");
+            showToast("Brak tokenu autoryzacji. Zaloguj się ponownie.", "error");
             return;
         }
         const response = await client.productsCreate({
@@ -221,20 +210,20 @@ const createProduct = async (payload: Parameters<typeof client.productsCreate>[0
             headers: getAuthHeaders(),
         });
         if (response.status === 200) {
-            showSnackbar("Produkt/usługa została dodana", "success");
+            showToast("Produkt/usługa została dodana", "success");
             await fetchProducts();
             createRef.value?.reset();
             createDialog.value = false;
         } else if (response.status === 400) {
             const body = response.body as { message?: string };
-            showSnackbar(body.message || "Nieprawidłowe dane", "error");
+            showToast(body.message || "Nieprawidłowe dane", "error");
         } else if (response.status === 401 || response.status === 403) {
-            showSnackbar("Brak uprawnień. Zaloguj się ponownie.", "error");
+            showToast("Brak uprawnień. Zaloguj się ponownie.", "error");
         } else {
-            showSnackbar("Nie udało się dodać produktu/usługi", "error");
+            showToast("Nie udało się dodać produktu/usługi", "error");
         }
     } catch (error) {
-        showSnackbar("Wystąpił błąd podczas dodawania", "error");
+        showToast("Wystąpił błąd podczas dodawania", "error");
     } finally {
         creating.value = false;
     }
@@ -260,14 +249,14 @@ const updateProduct = async (payload: Parameters<typeof client.productsUpdate>[0
             headers: getAuthHeaders(),
         });
         if (response.status === 200) {
-            showSnackbar("Produkt/usługa została zaktualizowana", "success");
+            showToast("Produkt/usługa została zaktualizowana", "success");
             await fetchProducts();
             closeDetails();
         } else if (response.status === 404) {
-            showSnackbar("Nie znaleziono wpisu", "error");
+            showToast("Nie znaleziono wpisu", "error");
         }
     } catch (error) {
-        showSnackbar("Wystąpił błąd podczas zapisywania", "error");
+        showToast("Wystąpił błąd podczas zapisywania", "error");
     } finally {
         updating.value = false;
     }
@@ -290,7 +279,7 @@ const deleteProducts = async () => {
                 })
             )
         );
-        showSnackbar("Usunięto wybrane elementy", "success");
+        showToast("Usunięto wybrane elementy", "success");
         await fetchProducts();
         selected.value = [];
         if (selectedProduct.value && deleteTargets.value.some((p) => p.id === selectedProduct.value!.id)) {
@@ -299,7 +288,7 @@ const deleteProducts = async () => {
         deleteDialog.value = false;
         deleteTargets.value = [];
     } catch (error) {
-        showSnackbar("Wystąpił błąd podczas usuwania", "error");
+        showToast("Wystąpił błąd podczas usuwania", "error");
     } finally {
         deleting.value = false;
     }
@@ -316,10 +305,20 @@ const formatCurrency = (value: number) => {
 
 const formatType = (type: "PRODUCT" | "SERVICE") => (type === "PRODUCT" ? "Towar" : "Usługa");
 
-const showSnackbar = (message: string, color: string) => {
-    snackbar.message = message;
-    snackbar.color = color;
-    snackbar.show = true;
+const showToast = (message: string, type: "success" | "error" | "info" | "warning") => {
+    if (type === "success") {
+        toast.success(message);
+        return;
+    }
+    if (type === "error") {
+        toast.error(message);
+        return;
+    }
+    if (type === "warning") {
+        toast.warning(message);
+        return;
+    }
+    toast.info(message);
 };
 
 onMounted(() => {
