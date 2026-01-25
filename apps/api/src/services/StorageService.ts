@@ -11,4 +11,15 @@ export class StorageService {
 
         fs.mkdirSync(userPath);
     }
+
+    public static async saveInvoiceOnDisk(companyId: string, invoiceId: string, xml: string) {
+        const userPath = path.resolve(process.cwd(), "storage", companyId, `${invoiceId}.xml`);
+
+        if (fs.existsSync(userPath)) {
+            return false;
+        }
+
+        fs.writeFileSync(userPath, xml);
+        return true;
+    }
 }

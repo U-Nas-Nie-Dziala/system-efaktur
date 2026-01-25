@@ -408,6 +408,31 @@ export const contract = c.router({
             404: error,
             200: z.unknown(),
         },
+        headers: z.object({
+            authorization: z.string(),
+        }),
+        metadata: {
+            auth: true,
+        },
+    },
+    invoicesSave: {
+        method: "POST",
+        path: "/invoices/:id/save",
+        pathParams: z.object({
+            id: z.string(),
+        }),
+        body: null,
+        responses: {
+            400: error,
+            404: error,
+            200: z.object({}),
+        },
+        headers: z.object({
+            authorization: z.string(),
+        }),
+        metadata: {
+            auth: true,
+        },
     },
 });
 
