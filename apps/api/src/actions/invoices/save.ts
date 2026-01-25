@@ -144,10 +144,8 @@ export const invoicesSave = async (ctx: Route["ctx"]): Promise<Route["response"]
             item.jednostkaMiary = pozycja.jednostkaMiary as never;
             item.ilosc = pozycja.ilosc as never;
             item.cenaJednostkowaNetto = pozycja.cenaJednostkowaNetto as never;
-            item.wartoscNetto = pozycja.wartoscNetto as never;
             item.stawkaVat = pozycja.stawkaVat;
             item.kwotaVat = pozycja.kwotaVat as never;
-            item.wartoscBrutto = pozycja.wartoscBrutto as never;
             return item;
         });
     };
