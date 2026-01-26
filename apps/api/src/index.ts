@@ -52,6 +52,7 @@ import { invoicesFind } from "./actions/invoices/find";
 import { invoicesSave } from "./actions/invoices/save";
 import { invoicesDelete } from "./actions/invoices/delete";
 import { invoicesSend } from "./actions/invoices/send";
+import { invoicesUpo } from "./actions/invoices/upo";
 
 const start = async () => {
     Config.validateEnv();
@@ -83,6 +84,7 @@ const start = async () => {
         invoicesSave,
         invoicesDelete,
         invoicesSend,
+        invoicesUpo,
     });
 
     createExpressEndpoints(contract, router, app, {

@@ -52,8 +52,26 @@
                                 size="small"
                                 variant="text"
                                 :loading="sendingId === item.id"
-                                :disabled="!canSend(item) || signingId !== null || sendingId !== null"
+                                :disabled="
+                                    !canSend(item) || gettingUpo !== null || signingId !== null || sendingId !== null
+                                "
                                 @click="sendInvoice(item)"
+                            >
+                                <v-icon>mdi:mdi-send</v-icon>
+                            </v-btn>
+                        </template>
+                    </v-tooltip>
+                    <v-tooltip text="Pobierz UPO" location="top">
+                        <template #activator="{ props }">
+                            <v-btn
+                                v-bind="props"
+                                size="small"
+                                variant="text"
+                                :loading="sendingId === item.id"
+                                :disabled="
+                                    !canGetUpo(item) || gettingUpo !== null || signingId !== null || sendingId !== null
+                                "
+                                @click="getUPO(item)"
                             >
                                 <v-icon>mdi:mdi-send</v-icon>
                             </v-btn>
@@ -122,6 +140,7 @@ const previewDialog = ref(false);
 const previewItem = ref<InvoiceRow | null>(null);
 const signingId = ref<string | null>(null);
 const sendingId = ref<string | null>(null);
+const gettingUpo = ref<string | null>(null);
 const { showToast } = useAppToast();
 
 const invoices = ref<IInvoice[]>([]);
@@ -156,6 +175,7 @@ const getStatus = (invoice: IInvoice) => {
 };
 
 const canSend = (row: InvoiceRow) => !row.raw.draft && !row.raw.sessionReferenceNumber;
+const canGetUpo = (row: InvoiceRow) => !row.raw.draft && row.raw.referenceNumber;
 
 const tableItems = computed<InvoiceRow[]>(() =>
     invoices.value
@@ -223,9 +243,45 @@ const sendInvoice = async (row: InvoiceRow) => {
 
         if (res.status == 200) {
             showToast("Faktura została przekazana do systemu KSeF.", "success");
+            await fetchInvoices();
         }
     } finally {
         sendingId.value = null;
+    }
+};
+
+const getUPO = async (row: InvoiceRow) => {
+    if (!canGetUpo(row)) {
+        showToast("Faktura nie została wysłana do KSeF.");
+        return;
+    }
+
+    gettingUpo.value = row.id;
+
+    try {
+        const res = await client.invoicesUpo({
+            headers: getAuthHeaders(),
+            params: {
+                id: row.id,
+            },
+        });
+
+        if (res.status == 400) {
+            showToast(res.body.message, "error");
+        }
+
+        if (res.status == 404) {
+            showToast(res.body.message);
+        }
+
+        if (res.status == 200) {
+            const blob = new Blob([res.body.upo], { type: "application/xml;charset=utf-8" });
+            const url = URL.createObjectURL(blob);
+
+            window.open(url, `upo-${row.raw.id}`);
+        }
+    } finally {
+        gettingUpo.value = null;
     }
 };
 

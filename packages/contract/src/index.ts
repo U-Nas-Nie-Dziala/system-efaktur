@@ -24,6 +24,7 @@ const invoiceEntity = z.object({
     id: z.string(),
     draft: z.boolean(),
     signed: z.boolean(),
+    referenceNumber: z.string().nullable().optional(),
     sessionReferenceNumber: z.string().nullable().optional(),
     sprzedawca: z.object({
         podmiot1: invoiceCreate.shape.podmiot1,
@@ -482,6 +483,26 @@ export const contract = c.router({
             400: error,
             404: error,
             200: z.object({}),
+        },
+        headers: z.object({
+            authorization: z.string(),
+        }),
+        metadata: {
+            auth: true,
+        },
+    },
+    invoicesUpo: {
+        method: "GET",
+        path: "/invoices/:id/upo",
+        pathParams: z.object({
+            id: z.string(),
+        }),
+        responses: {
+            400: error,
+            404: error,
+            200: z.object({
+                upo: z.string(),
+            }),
         },
         headers: z.object({
             authorization: z.string(),
