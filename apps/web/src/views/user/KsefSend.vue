@@ -45,20 +45,6 @@
                             </v-btn>
                         </template>
                     </v-tooltip>
-                    <v-tooltip text="Podpisz" location="top">
-                        <template #activator="{ props }">
-                            <v-btn
-                                v-bind="props"
-                                size="small"
-                                variant="text"
-                                :loading="signingId === item.id"
-                                :disabled="!canSign(item) || signingId !== null || sendingId !== null"
-                                @click="signInvoice(item)"
-                            >
-                                <v-icon>mdi:mdi-pen</v-icon>
-                            </v-btn>
-                        </template>
-                    </v-tooltip>
                     <v-tooltip text="Wyślij do KSeF" location="top">
                         <template #activator="{ props }">
                             <v-btn
@@ -169,8 +155,7 @@ const getStatus = (invoice: IInvoice) => {
     return { label: "Robocza", color: "grey" };
 };
 
-const canSign = (row: InvoiceRow) => !row.raw.draft && !row.raw.signed;
-const canSend = (row: InvoiceRow) => !row.raw.draft && row.raw.signed && !row.raw.sessionReferenceNumber;
+const canSend = (row: InvoiceRow) => !row.raw.draft && !row.raw.sessionReferenceNumber;
 
 const tableItems = computed<InvoiceRow[]>(() =>
     invoices.value
@@ -214,19 +199,6 @@ const openPreview = (row: InvoiceRow) => {
     previewDialog.value = true;
 };
 
-const signInvoice = async (row: InvoiceRow) => {
-    if (!canSign(row)) {
-        showToast("Faktura nie jest gotowa do podpisu", "info");
-        return;
-    }
-    signingId.value = row.id;
-    try {
-        showToast("Brak endpointu podpisu - implementacja do uzupełnienia", "warning");
-    } finally {
-        signingId.value = null;
-    }
-};
-
 const sendInvoice = async (row: InvoiceRow) => {
     if (!canSend(row)) {
         showToast("Faktura nie jest gotowa do wysyłki", "info");
@@ -234,7 +206,24 @@ const sendInvoice = async (row: InvoiceRow) => {
     }
     sendingId.value = row.id;
     try {
-        showToast("Brak endpointu wysyłki - implementacja do uzupełnienia", "warning");
+        const res = await client.invoicesSend({
+            headers: getAuthHeaders(),
+            params: {
+                id: row.id,
+            },
+        });
+
+        if (res.status == 400) {
+            showToast(res.body.message, "error");
+        }
+
+        if (res.status == 404) {
+            showToast(res.body.message);
+        }
+
+        if (res.status == 200) {
+            showToast("Faktura została przekazana do systemu KSeF.", "success");
+        }
     } finally {
         sendingId.value = null;
     }

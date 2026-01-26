@@ -471,9 +471,9 @@ export const contract = c.router({
             auth: true,
         },
     },
-    invoicesSign: {
-        method: "PUT",
-        path: "/invoices/:id",
+    invoicesSend: {
+        method: "POST",
+        path: "/invoices/:id/send",
         pathParams: z.object({
             id: z.string(),
         }),

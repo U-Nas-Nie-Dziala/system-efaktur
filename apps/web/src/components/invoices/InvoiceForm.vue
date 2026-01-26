@@ -333,8 +333,6 @@ const form = ref<VForm | null>(null);
 
 const companyReady = computed(() => Boolean(props.company?.nip && props.company?.name && props.company?.street));
 
-const today = () => new Date().toISOString().slice(0, 10);
-
 const defaultForm = () => ({
     nabywca: {
         nazwa: "",
@@ -347,7 +345,7 @@ const defaultForm = () => ({
     },
     faktura: {
         numer: randomInvoiceId(),
-        dataWystawienia: today(),
+        dataWystawienia: "",
         dataDostawy: "",
         miejsceWystawienia: "",
         waluta: TKodWaluty.PLN,
@@ -614,7 +612,7 @@ const loadFromInvoice = (invoice?: IInvoice | null) => {
 
     const fa = invoice.body?.fa;
     formState.faktura.numer = fa?.numerFaktury ?? "";
-    formState.faktura.dataWystawienia = fa?.dataWystawienia ?? today();
+    formState.faktura.dataWystawienia = fa?.dataWystawienia ?? "";
     formState.faktura.dataDostawy = fa?.dataDostawy ?? "";
     formState.faktura.miejsceWystawienia = fa?.miejsceWystawienia ?? "";
     formState.faktura.waluta = (fa?.waluta as TKodWaluty) ?? TKodWaluty.PLN;

@@ -66,7 +66,7 @@ export const invoicesSave = async (ctx: Route["ctx"]): Promise<Route["response"]
     faktura.naglowek = new Naglowek();
     faktura.naglowek.kodFormularza = new KodFormularzaFa();
     faktura.naglowek.systemInfo = "UNasNieDzialaApp";
-    faktura.naglowek.dataWytworzeniaFa = invoice.created_at.toISOString();
+    faktura.naglowek.dataWytworzeniaFa = new Date().toISOString();
     const mapAdres = (adres: { kodKraju: string; adresL1: string; adresL2?: string }) => {
         const mapped = new TAdres();
         mapped.kodKraju = adres.kodKraju as never;
@@ -141,6 +141,7 @@ export const invoicesSave = async (ctx: Route["ctx"]): Promise<Route["response"]
             const item = new FaWiersz();
             item.numerWiersza = pozycja.numerWiersza as never;
             item.nazwa = pozycja.nazwa as never;
+            item.wartoscNetto = pozycja.wartoscNetto;
             item.jednostkaMiary = pozycja.jednostkaMiary as never;
             item.ilosc = pozycja.ilosc as never;
             item.cenaJednostkowaNetto = pozycja.cenaJednostkowaNetto as never;

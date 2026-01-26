@@ -25,6 +25,10 @@ export class Invoice {
     @Index()
     sessionReferenceNumber?: string;
 
+    @Column({ type: "varchar", length: 256, nullable: true })
+    @Index()
+    referenceNumber?: string;
+
     @Column({ type: "json" })
     sprzedawca: SprzedawcaType;
 
