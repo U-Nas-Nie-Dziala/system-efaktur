@@ -1,7 +1,43 @@
-import { initContract, ServerInferRequest, ServerInferResponses } from "@ts-rest/core";
+import { AppRoute, initContract, ServerInferRequest, ServerInferResponses, AppRouter } from "@ts-rest/core";
+import { Request, Response } from "express";
 import { z } from "zod";
 
 const c = initContract();
+
+import registerSchema from "./schemas/registerAccount";
+import loginSchema from "./schemas/loginAccount";
+import tokensSchema from "./schemas/tokenAccount";
+import changePasswordSchema from "./schemas/changePassword";
+import changePersonalSchema from "./schemas/changePersonal";
+import contractorsCreate from "./schemas/contractorsCreate";
+import contractorsUpdate from "./schemas/contractorsUpdate";
+import productsCreate from "./schemas/productsCreate";
+import productsUpdate from "./schemas/productsUpdate";
+import ksefToken from "./schemas/ksefToken";
+import companyData from "./schemas/companyData";
+import openSession from "./schemas/openSession";
+import error from "./schemas/error";
+import invoiceCreate from "./schemas/invoiceCreate";
+import invoiceUpdate from "./schemas/invoiceUpdate";
+
+const invoiceEntity = z.object({
+    id: z.string(),
+    draft: z.boolean(),
+    signed: z.boolean(),
+    referenceNumber: z.string().nullable().optional(),
+    sessionReferenceNumber: z.string().nullable().optional(),
+    sprzedawca: z.object({
+        podmiot1: invoiceCreate.shape.podmiot1,
+    }),
+    nabywca: z.object({
+        podmiot2: invoiceCreate.shape.podmiot2,
+    }),
+    body: z.object({
+        fa: invoiceCreate.shape.fa,
+    }),
+    created_at: z.coerce.date(),
+    updated_at: z.coerce.date(),
+});
 
 export const contract = c.router({
     health: {
@@ -11,7 +47,476 @@ export const contract = c.router({
             200: z.object({ message: z.string() }),
         },
     },
+    registerAccount: {
+        method: "POST",
+        path: "/auth/register",
+        body: registerSchema,
+        responses: {
+            201: z.object({}),
+            419: error,
+        },
+    },
+    loginAccount: {
+        method: "POST",
+        path: "/auth/login",
+        body: loginSchema,
+        responses: {
+            200: z.object({
+                access_token: z.string(),
+                refresh_token: z.string(),
+            }),
+            400: error,
+            404: error,
+        },
+    },
+    refreshTokens: {
+        method: "POST",
+        path: "/auth/tokens",
+        body: tokensSchema,
+        responses: {
+            200: z.object({
+                access_token: z.string(),
+                refresh_token: z.string(),
+            }),
+            400: error,
+        },
+    },
+    changePassword: {
+        method: "POST",
+        path: "/me/change-password",
+        body: changePasswordSchema,
+        headers: z.object({
+            authorization: z.string(),
+        }),
+        responses: {
+            200: z.object({
+                message: z.string(),
+            }),
+            400: error,
+        },
+        metadata: {
+            auth: true,
+        },
+    },
+    changePersonal: {
+        method: "POST",
+        path: "/me/change-personal",
+        body: changePersonalSchema,
+        responses: {
+            200: z.object({
+                message: z.string(),
+            }),
+        },
+        headers: z.object({
+            authorization: z.string(),
+        }),
+        metadata: {
+            auth: true,
+        },
+    },
+    meInfo: {
+        method: "GET",
+        path: "/me/info",
+        responses: {
+            200: z.object({
+                firstname: z.string(),
+                lastname: z.string(),
+                email: z.string(),
+                hasCompany: z.boolean(),
+                company: z
+                    .object({
+                        id: z.string(),
+                        name: z.string(),
+                        type: z.string(),
+                        nip: z.string().optional(),
+                        regon: z.string(),
+                        bdo: z.string().optional(),
+                        krs: z.string().optional(),
+                        street: z.string(),
+                        address: z.string(),
+                        zipcode: z.string(),
+                        city: z.string(),
+                        country: z.string(),
+                        registerDate: z.date(),
+                        vat: z.boolean().optional(),
+                    })
+                    .optional(),
+            }),
+        },
+        headers: z.object({
+            authorization: z.string(),
+        }),
+        metadata: {
+            auth: true,
+        },
+    },
+    contractorsList: {
+        method: "GET",
+        path: "/contractors",
+        responses: {
+            200: z.array(
+                z.object({
+                    id: z.string(),
+                    own_name: z.string(),
+                    name: z.string(),
+                    nip: z.string(),
+                    street: z.string(),
+                    address: z.string(),
+                    zipcode: z.string(),
+                    city: z.string(),
+                    country: z.string(),
+                })
+            ),
+        },
+        headers: z.object({
+            authorization: z.string(),
+        }),
+        metadata: {
+            auth: true,
+        },
+    },
+    contractorsCreate: {
+        method: "POST",
+        path: "/contractors",
+        body: contractorsCreate,
+        responses: {
+            200: z.object({}),
+        },
+        headers: z.object({
+            authorization: z.string(),
+        }),
+        metadata: {
+            auth: true,
+        },
+    },
+    contractorsUpdate: {
+        method: "PATCH",
+        path: "/contractors/:id",
+        pathParams: z.object({
+            id: z.string().uuid(),
+        }),
+        body: contractorsUpdate,
+        responses: {
+            404: error,
+            200: z.object({}),
+        },
+        headers: z.object({
+            authorization: z.string(),
+        }),
+        metadata: {
+            auth: true,
+        },
+    },
+    contractorsDelete: {
+        method: "DELETE",
+        path: "/contractors/:id",
+        pathParams: z.object({
+            id: z.string().uuid(),
+        }),
+        responses: {
+            204: z.object({}),
+            404: error,
+        },
+        headers: z.object({
+            authorization: z.string(),
+        }),
+        metadata: {
+            auth: true,
+        },
+    },
+    productsList: {
+        method: "GET",
+        path: "/products",
+        responses: {
+            200: z.array(
+                z.object({
+                    id: z.string(),
+                    name: z.string(),
+                    description: z.string().optional(),
+                    type: z.enum(["PRODUCT", "SERVICE"]),
+                    unit: z.string(),
+                    price_netto: z.number(),
+                    price_brutto: z.number(),
+                    vat_rate: z.string(),
+                    created_at: z.coerce.date(),
+                    updated_at: z.coerce.date(),
+                })
+            ),
+        },
+        headers: z.object({
+            authorization: z.string(),
+        }),
+        metadata: {
+            auth: true,
+        },
+    },
+    productsCreate: {
+        method: "POST",
+        path: "/products",
+        body: productsCreate,
+        responses: {
+            200: z.object({}),
+            400: error,
+        },
+        headers: z.object({
+            authorization: z.string(),
+        }),
+        metadata: {
+            auth: true,
+        },
+    },
+    productsUpdate: {
+        method: "PATCH",
+        path: "/products/:id",
+        pathParams: z.object({
+            id: z.string().uuid(),
+        }),
+        body: productsUpdate,
+        responses: {
+            404: error,
+            200: z.object({}),
+        },
+        headers: z.object({
+            authorization: z.string(),
+        }),
+        metadata: {
+            auth: true,
+        },
+    },
+    productsDelete: {
+        method: "DELETE",
+        path: "/products/:id",
+        pathParams: z.object({
+            id: z.string().uuid(),
+        }),
+        responses: {
+            204: z.object({}),
+            404: error,
+        },
+        headers: z.object({
+            authorization: z.string(),
+        }),
+        metadata: {
+            auth: true,
+        },
+    },
+    setKsefToken: {
+        method: "PUT",
+        path: "/@me/ksef-token",
+        responses: {
+            200: z.object({}),
+            404: error,
+            409: error,
+        },
+        body: ksefToken,
+        headers: z.object({
+            authorization: z.string(),
+        }),
+        metadata: {
+            auth: true,
+        },
+    },
+    setCompanyData: {
+        method: "PUT",
+        path: "/@me/company",
+        responses: {
+            200: z.object({}),
+        },
+        body: companyData,
+        headers: z.object({
+            authorization: z.string(),
+        }),
+        metadata: {
+            auth: true,
+        },
+    },
+    ksefOpenSession: {
+        method: "POST",
+        path: "/ksef/open-session",
+        responses: {
+            200: z.object({
+                id: z.string(),
+                message: z.string(),
+            }),
+            400: error,
+            403: error,
+            404: error,
+            409: error,
+            500: error,
+        },
+        body: openSession,
+        headers: z.object({
+            authorization: z.string(),
+        }),
+        metadata: {
+            auth: true,
+        },
+    },
+    ksefCloseSession: {
+        method: "DELETE",
+        path: "/ksef/close-session",
+        responses: {
+            200: z.object({}),
+            400: error,
+            404: error,
+            500: error,
+        },
+        headers: z.object({
+            authorization: z.string(),
+        }),
+        metadata: {
+            auth: true,
+        },
+    },
+    invoicesList: {
+        method: "GET",
+        path: "/invoices",
+        responses: {
+            200: z.array(invoiceEntity),
+        },
+        headers: z.object({
+            authorization: z.string(),
+        }),
+        metadata: {
+            auth: true,
+        },
+    },
+    invoicesCreate: {
+        method: "POST",
+        path: "/invoices",
+        body: invoiceCreate,
+        responses: {
+            400: error,
+            200: z.object({
+                id: z.string(),
+            }),
+        },
+        headers: z.object({
+            authorization: z.string(),
+        }),
+        metadata: {
+            auth: true,
+        },
+    },
+    invoicesUpdate: {
+        method: "PATCH",
+        path: "/invoices/:id",
+        pathParams: z.object({
+            id: z.string(),
+        }),
+        body: invoiceUpdate,
+        responses: {
+            400: error,
+            404: error,
+            200: z.object({ id: z.string() }),
+        },
+        headers: z.object({
+            authorization: z.string(),
+        }),
+        metadata: {
+            auth: true,
+        },
+    },
+    invoicesFind: {
+        method: "GET",
+        path: "/invoices/:id",
+        pathParams: z.object({
+            id: z.string(),
+        }),
+        responses: {
+            400: error,
+            404: error,
+            200: invoiceEntity,
+        },
+        headers: z.object({
+            authorization: z.string(),
+        }),
+        metadata: {
+            auth: true,
+        },
+    },
+    invoicesSave: {
+        method: "POST",
+        path: "/invoices/:id/save",
+        pathParams: z.object({
+            id: z.string(),
+        }),
+        body: null,
+        responses: {
+            400: error,
+            404: error,
+            200: z.object({}),
+        },
+        headers: z.object({
+            authorization: z.string(),
+        }),
+        metadata: {
+            auth: true,
+        },
+    },
+    invoicesDelete: {
+        method: "DELETE",
+        path: "/invoices/:id",
+        pathParams: z.object({
+            id: z.string(),
+        }),
+        responses: {
+            400: error,
+            404: error,
+            200: z.object({}),
+        },
+        headers: z.object({
+            authorization: z.string(),
+        }),
+        metadata: {
+            auth: true,
+        },
+    },
+    invoicesSend: {
+        method: "POST",
+        path: "/invoices/:id/send",
+        pathParams: z.object({
+            id: z.string(),
+        }),
+        body: null,
+        responses: {
+            400: error,
+            404: error,
+            200: z.object({}),
+        },
+        headers: z.object({
+            authorization: z.string(),
+        }),
+        metadata: {
+            auth: true,
+        },
+    },
+    invoicesUpo: {
+        method: "GET",
+        path: "/invoices/:id/upo",
+        pathParams: z.object({
+            id: z.string(),
+        }),
+        responses: {
+            400: error,
+            404: error,
+            200: z.object({
+                upo: z.string(),
+            }),
+        },
+        headers: z.object({
+            authorization: z.string(),
+        }),
+        metadata: {
+            auth: true,
+        },
+    },
 });
 
-export type HealthRequest = ServerInferRequest<typeof contract.health>;
-export type HealthResponse = ServerInferResponses<typeof contract.health>;
+export type RouteCtx<T extends AppRoute | AppRouter> = {
+    ctx: ServerInferRequest<T> & {
+        req: Request;
+        res: Response;
+    };
+    response: ServerInferResponses<T>;
+};

@@ -1,52 +1,49 @@
-import { Column, CreateDateColumn, Entity, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import {
+    Column,
+    CreateDateColumn,
+    Entity,
+    OneToMany,
+    OneToOne,
+    PrimaryGeneratedColumn,
+    UpdateDateColumn,
+} from "typeorm";
 import { User } from "./User";
+import { Contractor } from "./Contractor";
+import { Product } from "./Product";
+import { KsefSession } from "./KsefSession";
+import { Invoice } from "./Invoice";
 
-export enum CompanyType {
-    JDG = "Jednoosobowa działalność gospodarcza",
-    SC = "Spółka cywilna",
-    SPJ = "Spółka jawna",
-    SPP = "Spółka partnerska",
-    SPK = "Spółka komandytowa",
-    SKA = "Spółka komandytowo-akcyjna",
-    SPZOO = "Spółka z ograniczoną odpowiedzialnością",
-    PSA = "Prosta spółka akcyjna",
-    SA = "Spółka akcyjna",
-    SPOLDZ = "Spółdzielnia",
-    FUNDACJA = "Fundacja",
-    STOWARZYSZENIE = "Stowarzyszenie rejestrowe",
-    SPZOZ = "Samodzielny publiczny zakład opieki zdrowotnej",
-    JEDNOSTKA_BUDZETOWA = "Jednostka budżetowa",
-    ODDZIAL_ZAGR = "Oddział przedsiębiorcy zagranicznego",
-    INNE = "Inna forma prawna",
-}
-
-export interface ICompanyContract {
-    name: string;
-    type: CompanyType;
-    nip: string;
-    regon: string;
-    bdo?: string;
-    krs?: string;
-    street: string;
-    address: string;
-    zipcode: string;
-    city: string;
-    country: string;
-    registerDate: Date;
-    vat: boolean;
-}
+export const CompanyTypes = [
+    "Jednoosobowa działalność gospodarcza",
+    "Spółka cywilna",
+    "Spółka jawna",
+    "Spółka partnerska",
+    "Spółka komandytowa",
+    "Spółka komandytowo-akcyjna",
+    "Spółka z ograniczoną odpowiedzialnością",
+    "Prosta spółka akcyjna",
+    "Spółka akcyjna",
+    "Spółdzielnia",
+    "Fundacja",
+    "Stowarzyszenie rejestrowe",
+    "Samodzielny publiczny zakład opieki zdrowotnej",
+    "Jednostka budżetowa",
+    "Oddział przedsiębiorcy zagranicznego",
+    "Inna forma prawna",
+] as const;
+export type CompanyType = (typeof CompanyTypes)[number];
 
 @Entity({
     name: "companies",
 })
-export class Company implements ICompanyContract {
+export class Company {
     @PrimaryGeneratedColumn("uuid")
     id: string;
 
     @Column({ name: "name", type: "varchar", length: 512 })
     name: string;
 
-    @Column({ type: "enum", enum: CompanyType })
+    @Column({ type: "varchar", length: 64 })
     type: CompanyType;
 
     @Column({ name: "nip", type: "varchar", length: 10 })
@@ -90,4 +87,22 @@ export class Company implements ICompanyContract {
 
     @OneToOne(() => User, (user) => user.company)
     user: User;
+
+    @OneToMany(() => Contractor, (c) => c.company)
+    contractors: Contractor[];
+
+    @OneToMany(() => Product, (p) => p.company)
+    products: Product[];
+
+    @Column({ type: "text", nullable: true })
+    ksefToken?: string;
+
+    @Column({ type: "varchar", length: 255, nullable: true })
+    ksefTokenPassword?: string;
+
+    @OneToMany(() => KsefSession, (ks) => ks.company)
+    ksefSessions: KsefSession[];
+
+    @OneToMany(() => Invoice, (i) => i.company)
+    invoices: Invoice[];
 }

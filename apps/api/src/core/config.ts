@@ -7,7 +7,7 @@ import { readFileSync } from "fs";
 interface IConfig {
     APP_PORT: number;
     APP_SECRET: string;
-    APP_COOKIE_SECRET: string;
+    // APP_COOKIE_SECRET: string;
     DB_HOST: string;
     DB_PORT: number;
     DB_USER: string;
@@ -30,9 +30,9 @@ class ConfigEnv implements IConfig {
     @IsString()
     APP_SECRET: string;
 
-    @IsNotEmpty()
-    @IsString()
-    APP_COOKIE_SECRET: string;
+    // @IsNotEmpty()
+    // @IsString()
+    // APP_COOKIE_SECRET: string;
 
     @IsNotEmpty()
     @IsString()

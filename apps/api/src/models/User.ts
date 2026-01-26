@@ -11,19 +11,10 @@ import {
 import { Token } from "./Token";
 import { Company } from "./Company";
 
-export interface IUserContract {
-    firstname: string;
-    lastname: string;
-    email: string;
-    password: string;
-    tokens: Token[];
-    company: Company;
-}
-
 @Entity({
     name: "users",
 })
-export class User implements IUserContract {
+export class User {
     @PrimaryGeneratedColumn("uuid")
     id: string;
 
@@ -50,5 +41,5 @@ export class User implements IUserContract {
 
     @OneToOne(() => Company, { nullable: true, cascade: true })
     @JoinColumn()
-    company: Company;
+    company?: Company;
 }

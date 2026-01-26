@@ -1,8 +1,13 @@
-import { DataSource } from "typeorm";
+import "reflect-metadata";
+import { DataSource, EntityTarget, ObjectLiteral, Repository } from "typeorm";
 import { Config } from "./config";
 import { User } from "../models/User";
 import { Token } from "../models/Token";
 import { Company } from "../models/Company";
+import { Contractor } from "../models/Contractor";
+import { Product } from "../models/Product";
+import { KsefSession } from "../models/KsefSession";
+import { Invoice } from "../models/Invoice";
 
 export class Database {
     private static ds: DataSource;
@@ -18,7 +23,7 @@ export class Database {
                 username: Config.key<string>("DB_USER"),
                 password: Config.key<string>("DB_PASS"),
                 database: Config.key<string>("DB_NAME"),
-                entities: [User, Token, Company],
+                entities: [User, Token, Company, Contractor, Product, KsefSession, Invoice],
                 timezone: "Z",
                 synchronize: true,
             });
@@ -35,4 +40,8 @@ export class Database {
     public static get dataSource(): DataSource {
         return this.ds;
     }
+}
+
+export function useRepository<T extends ObjectLiteral>(entity: EntityTarget<T>): Repository<T> {
+    return Database.dataSource.getRepository(entity);
 }
