@@ -604,8 +604,7 @@ export class KsefClient {
 
         return {
             ksefReferenceNumber: response.data.ksefReferenceNumber || elementReferenceNumber,
-            upo: response.data.upo,
-            timestamp: response.data.timestamp,
+            upo: response.data,
         };
     }
 

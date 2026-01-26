@@ -43,10 +43,11 @@ const FaWiersz = z.object({
     jednostkaMiary: TZnakowy.optional(),
     ilosc: TIlosc.optional(),
     cenaJednostkowaNetto: TKwotowy.optional(),
+    cenaJednostkowaBrutto: TKwotowy.optional(),
     wartoscNetto: TKwotowy.optional(),
+    wartoscBrutto: TKwotowy.optional(),
     stawkaVat: z.nativeEnum(TStawkaPodatku).optional(),
     kwotaVat: TKwotowy.optional(),
-    wartoscBrutto: TKwotowy.optional(),
 });
 
 const Adnotacje = z.object({

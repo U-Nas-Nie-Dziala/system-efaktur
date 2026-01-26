@@ -78,8 +78,7 @@ export interface KsefInvoiceStatus {
 
 export interface KsefUPO {
     ksefReferenceNumber: string; // numer ref faktury w ksef
-    upo: string; // zawartosc upo w base64
-    timestamp: string; // dla upo
+    upo: string; // zawartosc upo w raw
 }
 
 export interface KsefSessionCloseResponse {

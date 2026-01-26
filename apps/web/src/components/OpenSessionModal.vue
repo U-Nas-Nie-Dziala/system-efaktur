@@ -20,8 +20,8 @@
                 </v-card-text>
 
                 <v-card-actions class="d-flex flex-row justify-space-between">
-                    <v-btn text="Anuluj" color="dark" variant="tonal" @click="close" />
-                    <v-btn type="submit" text="Otwórz sesję" color="error" variant="tonal" />
+                    <v-btn :disabled="$loading" text="Anuluj" color="dark" variant="tonal" @click="close" />
+                    <v-btn :loading="$loading" type="submit" text="Otwórz sesję" color="error" variant="tonal" />
                 </v-card-actions>
             </v-form>
         </v-card>
@@ -36,6 +36,7 @@ import { client, getAuthHeaders } from "../api";
 import { useToast } from "vue-toastification";
 
 const $toast = useToast();
+const $loading = ref(false);
 
 const $form = ref<{
     input: {
@@ -60,7 +61,7 @@ const clearErrors = () => {
 const openKsef = async () => {
     try {
         const data = await contract.ksefOpenSession.body.parseAsync($form.value.input);
-
+        $loading.value = true;
         const response = await client.ksefOpenSession({
             body: data,
             headers: getAuthHeaders(),
@@ -94,6 +95,8 @@ const openKsef = async () => {
             });
             return;
         }
+    } finally {
+        $loading.value = false;
     }
 };
 

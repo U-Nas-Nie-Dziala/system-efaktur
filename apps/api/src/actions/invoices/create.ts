@@ -33,8 +33,12 @@ export const invoicesCreate = async (ctx: Route["ctx"]): Promise<Route["response
             },
         },
     };
-    i.nabywca.podmiot2 = ctx.body.podmiot2;
-    i.body.fa = ctx.body.fa;
+    i.nabywca = {
+        podmiot2: ctx.body.podmiot2,
+    };
+    i.body = {
+        fa: ctx.body.fa,
+    };
 
     const { id } = await invoicesRepository.save(i);
 

@@ -20,6 +20,25 @@ import error from "./schemas/error";
 import invoiceCreate from "./schemas/invoiceCreate";
 import invoiceUpdate from "./schemas/invoiceUpdate";
 
+const invoiceEntity = z.object({
+    id: z.string(),
+    draft: z.boolean(),
+    signed: z.boolean(),
+    referenceNumber: z.string().nullable().optional(),
+    sessionReferenceNumber: z.string().nullable().optional(),
+    sprzedawca: z.object({
+        podmiot1: invoiceCreate.shape.podmiot1,
+    }),
+    nabywca: z.object({
+        podmiot2: invoiceCreate.shape.podmiot2,
+    }),
+    body: z.object({
+        fa: invoiceCreate.shape.fa,
+    }),
+    created_at: z.coerce.date(),
+    updated_at: z.coerce.date(),
+});
+
 export const contract = c.router({
     health: {
         method: "GET",
@@ -353,7 +372,7 @@ export const contract = c.router({
         method: "GET",
         path: "/invoices",
         responses: {
-            200: z.array(z.unknown()),
+            200: z.array(invoiceEntity),
         },
         headers: z.object({
             authorization: z.string(),
@@ -407,7 +426,7 @@ export const contract = c.router({
         responses: {
             400: error,
             404: error,
-            200: z.unknown(),
+            200: invoiceEntity,
         },
         headers: z.object({
             authorization: z.string(),
@@ -445,6 +464,45 @@ export const contract = c.router({
             400: error,
             404: error,
             200: z.object({}),
+        },
+        headers: z.object({
+            authorization: z.string(),
+        }),
+        metadata: {
+            auth: true,
+        },
+    },
+    invoicesSend: {
+        method: "POST",
+        path: "/invoices/:id/send",
+        pathParams: z.object({
+            id: z.string(),
+        }),
+        body: null,
+        responses: {
+            400: error,
+            404: error,
+            200: z.object({}),
+        },
+        headers: z.object({
+            authorization: z.string(),
+        }),
+        metadata: {
+            auth: true,
+        },
+    },
+    invoicesUpo: {
+        method: "GET",
+        path: "/invoices/:id/upo",
+        pathParams: z.object({
+            id: z.string(),
+        }),
+        responses: {
+            400: error,
+            404: error,
+            200: z.object({
+                upo: z.string(),
+            }),
         },
         headers: z.object({
             authorization: z.string(),

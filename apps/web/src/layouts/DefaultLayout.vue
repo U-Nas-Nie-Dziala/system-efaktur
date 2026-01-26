@@ -20,6 +20,7 @@ const placeholderLinks = [
         icon: "mdi:mdi-package-variant",
         name: "products",
     },
+    { title: "Wysyłka KSeF", icon: "mdi:mdi-send", name: "ksef-send" },
     { title: "Ustawienia", icon: "mdi:mdi-cog-outline", name: "settings" },
 ];
 

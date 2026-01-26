@@ -22,4 +22,14 @@ export class StorageService {
         fs.writeFileSync(userPath, xml);
         return true;
     }
+
+    public static async readInvoiceFromDisk(companyId: string, invoiceId: string) {
+        const userPath = path.resolve(process.cwd(), "storage", companyId, `${invoiceId}.xml`);
+
+        if (!fs.existsSync(userPath)) {
+            return false;
+        }
+
+        return fs.readFileSync(userPath, { encoding: "utf-8" });
+    }
 }

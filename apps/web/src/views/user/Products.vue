@@ -95,12 +95,20 @@
                 </template>
 
                 <template #item.actions="{ item }">
-                    <v-btn size="small" variant="text" @click="openDetails(item)">
-                        <v-icon>mdi:mdi-eye</v-icon>
-                    </v-btn>
-                    <v-btn size="small" variant="text" @click="confirmDelete([item])">
-                        <v-icon>mdi:mdi-delete</v-icon>
-                    </v-btn>
+                    <v-tooltip text="Podgląd/edycja" location="top">
+                        <template #activator="{ props }">
+                            <v-btn v-bind="props" size="small" variant="text" @click="openDetails(item)">
+                                <v-icon>mdi:mdi-eye</v-icon>
+                            </v-btn>
+                        </template>
+                    </v-tooltip>
+                    <v-tooltip text="Usuń pozycję" location="top">
+                        <template #activator="{ props }">
+                            <v-btn v-bind="props" size="small" variant="text" @click="confirmDelete([item])">
+                                <v-icon>mdi:mdi-delete</v-icon>
+                            </v-btn>
+                        </template>
+                    </v-tooltip>
                 </template>
 
                 <template #no-data>
